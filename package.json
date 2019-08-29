@@ -1,0 +1,26 @@
+{
+    "name": "pubmanifest",
+    "version": "1.0.0",
+    "description": "Canonicalization of Publication Manifests",
+    "main": "dist/main.js",
+    "scripts": {
+        "test": "ts-node dist/main.js",
+        "build": "tsc"
+    },
+    "license": "W3C-20150513",
+    "keywords": [
+        "WP",
+        "W3C"
+    ],
+    "author": {
+        "name": "Ivan Herman",
+        "email": "ivan@w3.org",
+        "url": "https://www.w3.org/People/Ivan/"
+    },
+    "devDependencies": {
+        "@types/node": "^12.7.2",
+        "eslint": "^6.2.1",
+        "eslint-config-airbnb-base": "^14.0.0",
+        "eslint-plugin-import": "^2.18.2"
+    }
+}
