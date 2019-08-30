@@ -24,30 +24,59 @@ const creator_properties = [
     'translator'
 ];
 
-// export interface Terms {
-//     single_literal_terms: string[];
-//     multiple_literal_terms: string[];
+export interface Terms {
+    single_literal_terms: string[];
+    multiple_literal_terms: string[];
 
-//     single_loc_string_terms: string[];
-//     multiple_loc_string_terms: string[];
+    single_loc_string_terms: string[];
+    multiple_loc_string_terms: string[];
 
-//     multiple_entity_terms: string[];
-//     multiple_link_terms: string[];
+    multiple_entity_terms: string[];
+    multiple_link_terms: string[];
 
-//     [propName: string]    : any;
-// }
+    misc_terms: string[];
+
+    all_terms() : string[];
+}
+
+class Terms_info implements Terms {
+    single_literal_terms: string[];
+    multiple_literal_terms: string[];
+
+    single_loc_string_terms: string[];
+    multiple_loc_string_terms: string[];
+
+    multiple_entity_terms: string[];
+    multiple_link_terms: string[];
+
+    misc_terms: string[];
+
+    constructor(single_literal: string[], multiple_literal: string[],
+                single_loc_string: string[], multiple_loc_string: string[],
+                multiple_entity: string[],
+                multiple_link: string[],
+                misc_terms: string[] = []) {
+        this.single_literal_terms = single_literal;
+        this.multiple_literal_terms = multiple_literal;
+        this.single_loc_string_terms = single_loc_string;
+        this.multiple_loc_string_terms = multiple_loc_string;
+        this.multiple_entity_terms = multiple_entity;
+        this.multiple_link_terms = multiple_link;
+        this.misc_terms = misc_terms;
+    }
+
+    all_terms(): string[] {
+        return [
+            ...this.single_literal_terms, ...this.multiple_literal_terms,
+            ...this.single_loc_string_terms, ...this.multiple_loc_string_terms,
+            ...this.multiple_entity_terms, ...this.multiple_link_terms,
+            ...this.misc_terms
+        ];
+    }
+}
 
 
 export class CreatorInfo_Impl implements CreatorInfo {
-    // single_literal_terms: string[] = ['dateModified', 'datePublished', 'id', 'inDirection', 'readingProgression'];
-    // multiple_literal_terms: string[] = [...a11y_properties, 'inLanguage', 'type', 'url'];
-
-    // single_loc_string_terms: string[] = ['accessibilitySummary']
-    // multiple_loc_string_terms: string[] = ['name'];
-
-    // multiple_entity_terms: string[] = [...creator_properties];
-    // multiple_link_terms: string[] = ['readingOrder', 'resources', 'links'];
-
     constructor(person_organization: LocalizableString[]) { this._name = person_organization };
     _name: LocalizableString[];
     get name() {
@@ -68,6 +97,7 @@ export class CreatorInfo_Impl implements CreatorInfo {
     get url() {
         return this._url
     };
+    [propName: string] : any;
 };
 
 export class LocalizableString_Impl implements LocalizableString {
@@ -82,16 +112,7 @@ export class LocalizableString_Impl implements LocalizableString {
     };
 };
 
-
 export class LinkedResource_Impl implements LinkedResource {
-    // single_literal_terms: string[] = ['dateModified', 'datePublished', 'id', 'inDirection', 'readingProgression'];
-    // multiple_literal_terms: string[] = [...a11y_properties, 'inLanguage', 'type', 'url'];
-
-    // single_loc_string_terms: string[] = ['accessibilitySummary']
-    // multiple_loc_string_terms: string[] = ['name'];
-
-    // multiple_entity_terms: string[] = [...creator_properties];
-    // multiple_link_terms: string[] = ['readingOrder', 'resources', 'links'];
 
     constructor(url: string) { this._url = url }
     _url: string;
@@ -128,19 +149,20 @@ export class LinkedResource_Impl implements LinkedResource {
     get length() {
         return this._length
     }
-    // [propName: string] : any;
+    [propName: string] : any;
 };
 
 export class PublicationManifest_Impl implements PublicationManifest {
+    static terms: Terms = new Terms_info(
+        ['dateModified', 'datePublished', 'id', 'inDirection', 'readingProgression', 'direction'],
+        [...a11y_properties, 'inLanguage', 'type', 'url', 'inLanguage'],
 
-    static single_literal_terms: string[] = ['dateModified', 'datePublished', 'id', 'inDirection', 'readingProgression'];
-    static multiple_literal_terms: string[] = [...a11y_properties, 'inLanguage', 'type', 'url'];
+        ['accessibilitySummary'],
+        ['name'],
 
-    static single_loc_string_terms: string[] = ['accessibilitySummary']
-    static multiple_loc_string_terms: string[] = ['name'];
-
-    static multiple_entity_terms: string[] = [...creator_properties];
-    static multiple_link_terms: string[] = ['readingOrder', 'resources', 'links'];
+        [...creator_properties],
+        ['readingOrder', 'resources', 'links']
+    );
 
     // ------------------------- The required terms
     _type: string[] = ['CreativeWork'];
@@ -264,12 +286,17 @@ export class PublicationManifest_Impl implements PublicationManifest {
         return this._duration
     }
 
-    _inLanguage: string;
+    _direction: TextDirection;
+    get direction() {
+        return this._direction
+    }
+
+    _inLanguage: string[];
     get inLanguage() {
         return this._inLanguage
     }
 
-    _inDirection: TextDirection;
+    _inDirection: ProgressionDirection;
     get inDirection() {
         return this._inDirection
     }

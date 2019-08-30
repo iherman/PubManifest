@@ -1,5 +1,5 @@
 import { PublicationManifest, LinkedResource, LocalizableString, CreatorInfo, TextDirection, ProgressionDirection } from './manifest';
-import { CreatorInfo_Impl, LocalizableString_Impl, LinkedResource_Impl, PublicationManifest_Impl } from './manifest_classes';
+import { CreatorInfo_Impl, LocalizableString_Impl, LinkedResource_Impl, PublicationManifest_Impl, Terms } from './manifest_classes';
 import { LogLevel, Logger } from './logger';
 
 // ---------------------------- Global object for the various utilities ----------------
@@ -72,12 +72,44 @@ function get_ObjectArray<T>(arg: any, creator: create_Object<T>) : T[] {
 
 // ------------------------------------------------------------------
 
-function convert_object(target: any, source: any)  {
-    target.single_literal_terms.forEach( (term: string) => {
-        if (source[term])
-            target[`_${term}`] = create_string(source[term]);
+// function convert_object(target: any, source: any)  {
+//     target.single_literal_terms.forEach( (term: string) => {
+//         if (source[term])
+//             target[`_${term}`] = create_string(source[term]);
+//     })
+//     //return target;
+// }
+
+function convert_object(terms: Terms, target: PublicationManifest_Impl | LinkedResource_Impl | CreatorInfo_Impl, source: any) {
+
+    // Some terms should just be copied
+    terms.single_literal_terms.forEach( (term: string) => {
+        if (source[term]) target[`_${term}`] = create_string(source[term]);
     })
-    //return target;
+
+    // Some terms should be arrays, but otherwise their value remains unchanged
+    terms.multiple_literal_terms.forEach( (term: string) => {
+        if (source[term]) target[`_${term}`] = get_ObjectArray<string>(source[term], create_string);
+    })
+
+    // Some terms should be converted into a single Localizable String
+    terms.single_loc_string_terms.forEach( (term: string) => {
+        if (source[term]) target[`_${term}`] = create_LocalizableString(source[term]);
+    })
+
+    // Some terms should be converted into an array of Localizable Strings
+    terms.multiple_loc_string_terms.forEach( (term: string) => {
+        if (source[term]) target[`_${term}`] = get_ObjectArray<LocalizableString>(source[term], create_LocalizableString);
+    })
+
+    // Some terms should be converted into an array of entities
+    terms.multiple_entity_terms.forEach( (term: string) => {
+        if (source[term]) target[`_${term}`] = get_ObjectArray<CreatorInfo>(source[term], create_CreatorInfo);
+    })
+
+    terms.multiple_link_terms.forEach( (term: string) => {
+        if (source[term]) target[`_${term}`] = get_ObjectArray<LinkedResource>(source[term], create_LinkedResource);
+    })
 }
 
 
@@ -85,69 +117,32 @@ export function create_manifest_object(manifest: string, logger: Logger) : Publi
     const retval = new PublicationManifest_Impl();
      let obj;
 
+    // console.log(PublicationManifest_Impl.terms.all_terms());
+
     // The manifest text (i.e., JSON) must be turned into an object to be manipulated...
     try {
         const obj = JSON.parse(manifest);
         Global.logger = logger;
 
         // Some terms should just be copied
-        PublicationManifest_Impl.single_literal_terms.forEach( (term: string) => {
+        PublicationManifest_Impl.terms.single_literal_terms.forEach( (term: string) => {
             if (obj[term])
                 retval[`_${term}`] = create_string(obj[term]);
         })
 
         // Some terms should be arrays, but otherwise their value remains unchanged
-        PublicationManifest_Impl.multiple_literal_terms.forEach( (term: string) => {
+        PublicationManifest_Impl.terms.multiple_literal_terms.forEach( (term: string) => {
             if (obj[term])
                 retval[`_${term}`] = get_ObjectArray<string>(obj[term], create_string);
         })
 
-        // Some terms should be converted into a single Localizable String
-        PublicationManifest_Impl.single_loc_string_terms.forEach( (term: string) => {
-            if (obj[term])
-                retval[`_${term}`] = create_LocalizableString(obj[term]);
-        })
+ 
 
-        // Some terms should be converted into an array of Localizable Strings
-        PublicationManifest_Impl.multiple_loc_string_terms.forEach( (term: string) => {
-            if (obj[term])
-                retval[`_${term}`] = get_ObjectArray<LocalizableString>(obj[term], create_LocalizableString);
-        })
 
-        // Some terms should be converted into an array of entities
-        PublicationManifest_Impl.multiple_entity_terms.forEach( (term: string) => {
-            if (obj[term])
-                retval[`_${term}`] = get_ObjectArray<CreatorInfo>(obj[term], create_CreatorInfo);
-        })
-
-        PublicationManifest_Impl.multiple_link_terms.forEach( (term: string) => {
-            if (obj[term])
-                retval[`_${term}`] = get_ObjectArray<LinkedResource>(obj[term], create_LinkedResource);
-        })
+        convert_object(PublicationManifest_Impl.terms, retval, obj);
     } catch( err ) {
         logger.assert(false, `${err.message}`, LogLevel.error);
     }
     return retval;
 
-    // return._type = get_ObjectArray<string>(obj.type, create_string);
-
-    // // amend the resource list...
-    // const new_resource_list = obj.readingOrder.map((res: any) => get_linked_resource(res));
-    // obj.readingOrder = new_resource_list;
-
-    // obj.name = toArray(obj.name).map((txt: any) => create_LocalizableString(txt))
-    // obj.url = toArray(obj.url).map((txt: any) => create_LocalizableString(txt))
-
-    // // The ugly trick...
-    // const manifest_terms = Object.getOwnPropertyNames(retval);
-
-    // Object.keys(obj).forEach((term) => {
-    //     // Whilst most of the terms are used verbatim, some are not.
-    //     // Also, some should not be mapped.
-    //     if (term !== '@context') {
-    //         if (manifest_terms.includes(`_${term}`)) {
-    //             retval[`_${term}`] = obj[term];
-    //         }
-    //     }
-    // });
 }
