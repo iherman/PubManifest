@@ -3,6 +3,7 @@ export interface CreatorInfo {
     name               : LocalizableString[];
     id?                : string;
     url?               : string;
+    identifier?        : string[];
     // [propName: string] : any;
 };
 

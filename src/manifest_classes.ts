@@ -97,6 +97,13 @@ export class CreatorInfo_Impl implements CreatorInfo {
     get url() {
         return this._url
     };
+
+    _identifier: string[];
+    get identifier() {
+        return this._identifier
+    };
+
+
     [propName: string] : any;
 };
 
