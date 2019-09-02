@@ -77,7 +77,17 @@ class Terms_info implements Terms {
 
 
 export class CreatorInfo_Impl implements CreatorInfo {
-    constructor(person_organization: LocalizableString[]) { this._name = person_organization };
+    static terms: Terms = new Terms_info(
+        ['id', 'url'],
+        ['type', 'identifier'],
+
+        [],
+        ['name'],
+
+        [],
+        []
+    );
+
     _name: LocalizableString[];
     get name() {
         return this._name
@@ -103,16 +113,20 @@ export class CreatorInfo_Impl implements CreatorInfo {
         return this._identifier
     };
 
-
     [propName: string] : any;
 };
 
 export class LocalizableString_Impl implements LocalizableString {
-    constructor(value: string) { this._value = value }
+    _type: string[];
+    get type() {
+        return this._type
+    };
+
     _value: string;
     get value() {
         return this._value
     }
+
     _language: string;
     get language() {
         return this._language
@@ -120,8 +134,18 @@ export class LocalizableString_Impl implements LocalizableString {
 };
 
 export class LinkedResource_Impl implements LinkedResource {
+    static terms: Terms = new Terms_info(
+        ['url', 'encodingFormat', 'integrity'],
+        ['rel', 'type'],
 
-    constructor(url: string) { this._url = url }
+        ['description'],
+        ['name'],
+
+        [],
+        [],
+        ['length']
+    );
+
     _url: string;
     get url() {
         return this._url
@@ -156,6 +180,7 @@ export class LinkedResource_Impl implements LinkedResource {
     get length() {
         return this._length
     }
+
     [propName: string] : any;
 };
 
@@ -328,5 +353,5 @@ export class PublicationManifest_Impl implements PublicationManifest {
         return this._links
     }
 
-    [propName: string]    : any;
+    [propName: string] : any;
 };

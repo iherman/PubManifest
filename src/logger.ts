@@ -19,30 +19,26 @@ export class Logger {
     /**
      * Assertion that should lead to a log the message if false.
      *
-     * @param {boolean} condition - the condition that decides whether the message should be logged
      * @param {string} message - the message that should be logged, possibly, in case the condition is false
      * @param {Symbol} level - either LogLevel.warning or LogLevel.error
      * @returns {boolean}
      */
-    assert(condition: boolean, message: string, level: LogLevel) : boolean {
-        if (!condition) {
-            switch (level) {
-                case LogLevel.error:
-                    this._errors.push(message);
-                    break;
-                case LogLevel.warning:
-                    this._warnings.push(message);
-                    break;
-                default:
-                    break;
-            }
+    log(message: string, level: LogLevel) : void {
+        switch (level) {
+            case LogLevel.error:
+                this._errors.push(message);
+                break;
+            case LogLevel.warning:
+                this._warnings.push(message);
+                break;
+            default:
+                break;
         }
-        return condition;
     }
 
-    get warnings() { return this._warnings; }
+    get warnings(): string[] { return this._warnings; }
 
-    get errors() { return this._errors; }
+    get errors() : string[] { return this._errors; }
 
     /**
      * Display all the errors as one string.
