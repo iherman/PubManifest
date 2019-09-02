@@ -161,7 +161,7 @@ export class LinkedResource_Impl implements LinkedResource {
 
 export class PublicationManifest_Impl implements PublicationManifest {
     static terms: Terms = new Terms_info(
-        ['dateModified', 'datePublished', 'id', 'inDirection', 'readingProgression', 'direction'],
+        ['dateModified', 'datePublished', 'id', 'readingProgression', 'direction'],
         [...a11y_properties, 'inLanguage', 'type', 'url', 'inLanguage'],
 
         ['accessibilitySummary'],
@@ -301,11 +301,6 @@ export class PublicationManifest_Impl implements PublicationManifest {
     _inLanguage: string[];
     get inLanguage() {
         return this._inLanguage
-    }
-
-    _inDirection: ProgressionDirection;
-    get inDirection() {
-        return this._inDirection
     }
 
     _dateModified: string;

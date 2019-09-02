@@ -61,7 +61,6 @@ export interface PublicationManifest {
     duration?             : string;
     direction?            : TextDirection;
     inLanguage?           : string[];
-    inDirection?          : ProgressionDirection;
     dateModified?         : string;
     datePublished?        : string;
     readingProgression?   : ProgressionDirection;
