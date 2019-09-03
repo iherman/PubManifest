@@ -223,10 +223,7 @@ function get_ObjectArray<T>(arg: any, creator: create_Instance<T>, checker: chec
  * @param target the class where the values should be put
  * @param source the (originally JSON) object to get the values from
  */
-
-
 function convert_object(terms: Terms, target: PublicationManifest_Impl | LinkedResource_Impl | CreatorInfo_Impl, source: any) {
-
     // Some terms should just be copied
     terms.single_literal_terms.forEach( (term: string) => {
         if (source[term]) target[`_${term}`] = create_string(source[term]);
@@ -307,7 +304,5 @@ export function process_manifest(manifest: string, base: string, logger: Logger)
     } catch( err ) {
         logger.log(`${err.message}`, LogLevel.error);
     }
-
     return check_PublicationManifest(retval);
-
 }
