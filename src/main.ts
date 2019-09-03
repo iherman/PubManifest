@@ -1,6 +1,6 @@
 import { PublicationManifest, LinkedResource, LocalizableString } from "./manifest";
-import { create_manifest_object } from "./convert";
-import { Logger } from "./logger";
+import { process_manifest } from "./convert";
+import { Logger } from "./utilities";
 
 const test = `
 {
@@ -44,7 +44,7 @@ const test = `
 
 
 const logger = new Logger();
-const manifest_object = create_manifest_object(test, logger);
+const manifest_object = process_manifest(test, logger);
 console.log(manifest_object)
 
 

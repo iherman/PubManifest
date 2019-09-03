@@ -1,5 +1,10 @@
+/**
+ * Implementation classes for the Publication manifest. See 'manifest.ts' for the visible interfaces.
+ */
+
 import { PublicationManifest, LinkedResource, LocalizableString, CreatorInfo, TextDirection, ProgressionDirection } from './manifest';
 
+// -------------------------------------------- Convenience variables -------------------------------------
 const a11y_properties = [
     'accessMode',
     'accessModeSufficient',
@@ -24,60 +29,61 @@ const creator_properties = [
     'translator'
 ];
 
-export interface Terms {
+// -------------------------------------------- Categorization of terms -------------------------------------
+/**
+ * Categorization of terms per value types: arrays for terms as single literal values, multiple literal values (ie, must be turned into an array of strings),
+ * single localizable string and an array of localizable strings, array of creator terms, and an array of linked resources.
+ *
+ * There is a method to return the full list of terms; for that to work, there is an extra array for miscellaneous terms that need otherwise special consideration (e.g., 'length')
+ */
+export class Terms {
     single_literal_terms: string[];
     multiple_literal_terms: string[];
 
     single_loc_string_terms: string[];
     multiple_loc_string_terms: string[];
 
-    multiple_entity_terms: string[];
-    multiple_link_terms: string[];
-
-    misc_terms: string[];
-
-    all_terms() : string[];
-}
-
-class Terms_info implements Terms {
-    single_literal_terms: string[];
-    multiple_literal_terms: string[];
-
-    single_loc_string_terms: string[];
-    multiple_loc_string_terms: string[];
-
-    multiple_entity_terms: string[];
+    multiple_creators_terms: string[];
     multiple_link_terms: string[];
 
     misc_terms: string[];
 
     constructor(single_literal: string[], multiple_literal: string[],
                 single_loc_string: string[], multiple_loc_string: string[],
-                multiple_entity: string[],
+                multiple_creator: string[],
                 multiple_link: string[],
                 misc_terms: string[] = []) {
         this.single_literal_terms = single_literal;
         this.multiple_literal_terms = multiple_literal;
         this.single_loc_string_terms = single_loc_string;
         this.multiple_loc_string_terms = multiple_loc_string;
-        this.multiple_entity_terms = multiple_entity;
+        this.multiple_creators_terms = multiple_creator;
         this.multiple_link_terms = multiple_link;
         this.misc_terms = misc_terms;
     }
 
+    /**
+     * Return an array of all the terms
+     */
     all_terms(): string[] {
         return [
             ...this.single_literal_terms, ...this.multiple_literal_terms,
             ...this.single_loc_string_terms, ...this.multiple_loc_string_terms,
-            ...this.multiple_entity_terms, ...this.multiple_link_terms,
+            ...this.multiple_creators_terms, ...this.multiple_link_terms,
             ...this.misc_terms
         ];
     }
 }
 
-
+// -------------------------------------------- The real implementations of the manifest interfaces -------------------------------------
+/**
+ * Creators, ie, persons or organizations
+ */
 export class CreatorInfo_Impl implements CreatorInfo {
-    static terms: Terms = new Terms_info(
+    /**
+     * Terms used for object of this type
+     */
+    static terms: Terms = new Terms(
         ['id', 'url'],
         ['type', 'identifier'],
 
@@ -116,6 +122,9 @@ export class CreatorInfo_Impl implements CreatorInfo {
     [propName: string] : any;
 };
 
+/**
+ * Localizable Strings, i.e., string values with possible languages
+ */
 export class LocalizableString_Impl implements LocalizableString {
     _type: string[];
     get type() {
@@ -133,8 +142,11 @@ export class LocalizableString_Impl implements LocalizableString {
     };
 };
 
+/**
+ * Linked Resources (ie, references to publication resources)
+ */
 export class LinkedResource_Impl implements LinkedResource {
-    static terms: Terms = new Terms_info(
+    static terms: Terms = new Terms(
         ['url', 'encodingFormat', 'integrity'],
         ['rel', 'type'],
 
@@ -184,8 +196,11 @@ export class LinkedResource_Impl implements LinkedResource {
     [propName: string] : any;
 };
 
+/**
+ * The top level class for a publication manifest
+ */
 export class PublicationManifest_Impl implements PublicationManifest {
-    static terms: Terms = new Terms_info(
+    static terms: Terms = new Terms(
         ['dateModified', 'datePublished', 'id', 'readingProgression', 'direction'],
         [...a11y_properties, 'inLanguage', 'type', 'url', 'inLanguage'],
 

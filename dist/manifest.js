@@ -1,20 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class Canonical {
-    constructor() {
-        this.readingOrder = [];
-        this.name = [];
-        this.type = [];
-        this.id = '';
-        this.manifest_object = {};
-    }
-    get accessMode() {
-        return this._accessMode;
-    }
-    static create_canonical(manifest) {
-        const retval = new Canonical();
-        retval._accessMode = [manifest];
-        return retval;
-    }
-}
-exports.Canonical = Canonical;
+;
+var TextDirection;
+(function (TextDirection) {
+    TextDirection[TextDirection["ltr"] = 0] = "ltr";
+    TextDirection[TextDirection["rtl"] = 1] = "rtl";
+    TextDirection[TextDirection["auto"] = 2] = "auto";
+})(TextDirection = exports.TextDirection || (exports.TextDirection = {}));
+;
+;
+var ProgressionDirection;
+(function (ProgressionDirection) {
+    ProgressionDirection[ProgressionDirection["ltr"] = 0] = "ltr";
+    ProgressionDirection[ProgressionDirection["rtl"] = 1] = "rtl";
+})(ProgressionDirection = exports.ProgressionDirection || (exports.ProgressionDirection = {}));
+;
+;
+;

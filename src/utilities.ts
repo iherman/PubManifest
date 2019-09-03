@@ -1,7 +1,18 @@
+/* **************************** General utilities **************************** */
+
+/**
+ * Name tells it all: if the argument is  single value, it is encapsulated into
+ * an array. Used for Localizable String, Linked Resources, etc.
+ *
+ * @param {any} arg - the input value or array of values
+ * @returns {any[]}
+ */
+export const toArray = (arg: any) => Array.isArray(arg) ? arg : [arg];
+
+
 /**
  * Simple logger class to record errors and warnings for subsequent display
  */
-
 export enum LogLevel {
     warning,
     error
