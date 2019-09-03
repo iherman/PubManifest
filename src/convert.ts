@@ -1,6 +1,7 @@
 import { PublicationManifest, LinkedResource, LocalizableString, CreatorInfo, TextDirection, ProgressionDirection } from './manifest';
 import { CreatorInfo_Impl, LocalizableString_Impl, LinkedResource_Impl, PublicationManifest_Impl, Terms } from './manifest_classes';
-import { LogLevel, Logger, toArray } from './utilities';
+import { LogLevel, Logger, toArray, convert_and_check_url, check_language_tag } from './utilities';
+import * as url from 'url';
 
 // ---------------------------- Global object for the various utilities ----------------
 
@@ -51,7 +52,9 @@ const create_LinkedResource = (resource: any) : LinkedResource => {
         retval._type = ["LinkedResource"];
     } else {
         convert_object(LinkedResource_Impl.terms, retval, resource);
+        if (resource['length']) retval._length = resource['length'];
     }
+    if (retval.url) retval._url = convert_and_check_url(retval.url, Global.base, Global.logger);
     return retval;
 }
 
@@ -63,10 +66,14 @@ const create_LinkedResource = (resource: any) : LinkedResource => {
  */
 const check_LinkedResource = (resource: LinkedResource) : boolean => {
     let retval: boolean = true;
+
+    // Check URL existence
     if (!resource.url) {
         Global.logger.log("Linked Resource without a url (removed)", LogLevel.error);
-        retval = false;
+        return false;
     }
+
+
     return retval;
 }
 
@@ -88,7 +95,7 @@ const create_LocalizableString = (resource: any) : LocalizableString => {
             retval._value = resource.value;
         }
         if (resource.language) {
-            retval._language = resource.language;
+            retval._language = check_language_tag(resource.language, Global.logger);
         }
     }
 
@@ -132,8 +139,7 @@ const create_CreatorInfo = (resource: any) : CreatorInfo => {
     } else {
         if (resource['name']) {
             convert_object(CreatorInfo_Impl.terms, retval, resource);
-            // this one is special
-            if (resource['length']) retval['_length'] = resource['length'];
+            if (retval.url) retval._url = convert_and_check_url(retval.url, Global.base, Global.logger);
         }
     }
     return retval;
@@ -154,6 +160,29 @@ const check_CreatorInfo = (resource: CreatorInfo) : boolean => {
     return retval;
 }
 
+/**
+ * Check the top level object instance
+ */
+const check_PublicationManifest = (manifest: PublicationManifest_Impl): PublicationManifest => {
+    const empty = new PublicationManifest_Impl();
+    if (manifest.type.length === 0) {
+        Global.logger.log("Type information is missing for the manifest", LogLevel.error);
+        return empty;
+    }
+    if (manifest.name.length === 0) {
+        Global.logger.log("Name (title) is missing for the manifest", LogLevel.error);
+        return empty;
+    }
+    if (manifest.readingOrder.length === 0) {
+        Global.logger.log("Default reading order is missing for the manifest", LogLevel.error);
+        return empty;
+    }
+    if( manifest.url) manifest._url = manifest.url.map((a_url) :string => convert_and_check_url(a_url, Global.base, Global.logger));
+    if( manifest.inLanguage ) manifest._inLanguage = manifest.inLanguage.map((lang) :string => check_language_tag(lang, Global.logger));
+
+
+    return manifest;
+}
 
 /* **************************** General utility create an array of class instances **************************** */
 
@@ -238,10 +267,11 @@ function convert_object(terms: Terms, target: PublicationManifest_Impl | LinkedR
  * @returns a bona fide `PublicationManifest` instance
  */
 
-export function process_manifest(manifest: string, logger: Logger) : PublicationManifest {
+export function process_manifest(manifest: string, base: string, logger: Logger) : PublicationManifest {
     const retval = new PublicationManifest_Impl();
     let obj;
     Global.logger = logger;
+    Global.base = base;
 
     // Separate the JSON parsing errors...
     try {
@@ -258,7 +288,7 @@ export function process_manifest(manifest: string, logger: Logger) : Publication
         if ( contexts.length >= 2 && (contexts[0] === "http://schema.org" || contexts[0] === "https://schema.org") && contexts[1] === "https://www.w3.org/ns/pub-context" ) {
             // check language
             try {
-                Global.language = contexts[2]["language"];
+                Global.language = check_language_tag(contexts[2]["language"],Global.logger);
             } catch(e) {
                 // no problem if that did not work; no language has been set
                 ;
@@ -277,5 +307,7 @@ export function process_manifest(manifest: string, logger: Logger) : Publication
     } catch( err ) {
         logger.log(`${err.message}`, LogLevel.error);
     }
-    return retval;
+
+    return check_PublicationManifest(retval);
+
 }

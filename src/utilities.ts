@@ -1,3 +1,6 @@
+import * as validUrl from 'valid-url';
+import * as url from 'url';
+
 /* **************************** General utilities **************************** */
 
 /**
@@ -7,8 +10,35 @@
  * @param {any} arg - the input value or array of values
  * @returns {any[]}
  */
-export const toArray = (arg: any) => Array.isArray(arg) ? arg : [arg];
+export function toArray(arg: any): any[] {
+    return Array.isArray(arg) ? arg : [arg];
+}
 
+/**
+ * Turn a URL into absolute, and check the value.
+ *
+ * @param value relative or absolute URL
+ * @param base base URL
+ * @param logger logger for errors
+ * @returns the absolute URL
+ */
+export function convert_and_check_url(value: string, base: string, logger: Logger): string {
+    const absolute = url.resolve(base, value);
+    if (validUrl.isWebUri(absolute) === undefined) {
+        logger.log(`'${absolute}' is an invalid URL`, LogLevel.warning);
+    }
+    return absolute;
+}
+
+// eslint-disable-next-line max-len
+const bcp_pattern = RegExp('^(((en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang))|((([A-Za-z]{2,3}(-(?<extlang>[A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+))$');
+
+export function check_language_tag(value: string, logger: Logger): string {
+    if (!bcp_pattern.test(value)) logger.log(`'${value}' is an invalid language tag`, LogLevel.warning);
+    return value;
+}
+
+/* **************************** Logger **************************** */
 
 /**
  * Simple logger class to record errors and warnings for subsequent display

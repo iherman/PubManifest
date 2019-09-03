@@ -7,7 +7,7 @@ const test = `
     "@context" : ["https://schema.org", "https://www.w3.org/ns/pub-context", {"language":"en-US"}],
     "name" : "My Wonderful Book",
     "id" : "ISBN1234567890",
-    "url": "urn:abcdefghij",
+    "url": ["urn:abcdefghij","https://example.org", "relative.html"],
     "type" : ["CreativeWork"],
     "author": [
         "John Smith",
@@ -25,7 +25,7 @@ const test = `
         "namivan.html",
         {
             "type": "LinkedResource",
-            "url": "ezvan.html",
+            "url": "http://www.pik.u.la/ezvan.html",
             "name": "this is the second chapter",
             "description" : {
                 "value" : "Ez az igazi!",
@@ -44,7 +44,7 @@ const test = `
 
 
 const logger = new Logger();
-const manifest_object = process_manifest(test, logger);
+const manifest_object = process_manifest(test, 'http://www.example.org/', logger);
 console.log(manifest_object)
 
 

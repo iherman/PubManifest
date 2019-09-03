@@ -16,6 +16,10 @@
             ]
         }
     },
+    "typesRoots": [
+        "./typings",
+        "../node_modules/@types"
+    ],
     "include": [
         "src/**/*"
     ],
