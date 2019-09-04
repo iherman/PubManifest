@@ -6,9 +6,10 @@ const test = `
 {
     "@context" : ["https://schema.org", "https://www.w3.org/ns/pub-context", {"language":"en-US"}],
     "name" : "My Wonderful Book",
+    "direction": "ssss",
     "id" : "ISBN1234567890",
     "url": ["urn:abcdefghij","https://example.org", "relative.html"],
-    "type" : ["CreativeWork"],
+    "type" : [],
     "author": [
         "John Smith",
         {
@@ -20,13 +21,14 @@ const test = `
             "url" : "http://just.a.url/"
         }
     ],
-
+    "readingProgression" : "bogus",
     "readingOrder" : [
         "namivan.html",
         {
             "type": "LinkedResource",
             "url": "http://www.pik.u.la/ezvan.html",
             "name": "this is the second chapter",
+            "length": "namivan",
             "description" : {
                 "value" : "Ez az igazi!",
                 "language": "hu"

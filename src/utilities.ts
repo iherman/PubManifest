@@ -25,7 +25,7 @@ export function toArray(arg: any): any[] {
 export function convert_and_check_url(value: string, base: string, logger: Logger): string {
     const absolute = url.resolve(base, value);
     if (validUrl.isWebUri(absolute) === undefined) {
-        logger.log(`'${absolute}' is an invalid URL`, LogLevel.warning);
+        logger.log(`'${absolute}' is an invalid Web URL`, LogLevel.warning);
     }
     return absolute;
 }

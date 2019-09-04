@@ -8,9 +8,9 @@ export interface CreatorInfo {
 };
 
 export enum TextDirection {
-    ltr,
-    rtl,
-    auto
+    ltr = 'ltr',
+    rtl = 'rtl',
+    auto = 'auto'
 };
 
 export interface LocalizableString {
@@ -19,8 +19,8 @@ export interface LocalizableString {
 };
 
 export enum ProgressionDirection {
-    ltr,
-    rtl
+    ltr = 'ltr',
+    rtl = 'rtl',
 };
 
 export interface LinkedResource {

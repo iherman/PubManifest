@@ -73,6 +73,8 @@ const check_LinkedResource = (resource: LinkedResource) : boolean => {
         return false;
     }
 
+    // check media type format???
+    // check number value
 
     return retval;
 }
@@ -165,21 +167,37 @@ const check_CreatorInfo = (resource: CreatorInfo) : boolean => {
  */
 const check_PublicationManifest = (manifest: PublicationManifest_Impl): PublicationManifest => {
     const empty = new PublicationManifest_Impl();
-    if (manifest.type.length === 0) {
-        Global.logger.log("Type information is missing for the manifest", LogLevel.error);
-        return empty;
-    }
     if (manifest.name.length === 0) {
         Global.logger.log("Name (title) is missing for the manifest", LogLevel.error);
         return empty;
     }
+
     if (manifest.readingOrder.length === 0) {
         Global.logger.log("Default reading order is missing for the manifest", LogLevel.error);
         return empty;
     }
-    if( manifest.url) manifest._url = manifest.url.map((a_url) :string => convert_and_check_url(a_url, Global.base, Global.logger));
-    if( manifest.inLanguage ) manifest._inLanguage = manifest.inLanguage.map((lang) :string => check_language_tag(lang, Global.logger));
 
+    if (manifest.type.length === 0) {
+        Global.logger.log("Type information is missing for the manifest", LogLevel.warning);
+        manifest._type = ['CreativeWork'];
+    }
+
+    if (manifest.url) manifest._url = manifest.url.map((a_url) :string => convert_and_check_url(a_url, Global.base, Global.logger));
+    if (manifest.inLanguage) manifest._inLanguage = manifest.inLanguage.map((lang) :string => check_language_tag(lang, Global.logger));
+
+    // check dates for date published and updated
+
+    if (manifest.readingProgression) {
+        if (!(manifest.readingProgression === ProgressionDirection.rtl || manifest.readingProgression === ProgressionDirection.ltr)) {
+            Global.logger.log(`readingProgression value ('${manifest.readingProgression}') is invalid`, LogLevel.warning);
+            manifest['_readingProgression'] = ProgressionDirection.rtl;
+        }
+    }
+    if (manifest.direction) {
+        if (!(manifest.direction === TextDirection.rtl || manifest.direction === TextDirection.ltr || manifest.direction === TextDirection.auto)) {
+            Global.logger.log(`direction value ('${manifest.direction}') is invalid`, LogLevel.warning);
+        }
+    }
 
     return manifest;
 }
