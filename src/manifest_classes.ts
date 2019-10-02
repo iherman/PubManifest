@@ -128,17 +128,22 @@ export class CreatorInfo_Impl implements CreatorInfo {
 export class LocalizableString_Impl implements LocalizableString {
     _type: string[];
     get type() {
-        return this._type
+        return this._type;
     };
 
     _value: string;
     get value() {
-        return this._value
+        return this._value;
     }
 
     _language: string;
     get language() {
-        return this._language
+        return this._language;
+    };
+
+    _direction: string;
+    get direction() {
+        return this._direction;
     };
 };
 
@@ -201,7 +206,7 @@ export class LinkedResource_Impl implements LinkedResource {
  */
 export class PublicationManifest_Impl implements PublicationManifest {
     static terms: Terms = new Terms(
-        ['dateModified', 'datePublished', 'id', 'readingProgression', 'direction'],
+        ['dateModified', 'datePublished', 'id', 'readingProgression'],
         [...a11y_properties, 'inLanguage', 'type', 'url', 'inLanguage'],
 
         ['accessibilitySummary'],
@@ -331,11 +336,6 @@ export class PublicationManifest_Impl implements PublicationManifest {
     _duration: string;
     get duration() {
         return this._duration
-    }
-
-    _direction: TextDirection;
-    get direction() {
-        return this._direction
     }
 
     _inLanguage: string[];

@@ -7,15 +7,10 @@ export interface CreatorInfo {
     // [propName: string] : any;
 };
 
-export enum TextDirection {
-    ltr = 'ltr',
-    rtl = 'rtl',
-    auto = 'auto'
-};
-
 export interface LocalizableString {
-    value     : string;
-    language? : string;
+    value      : string;
+    language?  : string;
+    direction? : string;
 };
 
 export enum ProgressionDirection {
@@ -59,7 +54,6 @@ export interface PublicationManifest {
 
     url?                  : string[];
     duration?             : string;
-    direction?            : TextDirection;
     inLanguage?           : string[];
     dateModified?         : string;
     datePublished?        : string;

@@ -40,9 +40,24 @@ const bcp_pattern = RegExp('^(((en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak
  * @returns the same language tag is returned
  */
 export function check_language_tag(value: string, logger: Logger): string {
+    if (value === undefined) return null;
     if (!bcp_pattern.test(value)) logger.log(`'${value}' is an invalid language tag`, LogLevel.warning);
     return value;
 }
+
+/**
+ * Check the well-formedness of a direction tag
+ *
+ * @param value direction tag
+ * @param logger logger for errors
+ * @returns the same direction tag is returned
+ */
+export function check_direction_tag(value: string, logger: Logger): string {
+    if (value === undefined) return null;
+    if (!(value === null || value === 'ltr' || value === 'rtl')) logger.log(`'${value}' is an invalid direction tag`, LogLevel.warning)
+    return value;
+}
+
 
 /* **************************** Logger **************************** */
 

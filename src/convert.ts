@@ -1,17 +1,18 @@
 import { PublicationManifest, LinkedResource, LocalizableString, CreatorInfo, TextDirection, ProgressionDirection } from './manifest';
 import { CreatorInfo_Impl, LocalizableString_Impl, LinkedResource_Impl, PublicationManifest_Impl, Terms } from './manifest_classes';
-import { LogLevel, Logger, toArray, convert_and_check_url, check_language_tag } from './utilities';
+import { LogLevel, Logger, toArray, convert_and_check_url, check_language_tag, check_direction_tag } from './utilities';
 import * as url from 'url';
 
 // ---------------------------- Global object for the various utilities ----------------
 
 class Global  {
     static logger: Logger;
-    static language: string = '';
+    static language: string = null;
+    static direction: string = null;
     static base: string = '';
 }
 
-/* **************************** Conversion and checking methods, ie, to create specific classes, and check them at a later stage... **************************** */
+/* ****************** Conversion and checking methods, ie, to create specific classes, and check them at a later stage... ****************** */
 
 // Literals ------------------
 /**
@@ -99,11 +100,17 @@ const create_LocalizableString = (resource: any) : LocalizableString => {
         if (resource.language) {
             retval._language = check_language_tag(resource.language, Global.logger);
         }
+        if (resource.direction) {
+            retval._direction = check_language_tag(resource.direction, Global.logger);
+        }
     }
 
     // Set the language if not set...
-    if (!retval.language && Global.language) {
+    if (!retval.language && Global.language !== null) {
         retval._language = Global.language
+    }
+    if (!retval.direction && Global.language !== null) {
+        retval._direction = Global.language
     }
 
     return retval;
@@ -301,13 +308,21 @@ export function process_manifest(manifest: string, base: string, logger: Logger)
         // To simplify, turn this into an array in any case
         const contexts = toArray(obj["@context"]);
         if ( contexts.length >= 2 && (contexts[0] === "http://schema.org" || contexts[0] === "https://schema.org") && contexts[1] === "https://www.w3.org/ns/pub-context" ) {
-            // check language
-            try {
-                Global.language = check_language_tag(contexts[2]["language"],Global.logger);
-            } catch(e) {
-                // no problem if that did not work; no language has been set
-                ;
-            }
+            // check languages and directions
+            contexts.slice(2).forEach( (context) => {
+                try {
+                    Global.language = check_language_tag(context["language"], Global.logger);
+                } catch(e) {
+                    // no problem if that did not work; no language has been set
+                    ;
+                }
+                try {
+                    Global.direction = check_direction_tag(context["direction"], Global.logger);
+                } catch(e) {
+                    // no problem if that did not work; no language has been set
+                    ;
+                }
+            });
         } else {
             Global.logger.log("@context values are not set as required", LogLevel.error);
         }
