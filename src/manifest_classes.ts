@@ -245,7 +245,7 @@ export class PublicationManifest_Impl implements PublicationManifest {
         return this._readingOrder
     };
 
-    _conformsTo: string[];
+    _conformsTo: string[] = [];
     get conformsTo() {
         return this._conformsTo
     };

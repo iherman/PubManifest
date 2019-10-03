@@ -15,6 +15,24 @@ export function toArray(arg: any): any[] {
 }
 
 /**
+ * Check an absolute URL; raise a logging message if needed, and return undefined if
+ * it is not a proper URL
+ *
+ * @param value absolute URL
+ * @param logger: logger for errors
+ * @param level: log level
+ * @returns URL or undefined
+ */
+export function check_url(value: string, logger: Logger, level: LogLevel): string {
+    if (validUrl.isWebUri(value) === undefined) {
+        logger.log(`'${value}' is an invalid Web URL`, level);
+        return undefined;
+    } else {
+        return value;
+    }
+}
+
+/**
  * Turn a URL into absolute, and check the value.
  *
  * @param value relative or absolute URL
@@ -24,9 +42,7 @@ export function toArray(arg: any): any[] {
  */
 export function convert_and_check_url(value: string, base: string, logger: Logger): string {
     const absolute = url.resolve(base, value);
-    if (validUrl.isWebUri(absolute) === undefined) {
-        logger.log(`'${absolute}' is an invalid Web URL`, LogLevel.warning);
-    }
+    check_url(absolute, logger, LogLevel.warning);
     return absolute;
 }
 

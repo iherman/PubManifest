@@ -1,6 +1,6 @@
 import { PublicationManifest, LinkedResource, LocalizableString, Entity, ProgressionDirection } from './manifest';
 import { Entity_Impl, LocalizableString_Impl, LinkedResource_Impl, PublicationManifest_Impl, Terms } from './manifest_classes';
-import { LogLevel, Logger, toArray, convert_and_check_url, check_language_tag, check_direction_tag } from './utilities';
+import { LogLevel, Logger, toArray, convert_and_check_url, check_url, check_language_tag, check_direction_tag } from './utilities';
 import * as url from 'url';
 
 // ---------------------------- Global object for the various utilities ----------------
@@ -38,6 +38,14 @@ const check_string = (resource: string) : boolean => {
     return true;
 }
 
+/**
+ * Convert a URL to absolute, and check it on the fly.
+ *
+ * @param a_url URL to be checked and converted
+ * @returns the absolute URL
+ */
+const to_absolute_and_check = (a_url:string) :string => convert_and_check_url(a_url, Global.base, Global.logger);
+
 // Linked resources ------------------
 /**
  * Create a 'LinkedResource' instance.
@@ -55,7 +63,7 @@ const create_LinkedResource = (resource: any) : LinkedResource => {
         convert_object(LinkedResource_Impl.terms, retval, resource);
         if (resource['length']) retval._length = resource['length'];
     }
-    if (retval.url) retval._url = convert_and_check_url(retval.url, Global.base, Global.logger);
+    if (retval.url) retval._url = to_absolute_and_check(retval.url);
     return retval;
 }
 
@@ -109,8 +117,8 @@ const create_LocalizableString = (resource: any) : LocalizableString => {
     if (!retval.language && Global.language !== null) {
         retval._language = Global.language
     }
-    if (!retval.direction && Global.language !== null) {
-        retval._direction = Global.language
+    if (!retval.direction && Global.direction !== null) {
+        retval._direction = Global.direction
     }
 
     return retval;
@@ -148,7 +156,7 @@ const create_CreatorInfo = (resource: any) : Entity => {
     } else {
         if (resource['name']) {
             convert_object(Entity_Impl.terms, retval, resource);
-            if (retval.url) retval._url = convert_and_check_url(retval.url, Global.base, Global.logger);
+            if (retval.url) retval._url = to_absolute_and_check(retval.url);
         }
     }
     return retval;
@@ -173,9 +181,6 @@ const check_CreatorInfo = (resource: Entity) : boolean => {
  * Check the top level object instance
  */
 const check_PublicationManifest = (manifest: PublicationManifest_Impl): PublicationManifest => {
-    const convertToURLs = (a_url:string) :string => {
-        return convert_and_check_url(a_url, Global.base, Global.logger)
-    }
     const empty = new PublicationManifest_Impl();
 
     if (manifest.name.length === 0) {
@@ -193,14 +198,16 @@ const check_PublicationManifest = (manifest: PublicationManifest_Impl): Publicat
         manifest._type = ['CreativeWork'];
     }
 
-    if (manifest.conformsTo && manifest.conformsTo.length > 0) {
-        manifest._conformsTo = manifest.conformsTo.map(convertToURLs);
-    } else {
+    // There is initial value setting for conformsTo to the value of []
+    manifest._conformsTo = manifest.conformsTo
+                            .map((a_url:string) => check_url(a_url, Global.logger, LogLevel.error))
+                            .filter((a_url:string) :boolean => a_url !== undefined);
+    if (manifest.conformsTo.length === 0) {
         Global.logger.log("No conformance statement in the manifest", LogLevel.error);
         return empty;
     }
 
-    if (manifest.url) manifest._url = manifest.url.map(convertToURLs);
+    if (manifest.url) manifest._url = manifest.url.map(to_absolute_and_check);
     if (manifest.inLanguage) manifest._inLanguage = manifest.inLanguage.map((lang) :string => check_language_tag(lang, Global.logger));
 
     // check dates for date published and updated
