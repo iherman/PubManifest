@@ -2,7 +2,7 @@
  * Implementation classes for the Publication manifest. See 'manifest.ts' for the visible interfaces.
  */
 
-import { PublicationManifest, LinkedResource, LocalizableString, CreatorInfo, TextDirection, ProgressionDirection } from './manifest';
+import { PublicationManifest, LinkedResource, LocalizableString, Entity, ProgressionDirection } from './manifest';
 
 // -------------------------------------------- Convenience variables -------------------------------------
 const a11y_properties = [
@@ -48,17 +48,22 @@ export class Terms {
 
     misc_terms: string[];
 
+    boolean_terms: string[];
+
     constructor(single_literal: string[], multiple_literal: string[],
                 single_loc_string: string[], multiple_loc_string: string[],
                 multiple_creator: string[],
                 multiple_link: string[],
-                misc_terms: string[] = []) {
+                boolean_terms: string[] = [],
+                misc_terms: string[] = []
+                ) {
         this.single_literal_terms = single_literal;
         this.multiple_literal_terms = multiple_literal;
         this.single_loc_string_terms = single_loc_string;
         this.multiple_loc_string_terms = multiple_loc_string;
         this.multiple_creators_terms = multiple_creator;
         this.multiple_link_terms = multiple_link;
+        this.boolean_terms = boolean_terms;
         this.misc_terms = misc_terms;
     }
 
@@ -70,6 +75,7 @@ export class Terms {
             ...this.single_literal_terms, ...this.multiple_literal_terms,
             ...this.single_loc_string_terms, ...this.multiple_loc_string_terms,
             ...this.multiple_creators_terms, ...this.multiple_link_terms,
+            ...this.boolean_terms,
             ...this.misc_terms
         ];
     }
@@ -79,7 +85,7 @@ export class Terms {
 /**
  * Creators, ie, persons or organizations
  */
-export class CreatorInfo_Impl implements CreatorInfo {
+export class Entity_Impl implements Entity {
     /**
      * Terms used for object of this type
      */
@@ -207,13 +213,15 @@ export class LinkedResource_Impl implements LinkedResource {
 export class PublicationManifest_Impl implements PublicationManifest {
     static terms: Terms = new Terms(
         ['dateModified', 'datePublished', 'id', 'readingProgression'],
-        [...a11y_properties, 'inLanguage', 'type', 'url', 'inLanguage'],
+        [...a11y_properties, 'inLanguage', 'type', 'url', 'inLanguage', 'conformsTo'],
 
         ['accessibilitySummary'],
         ['name'],
 
         [...creator_properties],
-        ['readingOrder', 'resources', 'links']
+        ['readingOrder', 'resources', 'links'],
+
+        ['abridged']
     );
 
     // ------------------------- The required terms
@@ -235,6 +243,11 @@ export class PublicationManifest_Impl implements PublicationManifest {
     _readingOrder: LinkedResource[] = [];
     get readingOrder() {
         return this._readingOrder
+    };
+
+    _conformsTo: string[];
+    get conformsTo() {
+        return this._conformsTo
     };
 
     // ------------------------- The additional terms
@@ -268,67 +281,67 @@ export class PublicationManifest_Impl implements PublicationManifest {
         return this._accessibilitySummary
     }
 
-    _artist: CreatorInfo[];
+    _artist: Entity[];
     get artist() {
         return this._artist
     }
 
-    _author: CreatorInfo[];
+    _author: Entity[];
     get author() {
         return this._author
     }
 
-    _colorist: CreatorInfo[];
+    _colorist: Entity[];
     get colorist() {
         return this._colorist
     }
 
-    _contributor: CreatorInfo[];
+    _contributor: Entity[];
     get contributor() {
         return this._contributor
     }
 
-    _creator: CreatorInfo[];
+    _creator: Entity[];
     get creator() {
         return this._creator
     }
 
-    _editor: CreatorInfo[];
+    _editor: Entity[];
     get editor() {
         return this._editor
     }
 
-    _illustrator: CreatorInfo[];
+    _illustrator: Entity[];
     get illustrator() {
         return this._illustrator
     }
 
-    _inker: CreatorInfo[];
+    _inker: Entity[];
     get inker() {
         return this._inker
     }
 
-    _letterer: CreatorInfo[];
+    _letterer: Entity[];
     get letterer() {
         return this._letterer
     }
 
-    _penciler: CreatorInfo[];
+    _penciler: Entity[];
     get penciler() {
         return this._penciler
     }
 
-    _publisher: CreatorInfo[];
+    _publisher: Entity[];
     get publisher() {
         return this._publisher
     }
 
-    _readBy: CreatorInfo[];
+    _readBy: Entity[];
     get readBy() {
         return this._readBy
     }
 
-    _translator: CreatorInfo[];
+    _translator: Entity[];
     get translator() {
         return this._translator
     }
@@ -351,6 +364,11 @@ export class PublicationManifest_Impl implements PublicationManifest {
     _datePublished: string;
     get datePublished() {
         return this._datePublished
+    }
+
+    _abridged: boolean;
+    get abridged() {
+        return this._abridged
     }
 
     _readingProgression: ProgressionDirection = ProgressionDirection.ltr;

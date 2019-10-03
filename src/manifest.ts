@@ -1,4 +1,4 @@
-export interface CreatorInfo {
+export interface Entity {
     type?              : string[];
     name               : LocalizableString[];
     id?                : string;
@@ -30,33 +30,35 @@ export interface LinkedResource {
 };
 
 export interface PublicationManifest {
-    type                  : string[];
-    id                    : string;
+    type?                 : string[];
+    id?                   : string;
+    conformsTo            : string[];
 
     accessMode?           : string[];
     accessModeSufficient? : string[];
     accessibilityFeature? : string[];
     accessibilityHazard?  : string[];
     accessibilitySummary? : LocalizableString [];
-    artist?               : CreatorInfo[];
-    author?               : CreatorInfo[];
-    colorist?             : CreatorInfo[];
-    contributor?          : CreatorInfo[];
-    creator?              : CreatorInfo[];
-    editor?               : CreatorInfo[];
-    illustrator?          : CreatorInfo[];
-    inker?                : CreatorInfo[];
-    letterer?             : CreatorInfo[];
-    penciler?             : CreatorInfo[];
-    publisher?            : CreatorInfo[];
-    readBy?               : CreatorInfo[];
-    translator?           : CreatorInfo[];
+    artist?               : Entity[];
+    author?               : Entity[];
+    colorist?             : Entity[];
+    contributor?          : Entity[];
+    creator?              : Entity[];
+    editor?               : Entity[];
+    illustrator?          : Entity[];
+    inker?                : Entity[];
+    letterer?             : Entity[];
+    penciler?             : Entity[];
+    publisher?            : Entity[];
+    readBy?               : Entity[];
+    translator?           : Entity[];
 
     url?                  : string[];
     duration?             : string;
     inLanguage?           : string[];
     dateModified?         : string;
     datePublished?        : string;
+    abridged?             : boolean;
     readingProgression?   : ProgressionDirection;
     name                  : LocalizableString[];
     readingOrder          : LinkedResource[];

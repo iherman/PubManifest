@@ -1,5 +1,5 @@
-import { PublicationManifest, LinkedResource, LocalizableString, CreatorInfo, TextDirection, ProgressionDirection } from './manifest';
-import { CreatorInfo_Impl, LocalizableString_Impl, LinkedResource_Impl, PublicationManifest_Impl, Terms } from './manifest_classes';
+import { PublicationManifest, LinkedResource, LocalizableString, Entity, ProgressionDirection } from './manifest';
+import { Entity_Impl, LocalizableString_Impl, LinkedResource_Impl, PublicationManifest_Impl, Terms } from './manifest_classes';
 import { LogLevel, Logger, toArray, convert_and_check_url, check_language_tag, check_direction_tag } from './utilities';
 import * as url from 'url';
 
@@ -140,14 +140,14 @@ const check_LocalizableString = (resource: LocalizableString) : boolean => {
  *
  * @param resource either a string or a (originally JSON) object
  */
-const create_CreatorInfo = (resource: any) : CreatorInfo => {
-    const retval = new CreatorInfo_Impl();
+const create_CreatorInfo = (resource: any) : Entity => {
+    const retval = new Entity_Impl();
     if (typeof resource === "string") {
         retval._name = [create_LocalizableString(resource)];
         retval._type = ["Person"];
     } else {
         if (resource['name']) {
-            convert_object(CreatorInfo_Impl.terms, retval, resource);
+            convert_object(Entity_Impl.terms, retval, resource);
             if (retval.url) retval._url = convert_and_check_url(retval.url, Global.base, Global.logger);
         }
     }
@@ -160,7 +160,7 @@ const create_CreatorInfo = (resource: any) : CreatorInfo => {
  * @param resource the class to be checked
  * @returns true if the instance should be kept in the final output, false otherwise
  */
-const check_CreatorInfo = (resource: CreatorInfo) : boolean => {
+const check_CreatorInfo = (resource: Entity) : boolean => {
     let retval: boolean = true;
     if (!resource.name) {
         Global.logger.log("Creator without a name (removed)", LogLevel.error);
@@ -173,7 +173,11 @@ const check_CreatorInfo = (resource: CreatorInfo) : boolean => {
  * Check the top level object instance
  */
 const check_PublicationManifest = (manifest: PublicationManifest_Impl): PublicationManifest => {
+    const convertToURLs = (a_url:string) :string => {
+        return convert_and_check_url(a_url, Global.base, Global.logger)
+    }
     const empty = new PublicationManifest_Impl();
+
     if (manifest.name.length === 0) {
         Global.logger.log("Name (title) is missing for the manifest", LogLevel.error);
         return empty;
@@ -189,7 +193,14 @@ const check_PublicationManifest = (manifest: PublicationManifest_Impl): Publicat
         manifest._type = ['CreativeWork'];
     }
 
-    if (manifest.url) manifest._url = manifest.url.map((a_url) :string => convert_and_check_url(a_url, Global.base, Global.logger));
+    if (manifest.conformsTo && manifest.conformsTo.length > 0) {
+        manifest._conformsTo = manifest.conformsTo.map(convertToURLs);
+    } else {
+        Global.logger.log("No conformance statement in the manifest", LogLevel.error);
+        return empty;
+    }
+
+    if (manifest.url) manifest._url = manifest.url.map(convertToURLs);
     if (manifest.inLanguage) manifest._inLanguage = manifest.inLanguage.map((lang) :string => check_language_tag(lang, Global.logger));
 
     // check dates for date published and updated
@@ -198,11 +209,6 @@ const check_PublicationManifest = (manifest: PublicationManifest_Impl): Publicat
         if (!(manifest.readingProgression === ProgressionDirection.rtl || manifest.readingProgression === ProgressionDirection.ltr)) {
             Global.logger.log(`readingProgression value ('${manifest.readingProgression}') is invalid`, LogLevel.warning);
             manifest['_readingProgression'] = ProgressionDirection.rtl;
-        }
-    }
-    if (manifest.direction) {
-        if (!(manifest.direction === TextDirection.rtl || manifest.direction === TextDirection.ltr || manifest.direction === TextDirection.auto)) {
-            Global.logger.log(`direction value ('${manifest.direction}') is invalid`, LogLevel.warning);
         }
     }
 
@@ -248,7 +254,7 @@ function get_ObjectArray<T>(arg: any, creator: create_Instance<T>, checker: chec
  * @param target the class where the values should be put
  * @param source the (originally JSON) object to get the values from
  */
-function convert_object(terms: Terms, target: PublicationManifest_Impl | LinkedResource_Impl | CreatorInfo_Impl, source: any) {
+function convert_object(terms: Terms, target: PublicationManifest_Impl | LinkedResource_Impl | Entity_Impl, source: any) {
     // Some terms should just be copied
     terms.single_literal_terms.forEach( (term: string) => {
         if (source[term]) target[`_${term}`] = create_string(source[term]);
@@ -271,11 +277,15 @@ function convert_object(terms: Terms, target: PublicationManifest_Impl | LinkedR
 
     // Some terms should be converted into an array of entities
     terms.multiple_creators_terms.forEach( (term: string) => {
-        if (source[term]) target[`_${term}`] = get_ObjectArray<CreatorInfo>(source[term], create_CreatorInfo, check_CreatorInfo);
+        if (source[term]) target[`_${term}`] = get_ObjectArray<Entity>(source[term], create_CreatorInfo, check_CreatorInfo);
     })
 
     terms.multiple_link_terms.forEach( (term: string) => {
         if (source[term]) target[`_${term}`] = get_ObjectArray<LinkedResource>(source[term], create_LinkedResource, check_LinkedResource);
+    })
+
+    terms.boolean_terms.forEach( (term: string) => {
+        if (source[term]) target[`_${term}`] = source[term];
     })
 }
 

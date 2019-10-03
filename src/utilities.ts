@@ -58,7 +58,6 @@ export function check_direction_tag(value: string, logger: Logger): string {
     return value;
 }
 
-
 /* **************************** Logger **************************** */
 
 /**
