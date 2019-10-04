@@ -4,8 +4,9 @@
     "description": "Canonicalization of Publication Manifests",
     "main": "dist/main.js",
     "scripts": {
-        "test": "ts-node dist/main.js",
-        "build": "tsc"
+        "test": "ts-node src/main.ts",
+        "build": "tsc",
+        "run": "node src/main.js"
     },
     "license": "W3C-20150513",
     "keywords": [

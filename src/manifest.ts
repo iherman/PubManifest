@@ -8,6 +8,7 @@ export interface Entity {
 };
 
 export interface LocalizableString {
+    type?      : string[];
     value      : string;
     language?  : string;
     direction? : string;

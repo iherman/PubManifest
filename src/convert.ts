@@ -7,8 +7,8 @@ import * as url from 'url';
 
 class Global  {
     static logger: Logger;
-    static language: string = null;
-    static direction: string = null;
+    static language: string = undefined;
+    static direction: string = undefined;
     static base: string = '';
 }
 
@@ -98,27 +98,32 @@ const check_LinkedResource = (resource: LinkedResource) : boolean => {
  */
 const create_LocalizableString = (resource: any) : LocalizableString => {
     const retval = new LocalizableString_Impl();
-    retval._type = ["LocalizableString"];
+    let lang = (Global.language !== undefined) ? Global.language : undefined;
+    let dir  = (Global.direction !== undefined) ? Global.direction : undefined;
+
     if (typeof resource === "string") {
         retval._value = resource;
     } else {
         if (resource.value) {
             retval._value = resource.value;
         }
-        if (resource.language) {
-            retval._language = check_language_tag(resource.language, Global.logger);
+        if (resource.language !== undefined) {
+            lang = check_language_tag(resource.language, Global.logger);
         }
-        if (resource.direction) {
-            retval._direction = check_language_tag(resource.direction, Global.logger);
+        if (resource.direction !== undefined) {
+            dir = check_direction_tag(resource.direction, Global.logger);
         }
     }
 
-    // Set the language if not set...
-    if (!retval.language && Global.language !== null) {
-        retval._language = Global.language
+    if (lang === undefined || lang === null) {
+        delete retval._language;
+    } else {
+        retval._language = lang;
     }
-    if (!retval.direction && Global.direction !== null) {
-        retval._direction = Global.direction
+    if (dir === undefined || dir === null) {
+        delete retval._direction;
+    } else {
+        retval._direction = dir;
     }
 
     return retval;
@@ -327,17 +332,11 @@ export function process_manifest(manifest: string, base: string, logger: Logger)
         if ( contexts.length >= 2 && (contexts[0] === "http://schema.org" || contexts[0] === "https://schema.org") && contexts[1] === "https://www.w3.org/ns/pub-context" ) {
             // check languages and directions
             contexts.slice(2).forEach( (context) => {
-                try {
-                    Global.language = check_language_tag(context["language"], Global.logger);
-                } catch(e) {
-                    // no problem if that did not work; no language has been set
-                    ;
+                if (context.language !== undefined) {
+                    Global.language = check_language_tag(context.language, Global.logger)
                 }
-                try {
-                    Global.direction = check_direction_tag(context["direction"], Global.logger);
-                } catch(e) {
-                    // no problem if that did not work; no language has been set
-                    ;
+                if (context.direction !== undefined) {
+                    Global.direction = check_language_tag(context.direction, Global.logger)
                 }
             });
         } else {
