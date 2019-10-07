@@ -1,6 +1,6 @@
 import { PublicationManifest, LinkedResource, LocalizableString, Entity, ProgressionDirection } from './manifest';
 import { Entity_Impl, LocalizableString_Impl, LinkedResource_Impl, PublicationManifest_Impl, Terms } from './manifest_classes';
-import { LogLevel, Logger, toArray, convert_and_check_url, check_url, check_language_tag, check_direction_tag } from './utilities';
+import { LogLevel, Logger, toArray, convert_and_check_url, check_url, check_language_tag, check_direction_tag, isNumber } from './utilities';
 import * as url from 'url';
 
 // ---------------------------- Global object for the various utilities ----------------
@@ -81,9 +81,8 @@ const check_LinkedResource = (resource: LinkedResource) : boolean => {
         Global.logger.log("Linked Resource without a url (removed)", LogLevel.error);
         return false;
     }
-
     // check media type format???
-    if (resource.length && Number.isNaN(Number.parseFloat(`${resource.length}`))) {
+    if (resource.length && !(isNumber(resource.length)) {
         Global.logger.log(`Linked Resource length is not a number (${resource.length})`, LogLevel.warning);
     }
 

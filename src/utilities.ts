@@ -3,6 +3,16 @@ import * as url from 'url';
 
 /* **************************** General utilities **************************** */
 
+// export function isNumber(value: string | number): boolean
+// {
+//    return ((value != null) && typeof value != 'string' && !isNaN(Number(value.toString())));
+// }
+
+export function isNumber(value :any ) :boolean
+{
+   return ((value != null) && typeof value === 'number' && !isNaN(Number(value.toString())));
+}
+
 /**
  * Name tells it all: if the argument is  single value, it is encapsulated into
  * an array. Used for Localizable String, Linked Resources, etc.
