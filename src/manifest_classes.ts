@@ -81,6 +81,12 @@ export class Terms {
     }
 }
 
+// -------------------------------------------- toString utilities ------------------------------
+const obj_array_toString = <T>(objects: T[], join_string: string) :string => {
+    if (objects === undefined || objects.length === 0) return '';
+    return objects.map((obj: T) :string => obj.toString()).join(join_string);
+}
+
 // -------------------------------------------- The real implementations of the manifest interfaces -------------------------------------
 /**
  * Creators, ie, persons or organizations
@@ -125,6 +131,19 @@ export class Entity_Impl implements Entity {
         return this._identifier
     };
 
+    toString() :string {
+        let retval = obj_array_toString<LocalizableString>(this.name, ', ');
+        if (this.id) retval += `
+        id: ${this.id}`;
+        if (this.url) retval += `
+        url: ${this.url}`;
+        if (this.id) retval += `
+        id: ${this.id}`
+        if (this.identifier) retval += `
+        identifier: ${this.identifier.join(', ')}`
+        return retval;
+    }
+
     [propName: string] : any;
 };
 
@@ -151,6 +170,13 @@ export class LocalizableString_Impl implements LocalizableString {
     get direction() {
         return this._direction;
     };
+
+    toString() :string {
+        let retval = this.value
+        if (this.language) retval += `@${this.language}`;
+        if (this.direction) retval += `^${this.direction}`;
+        return retval;
+    }
 };
 
 /**
@@ -189,7 +215,7 @@ export class LinkedResource_Impl implements LinkedResource {
         return this._description
     };
 
-    _rel: LocalizableString[];
+    _rel: string[];
     get rel() {
         return this._rel
     };
@@ -202,6 +228,24 @@ export class LinkedResource_Impl implements LinkedResource {
     _length: number;
     get length() {
         return this._length
+    }
+
+    toString() :string {
+        let retval = this.url;
+        if (this.encodingFormat) retval += `
+        encoding format: ${this.encodingFormat}`
+        if (this.name) retval += `
+        name: ${obj_array_toString<LocalizableString>(this.name, ', ')}`
+        if (this.description) retval += `
+        description: ${this.description.toString()}`
+        if (this.rel) retval += `
+        rel: ${this.rel.join(', ')}`
+        if (this.integrity) retval += `
+        integrity: ${this.integrity}`
+        if (this.length) retval += `
+        length: ${this.length}`
+
+        return retval;
     }
 
     [propName: string] : any;
@@ -386,5 +430,27 @@ export class PublicationManifest_Impl implements PublicationManifest {
         return this._links
     }
 
+    toString() :string {
+        return `Publication Manifest:
+Type: ${this.type}
+id: ${this.id}
+conformsTo: ${this.conformsTo}
+name (title):
+    ${obj_array_toString<LocalizableString>(this.name, '\n    ')}
+author:
+    ${obj_array_toString<Entity>(this.author,'\n    ')}
+accessMode: ${this.accessMode}
+url: ${this.url}
+inLanguage: ${this.inLanguage}
+reading progression: ${this.readingProgression}
+abridged: ${this.abridged}
+reading order:
+    ${obj_array_toString<LinkedResource>(this.readingOrder, '\n    ')}
+additional resources:
+    ${obj_array_toString<LinkedResource>(this.resources, '\n    ')}
+external resources:
+    ${obj_array_toString<LinkedResource>(this.links, '\n    ')}
+`
+    }
     [propName: string] : any;
 };

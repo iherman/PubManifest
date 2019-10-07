@@ -24,7 +24,7 @@ export interface LinkedResource {
     encodingFormat?    : string;
     name?              : LocalizableString[];
     description?       : LocalizableString;
-    rel?               : LocalizableString[];
+    rel?               : string[];
     integrity?         : string;
     length?            : number;
     // [propName: string] : any;
@@ -67,5 +67,7 @@ export interface PublicationManifest {
     links?                : LinkedResource[];
 
     // [propName: string]    : any;
+
+
 };
 

@@ -83,7 +83,9 @@ const check_LinkedResource = (resource: LinkedResource) : boolean => {
     }
 
     // check media type format???
-    // check number value
+    if (resource.length && Number.isNaN(Number.parseFloat(`${resource.length}`))) {
+        Global.logger.log(`Linked Resource length is not a number (${resource.length})`, LogLevel.warning);
+    }
 
     return retval;
 }

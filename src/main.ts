@@ -5,7 +5,12 @@ import { Logger } from "./utilities";
 const test = `
 {
     "@context" : ["https://schema.org", "https://www.w3.org/ns/pub-context", {"language":"en-US", "direction" : "ltr"}],
-    "name" : "My Wonderful Book",
+    "name" : [
+        "My Wonderful Book",
+        {
+            "value" : "Az én csodálatos könyvem",
+            "language" : "hu"
+        }],
     "id" : "ISBN1234567890",
     "conformsTo" : "http://www.example.org/profile",
     "url": ["urn:abcdefghij","https://example.org", "relative.html"],
@@ -49,14 +54,12 @@ const test = `
 }
 `;
 
-
-
-
-
 const logger = new Logger();
 const manifest_object = process_manifest(test, 'http://www.example.org/', logger);
 // console.log(manifest_object)
-console.log(JSON.stringify(manifest_object, null, 4));
+// console.log(JSON.stringify(manifest_object, null, 4));
+
+console.log(manifest_object.toString())
 
 
 // console.log(manifest_object.author[0].name)
