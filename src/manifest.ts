@@ -1,14 +1,13 @@
 export interface Entity {
-    type?              : string[];
-    name               : LocalizableString[];
-    id?                : string;
-    url?               : string;
-    identifier?        : string[];
+    type?       : string[];
+    name        : LocalizableString[];
+    id?         : string;
+    url?        : string;
+    identifier? : string[];
     // [propName: string] : any;
 };
 
 export interface LocalizableString {
-    type?      : string[];
     value      : string;
     language?  : string;
     direction? : string;
@@ -27,6 +26,7 @@ export interface LinkedResource {
     rel?               : string[];
     integrity?         : string;
     length?            : number;
+    alternate?         : LinkedResource[];
     // [propName: string] : any;
 };
 

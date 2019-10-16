@@ -32,48 +32,46 @@ const creator_properties = [
 // -------------------------------------------- Categorization of terms -------------------------------------
 /**
  * Categorization of terms per value types: arrays for terms as single literal values, multiple literal values (ie, must be turned into an array of strings),
- * single localizable string and an array of localizable strings, array of creator terms, and an array of linked resources.
+ * single localizable string and an array of localizable strings, array of entities, array of linked resources, urls, booleans, etc.
  *
- * There is a method to return the full list of terms; for that to work, there is an extra array for miscellaneous terms that need otherwise special consideration (e.g., 'length')
+ * These arrays are used in generic method calls to handle, e.g., the creation and check of arrays of localizable strings.
+ *
+ * There is a method to return the full list of terms; for that to work, there is an extra array for miscellaneous terms that need
+ * otherwise special consideration anyway (e.g., 'length')
  */
 export class Terms {
-    single_literal_terms: string[];
-    multiple_literal_terms: string[];
+    single_literal:    string[];
+    array_of_literals: string[];
+    single_string:     string[];
+    array_of_strings:  string[];
+    array_of_entities: string[];
+    array_of_links:    string[];
+    single_url:        string[];
+    array_of_urls:     string[];
+    single_boolean:    string[];
+    misc:              string[];
 
-    single_loc_string_terms: string[];
-    multiple_loc_string_terms: string[];
-
-    multiple_creators_terms: string[];
-    multiple_link_terms: string[];
-
-    single_url_terms: string[];
-    multiple_url_terms: string[];
-
-    boolean_terms: string[];
-
-    misc_terms: string[];
-
-    constructor(single_literal: string[],
-                multiple_literal: string[],
-                single_loc_string: string[],
-                multiple_loc_string: string[],
-                multiple_creator: string[],
-                multiple_link: string[],
-                single_url: string[],
-                multiple_url: string[],
-                boolean_terms: string[] = [],
-                misc_terms: string[] = []
+    constructor(single_literal:    string[],
+                array_of_literals: string[],
+                single_string:     string[],
+                array_of_strings:  string[],
+                array_of_entities: string[],
+                array_of_links:    string[],
+                single_url:        string[],
+                array_of_urls:     string[],
+                single_boolean:    string[],
+                misc:              string[]
                 ) {
-        this.single_literal_terms = single_literal;
-        this.multiple_literal_terms = multiple_literal;
-        this.single_loc_string_terms = single_loc_string;
-        this.multiple_loc_string_terms = multiple_loc_string;
-        this.multiple_creators_terms = multiple_creator;
-        this.multiple_link_terms = multiple_link;
-        this.single_url_terms = single_url;
-        this.multiple_url_terms = multiple_url;
-        this.boolean_terms = boolean_terms;
-        this.misc_terms = misc_terms;
+        this.single_literal    = single_literal;
+        this.array_of_literals = array_of_literals;
+        this.single_string     = single_string;
+        this.array_of_strings  = array_of_strings;
+        this.array_of_entities = array_of_entities;
+        this.array_of_links    = array_of_links;
+        this.single_url        = single_url;
+        this.array_of_urls     = array_of_urls;
+        this.single_boolean    = single_boolean;
+        this.misc              = misc;
     }
 
     /**
@@ -81,12 +79,12 @@ export class Terms {
      */
     all_terms(): string[] {
         return [
-            ...this.single_literal_terms, ...this.multiple_literal_terms,
-            ...this.single_loc_string_terms, ...this.multiple_loc_string_terms,
-            ...this.multiple_creators_terms, ...this.multiple_link_terms,
-            ...this.single_url_terms, ...this.multiple_url_terms,
-            ...this.boolean_terms,
-            ...this.misc_terms
+            ...this.single_literal, ...this.array_of_literals,
+            ...this.single_string, ...this.array_of_strings,
+            ...this.array_of_entities, ...this.array_of_links,
+            ...this.single_url, ...this.array_of_urls,
+            ...this.single_boolean,
+            ...this.misc
         ];
     }
 }
@@ -101,175 +99,93 @@ const obj_array_toString = <T>(objects: T[], join_string: string) :string => {
     return objects.map((obj: T) :string => obj.toString()).join(join_string);
 }
 
-// -------------------------------------------- The real implementations of the manifest interfaces -------------------------------------
+// -------------------------------------------- Implementations of the manifest interfaces -------------------------------------
 /**
- * Creators, ie, persons or organizations
+ * Entities, ie, persons or organizations
  */
 export class Entity_Impl implements Entity {
     /**
      * Terms used for object of this type
      */
+    static single_literal:    string[] = ['id'];
+    static array_of_literals: string[] = ['type', 'identifier'];
+    static single_string:     string[] = [];
+    static array_of_strings:  string[] = ['name'];
+    static array_of_entities: string[] = [];
+    static array_of_links:    string[] = [];
+    static single_url:        string[] = [];
+    static array_of_urls:     string[] = [];
+    static single_boolean:    string[] = [];
+    static misc:              string[] = [];
+
     static terms: Terms = new Terms(
-        ['id'],
-        ['type', 'identifier'],
-
-        [],
-        ['name'],
-
-        ['url'],
-        [],
-
-        [],
-        [],
+        Entity_Impl.single_literal,
+        Entity_Impl.array_of_literals,
+        Entity_Impl.single_string,
+        Entity_Impl.array_of_strings,
+        Entity_Impl.array_of_entities,
+        Entity_Impl.array_of_links,
+        Entity_Impl.single_url,
+        Entity_Impl.array_of_urls,
+        Entity_Impl.single_boolean,
+        Entity_Impl.misc
     );
 
-    _name: LocalizableString[];
-    get name() {
-        return this._name
-    };
+    type       : string[];
+    name       : LocalizableString[];
+    id         : string;
+    url        : string;
+    identifier : string[];
 
-    _type: string[];
-    get type() {
-        return this._type
-    };
-
-    _id: string;
-    get id() {
-        return this._id
-    };
-
-    _url: string;
-    get url() {
-        return this._url
-    };
-
-    _identifier: string[];
-    get identifier() {
-        return this._identifier
-    };
-
-    toString() :string {
-        let retval = obj_array_toString<LocalizableString>(this.name, ', ');
-        if (this.id) retval += `
-        id: ${this.id}`;
-        if (this.url) retval += `
-        url: ${this.url}`;
-        if (this.id) retval += `
-        id: ${this.id}`
-        if (this.identifier) retval += `
-        identifier: ${this.identifier.join(', ')}`
-        return retval;
-    }
-
-    [propName: string] : any;
+    [propName  : string] : any;
 };
 
 /**
  * Localizable Strings, i.e., string values with possible languages
  */
 export class LocalizableString_Impl implements LocalizableString {
-    _type: string[];
-    get type() {
-        return this._type;
-    };
-
-    _value: string;
-    get value() {
-        return this._value;
-    }
-
-    _language: string;
-    get language() {
-        return this._language;
-    };
-
-    _direction: string;
-    get direction() {
-        return this._direction;
-    };
-
-    toString() :string {
-        let retval = this.value
-        if (this.language) retval += `@${this.language}`;
-        if (this.direction) retval += `^${this.direction}`;
-        return retval;
-    }
+    value     : string;
+    language  : string;
+    direction : string;
 };
 
 /**
  * Linked Resources (ie, references to publication resources)
  */
 export class LinkedResource_Impl implements LinkedResource {
+
+    static single_literal:    string[] = ['encodingFormat', 'integrity'];
+    static array_of_literals: string[] = ['rel'];
+    static single_string:     string[] = [];
+    static array_of_strings:  string[] = ['name', 'description'];
+    static array_of_entities: string[] = [];
+    static array_of_links:    string[] = ['alternate'];
+    static single_url:        string[] = ['url'];
+    static array_of_urls:     string[] = [];
+    static single_boolean:    string[] = [];
+    static misc:              string[] = ['length'];
+
     static terms: Terms = new Terms(
-        ['encodingFormat', 'integrity', 'url'],
-        ['rel', 'type'],
-
-        ['description'],
-        ['name'],
-
-        [],
-        [],
-
-        ['url'],
-        [],
-
-        [],
-
-        ['length']
+        LinkedResource_Impl.single_literal,
+        LinkedResource_Impl.array_of_literals,
+        LinkedResource_Impl.single_string,
+        LinkedResource_Impl.array_of_strings,
+        LinkedResource_Impl.array_of_entities,
+        LinkedResource_Impl.array_of_links,
+        LinkedResource_Impl.single_url,
+        LinkedResource_Impl.array_of_urls,
+        LinkedResource_Impl.single_boolean,
+        LinkedResource_Impl.misc
     );
 
-    _url: string;
-    get url() {
-        return this._url
-    };
-
-    _encodingFormat: string;
-    get encodingFormat() {
-        return this._encodingFormat
-    };
-
-    _name: LocalizableString[];
-    get name() {
-        return this._name
-    };
-
-    _description: LocalizableString;
-    get description() {
-        return this._description
-    };
-
-    _rel: string[];
-    get rel() {
-        return this._rel
-    };
-
-    _integrity: string;
-    get integrity() {
-        return this._integrity
-    };
-
-    _length: number;
-    get length() {
-        return this._length
-    }
-
-    toString() :string {
-        let retval = this.url;
-        if (this.encodingFormat) retval += `
-        encoding format: ${this.encodingFormat}`
-        if (this.name) retval += `
-        name: ${obj_array_toString<LocalizableString>(this.name, ', ')}`
-        if (this.description) retval += `
-        description: ${this.description.toString()}`
-        if (this.rel) retval += `
-        rel: ${this.rel.join(', ')}`
-        if (this.integrity) retval += `
-        integrity: ${this.integrity}`
-        if (this.length) retval += `
-        length: ${this.length}`
-
-        return retval;
-    }
+    url            : string;
+    encodingFormat : string;
+    name           : LocalizableString[];
+    description    : LocalizableString;
+    rel            : string[];
+    integrity      : string;
+    length         : number;
+    alternate      : LinkedResource[];
 
     [propName: string] : any;
 };
@@ -278,205 +194,65 @@ export class LinkedResource_Impl implements LinkedResource {
  * The top level class for a publication manifest
  */
 export class PublicationManifest_Impl implements PublicationManifest {
+    static single_literal:    string[] = ['dateModified', 'datePublished', 'id', 'readingProgression'];
+    static array_of_literals: string[] = [...a11y_properties, 'inLanguage', 'type'];
+    static single_string:     string[] = [];
+    static array_of_strings:  string[] = ['name', 'accessibilitySummary'];
+    static array_of_entities: string[] = [...creator_properties];
+    static array_of_links:    string[] = ['readingOrder', 'resources', 'links'];
+    static single_url:        string[] = [];
+    static array_of_urls:     string[] = ['url'];
+    static single_boolean:    string[] = ['abridged'];
+    static misc:              string[] = [];
+
     static terms: Terms = new Terms(
-        ['dateModified', 'datePublished', 'id', 'readingProgression'],
-        [...a11y_properties, 'inLanguage', 'type', 'url'],
-
-        ['accessibilitySummary'],
-        ['name'],
-
-        [...creator_properties],
-        ['readingOrder', 'resources', 'links'],
-
-        [],
-        ['url'],
-
-        ['abridged']
+        PublicationManifest_Impl.single_literal,
+        PublicationManifest_Impl.array_of_literals,
+        PublicationManifest_Impl.single_string,
+        PublicationManifest_Impl.array_of_strings,
+        PublicationManifest_Impl.array_of_entities,
+        PublicationManifest_Impl.array_of_links,
+        PublicationManifest_Impl.single_url,
+        PublicationManifest_Impl.array_of_urls,
+        PublicationManifest_Impl.single_boolean,
+        PublicationManifest_Impl.misc
     );
 
-    // ------------------------- The required terms
-    _type: string[] = ['CreativeWork'];
-    get type() {
-        return this._type
-    };
+    type                 : string[] = ['CreativeWork'];
+    id                   : string = '';
+    profile              : string = '';
 
-    _id: string = '';
-    get id() {
-        return this._id
-    };
 
-    _name: LocalizableString[] = [];
-    get name() {
-        return this._name
-    };
+    accessMode           : string[];
+    accessModeSufficient : string[];
+    accessibilityFeature : string[];
+    accessibilityHazard  : string[];
+    accessibilitySummary : LocalizableString[];
+    artist               : Entity[];
+    author               : Entity[];
+    colorist             : Entity[];
+    contributor          : Entity[];
+    creator              : Entity[];
+    editor               : Entity[];
+    illustrator          : Entity[];
+    inker                : Entity[];
+    letterer             : Entity[];
+    penciler             : Entity[];
+    publisher            : Entity[];
+    readBy               : Entity[];
+    translator           : Entity[];
 
-    _readingOrder: LinkedResource[] = [];
-    get readingOrder() {
-        return this._readingOrder
-    };
+    url                  : string[];
+    duration             : string;
+    inLanguage           : string[];
+    dateModified         : string;
+    datePublished        : string;
+    abridged             : boolean;
+    readingProgression   : ProgressionDirection = ProgressionDirection.ltr;
+    name                 : LocalizableString[] = [];
+    readingOrder         : LinkedResource[] = [];
+    resources            : LinkedResource[];
+    links                : LinkedResource[];
 
-    _profile: string = '';
-    get profile() {
-        return this._profile;
-    };
-
-    // ------------------------- The additional terms
-    _url: string[];
-    get url() {
-        return this._url
-    };
-
-    _accessMode: string[];
-    get accessMode() {
-        return this._accessMode
-    }
-
-    _accessModeSufficient: string[];
-    get accessModeSufficient() {
-        return this._accessModeSufficient
-    }
-
-    _accessibilityFeature: string[];
-    get accessibilityFeature() {
-        return this._accessibilityFeature
-    }
-
-    _accessibilityHazard: string[];
-    get accessibilityHazard() {
-        return this._accessibilityHazard
-    }
-
-    _accessibilitySummary: LocalizableString[];
-    get accessibilitySummary() {
-        return this._accessibilitySummary
-    }
-
-    _artist: Entity[];
-    get artist() {
-        return this._artist
-    }
-
-    _author: Entity[];
-    get author() {
-        return this._author
-    }
-
-    _colorist: Entity[];
-    get colorist() {
-        return this._colorist
-    }
-
-    _contributor: Entity[];
-    get contributor() {
-        return this._contributor
-    }
-
-    _creator: Entity[];
-    get creator() {
-        return this._creator
-    }
-
-    _editor: Entity[];
-    get editor() {
-        return this._editor
-    }
-
-    _illustrator: Entity[];
-    get illustrator() {
-        return this._illustrator
-    }
-
-    _inker: Entity[];
-    get inker() {
-        return this._inker
-    }
-
-    _letterer: Entity[];
-    get letterer() {
-        return this._letterer
-    }
-
-    _penciler: Entity[];
-    get penciler() {
-        return this._penciler
-    }
-
-    _publisher: Entity[];
-    get publisher() {
-        return this._publisher
-    }
-
-    _readBy: Entity[];
-    get readBy() {
-        return this._readBy
-    }
-
-    _translator: Entity[];
-    get translator() {
-        return this._translator
-    }
-
-    _duration: string;
-    get duration() {
-        return this._duration
-    }
-
-    _inLanguage: string[];
-    get inLanguage() {
-        return this._inLanguage
-    }
-
-    _dateModified: string;
-    get dateModified() {
-        return this._dateModified
-    }
-
-    _datePublished: string;
-    get datePublished() {
-        return this._datePublished
-    }
-
-    _abridged: boolean;
-    get abridged() {
-        return this._abridged
-    }
-
-    _readingProgression: ProgressionDirection = ProgressionDirection.ltr;
-    get readingProgression() {
-        return this._readingProgression
-    }
-
-    _resources: LinkedResource[];
-    get resources() {
-        return this._resources
-    }
-
-    _links: LinkedResource[];
-    get links() {
-        return this._links
-    }
-
-    toString() :string {
-        return `Publication Manifest:
-Type: ${this.type}
-id: ${this.id}
-profile: ${this.profile}
-name (title):
-    ${obj_array_toString<LocalizableString>(this.name, '\n    ')}
-author:
-    ${obj_array_toString<Entity>(this.author,'\n    ')}
-accessMode: ${this.accessMode}
-url: ${this.url}
-inLanguage: ${this.inLanguage}
-reading progression: ${this.readingProgression}
-abridged: ${this.abridged}
-reading order:
-    ${obj_array_toString<LinkedResource>(this.readingOrder, '\n    ')}
-additional resources:
-    ${obj_array_toString<LinkedResource>(this.resources, '\n    ')}
-external resources:
-    ${obj_array_toString<LinkedResource>(this.links, '\n    ')}
-`
-    }
     [propName: string] : any;
 };

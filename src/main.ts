@@ -56,18 +56,6 @@ const test = `
 
 const logger = new Logger();
 const manifest_object = process_manifest(test, 'http://www.example.org/', logger);
-// console.log(manifest_object)
-// console.log(JSON.stringify(manifest_object, null, 4));
-
-console.log(manifest_object.toString())
-
-
-// console.log(manifest_object.author[0].name)
-// console.log(">>>", manifest_object.readingOrder )
-
-
-
-
-
+console.log(JSON.stringify(manifest_object, null, 4))
 console.log(logger.toString());
 

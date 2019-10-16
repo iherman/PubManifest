@@ -79,11 +79,10 @@ const check_Web_URL = (resource: URL): boolean => {
 const create_LinkedResource = (resource: any): LinkedResource => {
     const retval = new LinkedResource_Impl();
     if (typeof resource === "string") {
-        retval._url = resource;
-        retval._type = ["LinkedResource"];
+        retval.url = resource;
     } else {
         normalize(LinkedResource_Impl.terms, retval, resource);
-        if (resource['length']) retval._length = resource['length'];
+        if (resource['length']) retval.length = resource['length'];
     }
     return retval;
 }
@@ -127,10 +126,10 @@ const create_LocalizableString = (resource: any) : LocalizableString => {
         Global.logger.log(`Invalid value for a Localizable String: ${resource}`, LogLevel.warning);
         return {} as LocalizableString;
     } else if (typeof resource === "string") {
-        retval._value = resource;
+        retval.value = resource;
     } else {
         if (resource.value) {
-            retval._value = resource.value;
+            retval.value = resource.value;
         }
         if (resource.language !== undefined) {
             lang = check_language_tag(resource.language, Global.logger);
@@ -141,14 +140,14 @@ const create_LocalizableString = (resource: any) : LocalizableString => {
     }
 
     if (lang === undefined || lang === null) {
-        delete retval._language;
+        delete retval.language;
     } else {
-        retval._language = lang;
+        retval.language = lang;
     }
     if (dir === undefined || dir === null) {
-        delete retval._direction;
+        delete retval.direction;
     } else {
-        retval._direction = dir;
+        retval.direction = dir;
     }
 
     return retval;
@@ -181,8 +180,8 @@ const check_LocalizableString = (resource: LocalizableString) : boolean => {
 const create_CreatorInfo = (resource: any) : Entity => {
     const retval = new Entity_Impl();
     if (typeof resource === "string") {
-        retval._name = [create_LocalizableString(resource)];
-        retval._type = ["Person"];
+        retval.name = [create_LocalizableString(resource)];
+        retval.type = ["Person"];
     } else {
         if (resource['name']) {
             normalize(Entity_Impl.terms, retval, resource);
@@ -224,17 +223,17 @@ const check_PublicationManifest = (manifest: PublicationManifest_Impl): Publicat
 
     if (manifest.type.length === 0) {
         Global.logger.log("Type information is missing for the manifest", LogLevel.warning);
-        manifest._type = ['CreativeWork'];
+        manifest.type = ['CreativeWork'];
     }
 
-    if (manifest.inLanguage) manifest._inLanguage = manifest.inLanguage.map((lang) :string => check_language_tag(lang, Global.logger));
+    if (manifest.inLanguage) manifest.inLanguage = manifest.inLanguage.map((lang) :string => check_language_tag(lang, Global.logger));
 
     // check dates for date published and updated
 
     if (manifest.readingProgression) {
         if (!(manifest.readingProgression === ProgressionDirection.rtl || manifest.readingProgression === ProgressionDirection.ltr)) {
             Global.logger.log(`readingProgression value ('${manifest.readingProgression}') is invalid`, LogLevel.warning);
-            manifest['_readingProgression'] = ProgressionDirection.rtl;
+            manifest['readingProgression'] = ProgressionDirection.rtl;
         }
     }
 
@@ -295,52 +294,52 @@ function get_ObjectArray<T>(arg: any, creator: create_Instance<T>, checker: chec
  */
 function normalize(terms: Terms, processed: PublicationManifest_Impl | LinkedResource_Impl | Entity_Impl, manifest: any) {
     // Some terms should just be copied, no specific steps in the document
-    terms.single_literal_terms.forEach((term: string) => {
-        if (manifest[term]) processed[`_${term}`] = create_string(manifest[term]);
+    terms.single_literal.forEach((term: string) => {
+        if (manifest[term]) processed[term] = create_string(manifest[term]);
     })
 
     /* -- 6.b turn single objects into arrays, without converting them -- */
-    terms.multiple_literal_terms.forEach((term: string) => {
-        if (manifest[term]) processed[`_${term}`] = get_ObjectArray<string>(manifest[term], create_string, check_string);
+    terms.array_of_literals.forEach((term: string) => {
+        if (manifest[term]) processed[term] = get_ObjectArray<string>(manifest[term], create_string, check_string);
     })
 
     /* -- 6.d turn single string into a Localizable String -- */
-    terms.single_loc_string_terms.forEach((term: string) => {
-        if (manifest[term]) processed[`_${term}`] = create_LocalizableString(manifest[term]);
+    terms.single_string.forEach((term: string) => {
+        if (manifest[term]) processed[term] = create_LocalizableString(manifest[term]);
     })
 
     /* -- 6.b and 6.d turn an array of single strings or Localizable Strings into an array of Localizable Strings -- */
-    terms.multiple_loc_string_terms.forEach((term: string) => {
-        if (manifest[term]) processed[`_${term}`] = get_ObjectArray<LocalizableString>(manifest[term], create_LocalizableString, check_LocalizableString);
+    terms.array_of_strings.forEach((term: string) => {
+        if (manifest[term]) processed[term] = get_ObjectArray<LocalizableString>(manifest[term], create_LocalizableString, check_LocalizableString);
     })
 
     /* -- 6.b. and 6.c turn an array of single strings or Entities into an array of Entities -- */
-    terms.multiple_creators_terms.forEach((term: string) => {
-        if (manifest[term]) processed[`_${term}`] = get_ObjectArray<Entity>(manifest[term], create_CreatorInfo, check_CreatorInfo);
+    terms.array_of_entities.forEach((term: string) => {
+        if (manifest[term]) processed[term] = get_ObjectArray<Entity>(manifest[term], create_CreatorInfo, check_CreatorInfo);
     })
 
     /* -- 6.b. and 6.e turn an array of single strings or linked resources into an array of Linked Resources -- */
-    terms.multiple_link_terms.forEach((term: string) => {
-        if (manifest[term]) processed[`_${term}`] = get_ObjectArray<LinkedResource>(manifest[term], create_LinkedResource, check_LinkedResource);
+    terms.array_of_links.forEach((term: string) => {
+        if (manifest[term]) processed[term] = get_ObjectArray<LinkedResource>(manifest[term], create_LinkedResource, check_LinkedResource);
     })
 
     /* -- 6.f check the URL -- */
-    terms.single_url_terms.forEach((term: string) => {
+    terms.single_url.forEach((term: string) => {
         if (manifest[term]) {
             const abs_url = create_URL(manifest[term]);
             check_Web_URL(abs_url);
-            processed[`_${term}`] = abs_url;
+            processed[term] = abs_url;
         }
     });
 
     /* -- 6.b. and 6.f convert and check arrays of URLs -- */
-    terms.multiple_url_terms.forEach((term:string) => {
-        if (manifest[term]) processed[`_${term}`] = get_ObjectArray<URL>(manifest[term], create_URL, check_Web_URL);
+    terms.array_of_urls.forEach((term:string) => {
+        if (manifest[term]) processed[term] = get_ObjectArray<URL>(manifest[term], create_URL, check_Web_URL);
     })
 
     /* -- copy booleans -- */
-    terms.boolean_terms.forEach((term: string) => {
-        if (manifest[term]) processed[`_${term}`] = manifest[term];
+    terms.single_boolean.forEach((term: string) => {
+        if (manifest[term]) processed[term] = manifest[term];
     })
 }
 
@@ -399,21 +398,21 @@ export function process_manifest(text: string, base: string, logger: Logger) : P
         const conformsTo = toArray(manifest.conformsTo);
         if (conformsTo.length === 0) {
             Global.logger.log("No conformance statement, set to default", LogLevel.warning);
-            processed._profile = 'http://www.w3.org/TR/pub-manifest';
+            processed.profile = 'http://www.w3.org/TR/pub-manifest';
         } else {
             // Note that this test is simpler than it would be in a complete implementation, because this
             // user agent has only one accepted profile. If there were more, it should look for the
             // first available one.
             if (conformsTo.find((s) => s === accepted_profile) !== undefined) {
-                processed._profile = accepted_profile
+                processed.profile = accepted_profile
             } else {
                 Global.logger.log("No acceptable profile URI, set to default", LogLevel.warning);
-                processed._profile = 'http://www.w3.org/TR/pub-manifest';
+                processed.profile = 'http://www.w3.org/TR/pub-manifest';
             }
         }
     } else {
         Global.logger.log("No conformance statement, set to default", LogLevel.warning);
-        processed._profile = 'http://www.w3.org/TR/pub-manifest';
+        processed.profile = 'http://www.w3.org/TR/pub-manifest';
     }
     // Not sure this will ever be used, but it doesn't do any harm
     Global.profile = processed.profile;
