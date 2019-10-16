@@ -33,27 +33,13 @@ export function toArray(arg: any): any[] {
  * @param level: log level
  * @returns URL or undefined
  */
-export function check_url(value: string, logger: Logger, level: LogLevel): string {
+export function check_url(value: string, logger: Logger, level: LogLevel): boolean {
     if (validUrl.isWebUri(value) === undefined) {
         logger.log(`'${value}' is an invalid Web URL`, level);
-        return undefined;
+        return false;
     } else {
-        return value;
+        return true;
     }
-}
-
-/**
- * Turn a URL into absolute, and check the value.
- *
- * @param value relative or absolute URL
- * @param base base URL
- * @param logger logger for errors
- * @returns the absolute URL
- */
-export function convert_and_check_url(value: string, base: string, logger: Logger): string {
-    const absolute = url.resolve(base, value);
-    check_url(absolute, logger, LogLevel.warning);
-    return absolute;
 }
 
 // eslint-disable-next-line max-len

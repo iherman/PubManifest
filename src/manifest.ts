@@ -33,7 +33,7 @@ export interface LinkedResource {
 export interface PublicationManifest {
     type?                 : string[];
     id?                   : string;
-    conformsTo            : string[];
+    profile               : string;
 
     accessMode?           : string[];
     accessModeSufficient? : string[];

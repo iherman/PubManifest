@@ -46,14 +46,21 @@ export class Terms {
     multiple_creators_terms: string[];
     multiple_link_terms: string[];
 
-    misc_terms: string[];
+    single_url_terms: string[];
+    multiple_url_terms: string[];
 
     boolean_terms: string[];
 
-    constructor(single_literal: string[], multiple_literal: string[],
-                single_loc_string: string[], multiple_loc_string: string[],
+    misc_terms: string[];
+
+    constructor(single_literal: string[],
+                multiple_literal: string[],
+                single_loc_string: string[],
+                multiple_loc_string: string[],
                 multiple_creator: string[],
                 multiple_link: string[],
+                single_url: string[],
+                multiple_url: string[],
                 boolean_terms: string[] = [],
                 misc_terms: string[] = []
                 ) {
@@ -63,6 +70,8 @@ export class Terms {
         this.multiple_loc_string_terms = multiple_loc_string;
         this.multiple_creators_terms = multiple_creator;
         this.multiple_link_terms = multiple_link;
+        this.single_url_terms = single_url;
+        this.multiple_url_terms = multiple_url;
         this.boolean_terms = boolean_terms;
         this.misc_terms = misc_terms;
     }
@@ -75,11 +84,16 @@ export class Terms {
             ...this.single_literal_terms, ...this.multiple_literal_terms,
             ...this.single_loc_string_terms, ...this.multiple_loc_string_terms,
             ...this.multiple_creators_terms, ...this.multiple_link_terms,
+            ...this.single_url_terms, ...this.multiple_url_terms,
             ...this.boolean_terms,
             ...this.misc_terms
         ];
     }
 }
+
+// -------------------------------- Type alias for URL (which are strings, in fact) -------------
+
+export type URL = string;
 
 // -------------------------------------------- toString utilities ------------------------------
 const obj_array_toString = <T>(objects: T[], join_string: string) :string => {
@@ -96,14 +110,17 @@ export class Entity_Impl implements Entity {
      * Terms used for object of this type
      */
     static terms: Terms = new Terms(
-        ['id', 'url'],
+        ['id'],
         ['type', 'identifier'],
 
         [],
         ['name'],
 
+        ['url'],
         [],
-        []
+
+        [],
+        [],
     );
 
     _name: LocalizableString[];
@@ -184,7 +201,7 @@ export class LocalizableString_Impl implements LocalizableString {
  */
 export class LinkedResource_Impl implements LinkedResource {
     static terms: Terms = new Terms(
-        ['url', 'encodingFormat', 'integrity'],
+        ['encodingFormat', 'integrity', 'url'],
         ['rel', 'type'],
 
         ['description'],
@@ -192,6 +209,12 @@ export class LinkedResource_Impl implements LinkedResource {
 
         [],
         [],
+
+        ['url'],
+        [],
+
+        [],
+
         ['length']
     );
 
@@ -257,13 +280,16 @@ export class LinkedResource_Impl implements LinkedResource {
 export class PublicationManifest_Impl implements PublicationManifest {
     static terms: Terms = new Terms(
         ['dateModified', 'datePublished', 'id', 'readingProgression'],
-        [...a11y_properties, 'inLanguage', 'type', 'url', 'inLanguage', 'conformsTo'],
+        [...a11y_properties, 'inLanguage', 'type', 'url'],
 
         ['accessibilitySummary'],
         ['name'],
 
         [...creator_properties],
         ['readingOrder', 'resources', 'links'],
+
+        [],
+        ['url'],
 
         ['abridged']
     );
@@ -289,9 +315,9 @@ export class PublicationManifest_Impl implements PublicationManifest {
         return this._readingOrder
     };
 
-    _conformsTo: string[] = [];
-    get conformsTo() {
-        return this._conformsTo
+    _profile: string = '';
+    get profile() {
+        return this._profile;
     };
 
     // ------------------------- The additional terms
@@ -434,7 +460,7 @@ export class PublicationManifest_Impl implements PublicationManifest {
         return `Publication Manifest:
 Type: ${this.type}
 id: ${this.id}
-conformsTo: ${this.conformsTo}
+profile: ${this.profile}
 name (title):
     ${obj_array_toString<LocalizableString>(this.name, '\n    ')}
 author:
