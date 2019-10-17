@@ -1,9 +1,7 @@
 import { PublicationManifest, LinkedResource, LocalizableString, Entity, ProgressionDirection } from './manifest';
 import { Entity_Impl, LocalizableString_Impl, LinkedResource_Impl, PublicationManifest_Impl, Terms, URL } from './manifest_classes';
-import { LogLevel, Logger, toArray, check_url, check_language_tag, check_direction_tag, isNumber } from './utilities';
+import { LogLevel, Logger, toArray, check_url, check_language_tag, check_direction_tag, isNumber, fetch_json } from './utilities';
 import * as url from 'url';
-import { type } from 'os';
-import { reverse } from 'dns';
 
 const accepted_profile = 'http://www.w3.org/TR/audiobooks';
 
@@ -348,26 +346,27 @@ function normalize(terms: Terms, processed: PublicationManifest_Impl | LinkedRes
 /**
  * _The_ entry point to the conversion.
  *
- * @param text the manifest string; supposed to be a string parsable as JSON
+ * @param url the url of the manifest
  * @param logger generic logger instance to log warnings and errors during processing
  * @returns a bona fide `PublicationManifest` instance
  */
 
-export function process_manifest(text: string, base: string, logger: Logger) : PublicationManifest {
+export async function process_manifest(url: string, logger: Logger) : Promise<PublicationManifest> {
     Global.logger = logger;
-    Global.base = base;
+    Global.base = url;
 
     /* -- 1. Let _processed_ be a map containing the internal representation of the manifest. --*/
     const processed = new PublicationManifest_Impl();
 
     /* -- 2. Let _manifest_ be the result of parsing JSON into Infra values given text. If manifest is not a map, fatal error, return failure. --*/
-    // JSON parser returns an object, without any further typing info.
+    // This is not a full implementation, because we do not consider the whole problem area of extracting it from HTML, etc. This is, after all,
+    // a test for the processing steps...
     let manifest;
-    // Separate the JSON parsing errors...
+    // retrieve the manifest and convert it into
     try {
-        manifest = JSON.parse(text);
+        manifest = await fetch_json(url);
     } catch (err) {
-        logger.log(`JSON parsing error: ${err.message}`, LogLevel.error);
+        logger.log(`JSON fetching or parsing error: ${err.message}`, LogLevel.error);
         return processed;
     }
 

@@ -1,5 +1,29 @@
 import * as validUrl from 'valid-url';
-import * as url from 'url';
+import * as fetch from 'node-fetch';
+
+// const fetch = require('node-fetch');
+
+/* **************************** Get hold of a JSON file via its URL ********** */
+// This is for testing purposes, so all kinds of checks are not done...
+//
+
+export  async function fetch_json(request: fetch.RequestInfo): Promise<any> {
+    return new Promise(resolve => {
+      fetch.default(request)
+        .then((response: fetch.Response) => response.json())
+        .then((body: fetch.Body) => {
+          resolve(body);
+        });
+    });
+};
+
+async function test() {
+    let json = await fetch_json('http://localhost:8001/LocalData/github/Publishing/PubManifest-jsonld/tests/manu.json');
+    console.log(json);
+    console.log(typeof json)
+}
+
+test();
 
 /* **************************** General utilities **************************** */
 
