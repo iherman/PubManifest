@@ -34,6 +34,7 @@ export interface PublicationManifest {
     type?                 : string[];
     id?                   : string;
     profile               : string;
+    conformsTo            : string[];
 
     accessMode?           : string[];
     accessModeSufficient? : string[];

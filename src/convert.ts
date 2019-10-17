@@ -398,6 +398,7 @@ export async function process_manifest(url: string, logger: Logger) : Promise<Pu
         if (conformsTo.length === 0) {
             Global.logger.log("No conformance statement, set to default", LogLevel.warning);
             processed.profile = 'http://www.w3.org/TR/pub-manifest';
+            processed.conformsTo = ['http://www.w3.org/TR/pub-manifest'];
         } else {
             // Note that this test is simpler than it would be in a complete implementation, because this
             // user agent has only one accepted profile. If there were more, it should look for the
@@ -408,10 +409,12 @@ export async function process_manifest(url: string, logger: Logger) : Promise<Pu
                 Global.logger.log("No acceptable profile URI, set to default", LogLevel.warning);
                 processed.profile = 'http://www.w3.org/TR/pub-manifest';
             }
+            processed.conformsTo = conformsTo;
         }
     } else {
         Global.logger.log("No conformance statement, set to default", LogLevel.warning);
         processed.profile = 'http://www.w3.org/TR/pub-manifest';
+        processed.conformsTo = ['http://www.w3.org/TR/pub-manifest'];
     }
     // Not sure this will ever be used, but it doesn't do any harm
     Global.profile = processed.profile;

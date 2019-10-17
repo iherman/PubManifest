@@ -221,7 +221,7 @@ export class PublicationManifest_Impl implements PublicationManifest {
     type                 : string[] = ['CreativeWork'];
     id                   : string = '';
     profile              : string = '';
-
+    conformsTo           : string[];
 
     accessMode           : string[];
     accessModeSufficient : string[];
