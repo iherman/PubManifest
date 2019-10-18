@@ -1,5 +1,6 @@
 import * as validUrl from 'valid-url';
 import * as fetch from 'node-fetch';
+import * as _ from 'underscore';
 
 // const fetch = require('node-fetch');
 
@@ -17,24 +18,32 @@ export  async function fetch_json(request: fetch.RequestInfo): Promise<any> {
     });
 };
 
-async function test() {
-    let json = await fetch_json('http://localhost:8001/LocalData/github/Publishing/PubManifest-jsonld/tests/manu.json');
-    console.log(json);
-    console.log(typeof json)
-}
-
-test();
-
 /* **************************** General utilities **************************** */
 
-// export function isNumber(value: string | number): boolean
-// {
-//    return ((value != null) && typeof value != 'string' && !isNaN(Number(value.toString())));
-// }
 
-export function isNumber(value :any ) :boolean
+export function isNumber(value :any ): boolean
 {
-   return ((value != null) && typeof value === 'number' && !isNaN(Number(value.toString())));
+    return _.isNumber(value);
+}
+
+export function isArray(value: any): boolean
+{
+    return _.isArray(value);
+}
+
+export function isMap(value: any): boolean
+{
+    return _.isObject(value) && !_.isArray(value);
+}
+
+export function isString(value: any): boolean
+{
+    return _.isString(value);
+}
+
+export function isBoolean(value: any): boolean
+{
+    return _.isBoolean(value);
 }
 
 /**
@@ -78,7 +87,7 @@ const bcp_pattern = RegExp('^(((en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak
 export function check_language_tag(value: string, logger: Logger): string {
     if (value === null) return null;
     if (!bcp_pattern.test(value)) {
-        logger.log(`'${value}' is an invalid language tag`, LogLevel.warning);
+        logger.log(`'${value}' is an invalid language tag`, LogLevel.ValidationError);
         return undefined;
     } else {
         return value;
@@ -95,7 +104,7 @@ export function check_language_tag(value: string, logger: Logger): string {
 export function check_direction_tag(value: string, logger: Logger): string {
     if (value === null) return null;
     if (!(value === 'ltr' || value === 'rtl')) {
-        logger.log(`'${value}' is an invalid direction tag`, LogLevel.warning);
+        logger.log(`'${value}' is an invalid direction tag`, LogLevel.ValidationError);
         return undefined;
     } else {
         return value;
@@ -108,17 +117,17 @@ export function check_direction_tag(value: string, logger: Logger): string {
  * Simple logger class to record errors and warnings for subsequent display
  */
 export enum LogLevel {
-    warning,
-    error
+    ValidationError,
+    FatalError
 }
 
 export class Logger {
-    private _warnings: string[];
-    private _errors: string[];
+    private _validation_errors: string[];
+    private _fatal_errors: string[];
 
     constructor() {
-        this._warnings = [];
-        this._errors = [];
+        this._validation_errors = [];
+        this._fatal_errors = [];
     }
 
     /**
@@ -130,28 +139,28 @@ export class Logger {
      */
     log(message: string, level: LogLevel) : void {
         switch (level) {
-            case LogLevel.error:
-                this._errors.push(message);
+            case LogLevel.FatalError:
+                this._fatal_errors.push(message);
                 break;
-            case LogLevel.warning:
-                this._warnings.push(message);
+            case LogLevel.ValidationError:
+                this._validation_errors.push(message);
                 break;
             default:
                 break;
         }
     }
 
-    get warnings(): string[] { return this._warnings; }
+    get validation_errors(): string[] { return this._validation_errors; }
 
-    get errors() : string[] { return this._errors; }
+    get fatal_errors() : string[] { return this._fatal_errors; }
 
     /**
      * Display all the errors as one string.
      *
      * @returns {string}
      */
-    errors_toString() : string {
-        return Logger._display(this.errors, 'Errors:');
+    fatal_errors_toString() : string {
+        return Logger._display(this.fatal_errors, 'Fatal Errors:');
     }
 
     /**
@@ -159,8 +168,8 @@ export class Logger {
      *
      * @returns {string}
      */
-    warnings_toString() : string {
-        return Logger._display(this.warnings, 'Warnings:');
+    validation_errors_toString() : string {
+        return Logger._display(this.validation_errors, 'Validation Errors:');
     }
 
     /**
@@ -169,7 +178,7 @@ export class Logger {
      * @returns {string}
      */
     toString() : string {
-        return `${this.warnings_toString()}\n${this.errors_toString()}`;
+        return `${this.validation_errors_toString()}\n${this.fatal_errors_toString()}`;
     }
 
     /**

@@ -42,7 +42,6 @@ const creator_properties = [
 export class Terms {
     single_literal:    string[];
     array_of_literals: string[];
-    single_string:     string[];
     array_of_strings:  string[];
     array_of_entities: string[];
     array_of_links:    string[];
@@ -53,7 +52,6 @@ export class Terms {
 
     constructor(single_literal:    string[],
                 array_of_literals: string[],
-                single_string:     string[],
                 array_of_strings:  string[],
                 array_of_entities: string[],
                 array_of_links:    string[],
@@ -64,7 +62,6 @@ export class Terms {
                 ) {
         this.single_literal    = single_literal;
         this.array_of_literals = array_of_literals;
-        this.single_string     = single_string;
         this.array_of_strings  = array_of_strings;
         this.array_of_entities = array_of_entities;
         this.array_of_links    = array_of_links;
@@ -74,13 +71,17 @@ export class Terms {
         this.misc              = misc;
     }
 
+    get array_terms() {
+        return [...this.array_of_literals, ...this.array_of_strings, ...this.array_of_urls, ...this.array_of_entities, ...this.array_of_links]
+    }
+
     /**
      * Return an array of all the terms
      */
     all_terms(): string[] {
         return [
             ...this.single_literal, ...this.array_of_literals,
-            ...this.single_string, ...this.array_of_strings,
+            ...this.array_of_strings,
             ...this.array_of_entities, ...this.array_of_links,
             ...this.single_url, ...this.array_of_urls,
             ...this.single_boolean,
@@ -109,7 +110,6 @@ export class Entity_Impl implements Entity {
      */
     static single_literal:    string[] = ['id'];
     static array_of_literals: string[] = ['type', 'identifier'];
-    static single_string:     string[] = [];
     static array_of_strings:  string[] = ['name'];
     static array_of_entities: string[] = [];
     static array_of_links:    string[] = [];
@@ -121,7 +121,6 @@ export class Entity_Impl implements Entity {
     static terms: Terms = new Terms(
         Entity_Impl.single_literal,
         Entity_Impl.array_of_literals,
-        Entity_Impl.single_string,
         Entity_Impl.array_of_strings,
         Entity_Impl.array_of_entities,
         Entity_Impl.array_of_links,
@@ -130,6 +129,9 @@ export class Entity_Impl implements Entity {
         Entity_Impl.single_boolean,
         Entity_Impl.misc
     );
+    get terms() {
+        return Entity_Impl.terms;
+    }
 
     type       : string[];
     name       : LocalizableString[];
@@ -156,7 +158,6 @@ export class LinkedResource_Impl implements LinkedResource {
 
     static single_literal:    string[] = ['encodingFormat', 'integrity'];
     static array_of_literals: string[] = ['rel'];
-    static single_string:     string[] = [];
     static array_of_strings:  string[] = ['name', 'description'];
     static array_of_entities: string[] = [];
     static array_of_links:    string[] = ['alternate'];
@@ -168,7 +169,6 @@ export class LinkedResource_Impl implements LinkedResource {
     static terms: Terms = new Terms(
         LinkedResource_Impl.single_literal,
         LinkedResource_Impl.array_of_literals,
-        LinkedResource_Impl.single_string,
         LinkedResource_Impl.array_of_strings,
         LinkedResource_Impl.array_of_entities,
         LinkedResource_Impl.array_of_links,
@@ -177,6 +177,9 @@ export class LinkedResource_Impl implements LinkedResource {
         LinkedResource_Impl.single_boolean,
         LinkedResource_Impl.misc
     );
+    get terms() {
+        return LinkedResource_Impl.terms;
+    }
 
     url            : string;
     encodingFormat : string;
@@ -195,8 +198,7 @@ export class LinkedResource_Impl implements LinkedResource {
  */
 export class PublicationManifest_Impl implements PublicationManifest {
     static single_literal:    string[] = ['dateModified', 'datePublished', 'id', 'readingProgression'];
-    static array_of_literals: string[] = [...a11y_properties, 'inLanguage', 'type'];
-    static single_string:     string[] = [];
+    static array_of_literals: string[] = [...a11y_properties, 'inLanguage', 'type', 'conformsTo'];
     static array_of_strings:  string[] = ['name', 'accessibilitySummary'];
     static array_of_entities: string[] = [...creator_properties];
     static array_of_links:    string[] = ['readingOrder', 'resources', 'links'];
@@ -208,7 +210,6 @@ export class PublicationManifest_Impl implements PublicationManifest {
     static terms: Terms = new Terms(
         PublicationManifest_Impl.single_literal,
         PublicationManifest_Impl.array_of_literals,
-        PublicationManifest_Impl.single_string,
         PublicationManifest_Impl.array_of_strings,
         PublicationManifest_Impl.array_of_entities,
         PublicationManifest_Impl.array_of_links,
@@ -217,6 +218,9 @@ export class PublicationManifest_Impl implements PublicationManifest {
         PublicationManifest_Impl.single_boolean,
         PublicationManifest_Impl.misc
     );
+    get terms() {
+        return PublicationManifest_Impl.terms;
+    }
 
     type                 : string[] = ['CreativeWork'];
     id                   : string = '';

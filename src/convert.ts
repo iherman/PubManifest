@@ -29,7 +29,7 @@ const create_string = (arg: any) : string  => {
         return arg;
     } else {
         const retval = `${arg}`;
-        Global.logger.log(`${retval} should be a string, but it is not...`, LogLevel.warning);
+        Global.logger.log(`${retval} should be a string, but it is not...`, LogLevel.ValidationError);
         return `${arg}`;
     }
 }
@@ -49,7 +49,7 @@ const check_string = (resource: string) : boolean => {
  */
 const create_URL = (resource: any): URL => {
     if (typeof resource !== 'string') {
-        Global.logger.log(`'${resource}' is an invalid Web URL`, LogLevel.warning);
+        Global.logger.log(`'${resource}' is an invalid Web URL`, LogLevel.ValidationError);
         return '';
     } else {
         return url.resolve(Global.base, resource)
@@ -63,7 +63,7 @@ const create_URL = (resource: any): URL => {
  * @returns boolean
  */
 const check_Web_URL = (resource: URL): boolean => {
-    return check_url(resource, Global.logger, LogLevel.warning);
+    return check_url(resource, Global.logger, LogLevel.ValidationError);
 }
 
 // Linked resources ------------------
@@ -96,12 +96,12 @@ const check_LinkedResource = (resource: LinkedResource) : boolean => {
 
     // Check URL existence
     if (!resource.url) {
-        Global.logger.log("Linked Resource without a url (removed)", LogLevel.error);
+        Global.logger.log("Linked Resource without a url (removed)", LogLevel.FatalError);
         return false;
     }
     // check media type format???
     if (resource.length && !(isNumber(resource.length))) {
-        Global.logger.log(`Linked Resource length is not a number (${resource.length})`, LogLevel.warning);
+        Global.logger.log(`Linked Resource length is not a number (${resource.length})`, LogLevel.ValidationError);
     }
 
     return retval;
@@ -121,7 +121,7 @@ const create_LocalizableString = (resource: any) : LocalizableString => {
     let dir  = (Global.direction !== undefined) ? Global.direction : undefined;
 
     if (typeof resource === 'number' || typeof resource === 'boolean' || resource === null) {
-        Global.logger.log(`Invalid value for a Localizable String: ${resource}`, LogLevel.warning);
+        Global.logger.log(`Invalid value for a Localizable String: ${resource}`, LogLevel.ValidationError);
         return {} as LocalizableString;
     } else if (typeof resource === "string") {
         retval.value = resource;
@@ -160,7 +160,7 @@ const create_LocalizableString = (resource: any) : LocalizableString => {
 const check_LocalizableString = (resource: LocalizableString) : boolean => {
     let retval: boolean = true;
     if (!resource.value) {
-        Global.logger.log("Localizable string without a value (removed)", LogLevel.error);
+        Global.logger.log("Localizable string without a value (removed)", LogLevel.FatalError);
         retval = false;
     }
     return retval;
@@ -197,7 +197,7 @@ const create_CreatorInfo = (resource: any) : Entity => {
 const check_CreatorInfo = (resource: Entity) : boolean => {
     let retval: boolean = true;
     if (!resource.name) {
-        Global.logger.log("Creator without a name (removed)", LogLevel.error);
+        Global.logger.log("Creator without a name (removed)", LogLevel.FatalError);
         retval = false;
     }
     return retval;
@@ -210,17 +210,17 @@ const check_PublicationManifest = (manifest: PublicationManifest_Impl): Publicat
     const empty = new PublicationManifest_Impl();
 
     if (manifest.name.length === 0) {
-        Global.logger.log("Name (title) is missing for the manifest", LogLevel.error);
+        Global.logger.log("Name (title) is missing for the manifest", LogLevel.FatalError);
         return empty;
     }
 
     if (manifest.readingOrder.length === 0) {
-        Global.logger.log("Default reading order is missing for the manifest", LogLevel.error);
+        Global.logger.log("Default reading order is missing for the manifest", LogLevel.FatalError);
         return empty;
     }
 
     if (manifest.type.length === 0) {
-        Global.logger.log("Type information is missing for the manifest", LogLevel.warning);
+        Global.logger.log("Type information is missing for the manifest", LogLevel.ValidationError);
         manifest.type = ['CreativeWork'];
     }
 
@@ -230,7 +230,7 @@ const check_PublicationManifest = (manifest: PublicationManifest_Impl): Publicat
 
     if (manifest.readingProgression) {
         if (!(manifest.readingProgression === ProgressionDirection.rtl || manifest.readingProgression === ProgressionDirection.ltr)) {
-            Global.logger.log(`readingProgression value ('${manifest.readingProgression}') is invalid`, LogLevel.warning);
+            Global.logger.log(`readingProgression value ('${manifest.readingProgression}') is invalid`, LogLevel.ValidationError);
             manifest['readingProgression'] = ProgressionDirection.rtl;
         }
     }
@@ -366,7 +366,7 @@ export async function process_manifest(url: string, logger: Logger) : Promise<Pu
     try {
         manifest = await fetch_json(url);
     } catch (err) {
-        logger.log(`JSON fetching or parsing error: ${err.message}`, LogLevel.error);
+        logger.log(`JSON fetching or parsing error: ${err.message}`, LogLevel.FatalError);
         return processed;
     }
 
@@ -385,10 +385,10 @@ export async function process_manifest(url: string, logger: Logger) : Promise<Pu
                 }
             });
         } else {
-            Global.logger.log("@context values are not set as required", LogLevel.error);
+            Global.logger.log("@context values are not set as required", LogLevel.FatalError);
         }
     } else {
-        Global.logger.log("No @context set in manifest", LogLevel.error);
+        Global.logger.log("No @context set in manifest", LogLevel.FatalError);
     }
 
     /* -- 4. Set _profile --*/
@@ -396,7 +396,7 @@ export async function process_manifest(url: string, logger: Logger) : Promise<Pu
         // To simplify, turn this into an array in any case
         const conformsTo = toArray(manifest.conformsTo);
         if (conformsTo.length === 0) {
-            Global.logger.log("No conformance statement, set to default", LogLevel.warning);
+            Global.logger.log("No conformance statement, set to default", LogLevel.ValidationError);
             processed.profile = 'http://www.w3.org/TR/pub-manifest';
             processed.conformsTo = ['http://www.w3.org/TR/pub-manifest'];
         } else {
@@ -406,25 +406,25 @@ export async function process_manifest(url: string, logger: Logger) : Promise<Pu
             if (conformsTo.find((s) => s === accepted_profile) !== undefined) {
                 processed.profile = accepted_profile
             } else {
-                Global.logger.log("No acceptable profile URI, set to default", LogLevel.warning);
+                Global.logger.log("No acceptable profile URI, set to default", LogLevel.ValidationError);
                 processed.profile = 'http://www.w3.org/TR/pub-manifest';
             }
             processed.conformsTo = conformsTo;
         }
     } else {
-        Global.logger.log("No conformance statement, set to default", LogLevel.warning);
+        Global.logger.log("No conformance statement, set to default", LogLevel.ValidationError);
         processed.profile = 'http://www.w3.org/TR/pub-manifest';
         processed.conformsTo = ['http://www.w3.org/TR/pub-manifest'];
     }
     // Not sure this will ever be used, but it doesn't do any harm
     Global.profile = processed.profile;
 
-    if (Global.logger.errors.length > 0) return processed;
+    if (Global.logger.fatal_errors.length > 0) return processed;
 
     try {
         normalize(PublicationManifest_Impl.terms, processed, manifest);
     } catch( err ) {
-        logger.log(`${err.message}`, LogLevel.error);
+        logger.log(`${err.message}`, LogLevel.FatalError);
     }
     return check_PublicationManifest(processed);
 }

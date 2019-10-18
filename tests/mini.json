@@ -1,31 +1,10 @@
 {
-    "@context" : ["https://schema.org", "https://www.w3.org/ns/pub-context", {"language":"en-US", "direction" : "ltr"}],
-    "name" : [
-        "My Wonderful Book",
-        {
-            "value" : "Az én csodálatos könyvem",
-            "language" : "hu"
-        }],
+    "@context" : ["https://schema.org", "https://www.w3.org/ns/pub-context"],
+    "name" : "My Wonderful Book",
     "id" : "ISBN1234567890",
     "conformsTo" : ["http://www.example.org/profile", "https://www.w3.org/TR/audiobooks/"],
     "url": "https://example.org",
     "type" : "CreativeWork",
-    "author": [
-        "John Smith",
-        {
-            "name" : "Bill Holiday",
-            "url" : "http://example.org/BH",
-            "identifier": "123456789"
-        },
-        {
-            "name" : {
-                "value" : "Somebody from the corner",
-                "language": null
-            },
-            "url" : "http://just.a.url/"
-        }
-    ],
-    "readingProgression" : "bogus",
     "readingOrder" : [
         "namivan.html",
         {
@@ -46,4 +25,5 @@
             "name": "Without a url..."
         }
     ]
+
 }
