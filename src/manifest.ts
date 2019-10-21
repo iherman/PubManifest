@@ -7,6 +7,15 @@ export interface Entity {
     // [propName: string] : any;
 };
 
+export interface Person extends Entity {
+};
+
+export interface Organization extends Entity {
+};
+
+export type RecognizedTypes = Person | Organization | LinkedResource;
+
+
 export interface LocalizableString {
     value      : string;
     language?  : string;

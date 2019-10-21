@@ -63,12 +63,11 @@ export function toArray(arg: any): any[] {
  *
  * @param value absolute URL
  * @param logger: logger for errors
- * @param level: log level
  * @returns URL or undefined
  */
-export function check_url(value: string, logger: Logger, level: LogLevel): boolean {
+export function check_url(value: string, logger: Logger): boolean {
     if (validUrl.isWebUri(value) === undefined) {
-        logger.log(`'${value}' is an invalid Web URL`, level);
+        logger.log(`'${value}' is an invalid Web URL`, LogLevel.ValidationError);
         return false;
     } else {
         return true;
@@ -85,12 +84,12 @@ const bcp_pattern = RegExp('^(((en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak
  * @returns the same language tag is returned
  */
 export function check_language_tag(value: string, logger: Logger): string {
-    if (value === null) return null;
-    if (!bcp_pattern.test(value)) {
-        logger.log(`'${value}' is an invalid language tag`, LogLevel.ValidationError);
-        return undefined;
-    } else {
+    if (value === null) {
+        return null;
+    } else if (isString(value) && bcp_pattern.test(value)) {
         return value;
+    } else {
+        return undefined;
     }
 }
 
@@ -102,12 +101,12 @@ export function check_language_tag(value: string, logger: Logger): string {
  * @returns the same direction tag is returned
  */
 export function check_direction_tag(value: string, logger: Logger): string {
-    if (value === null) return null;
-    if (!(value === 'ltr' || value === 'rtl')) {
-        logger.log(`'${value}' is an invalid direction tag`, LogLevel.ValidationError);
-        return undefined;
-    } else {
+    if (value === null) {
+        return null;
+    } else if (isString(value) && (value === 'ltr' || value === 'rtl')) {
         return value;
+    } else {
+        return undefined;
     }
 }
 

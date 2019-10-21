@@ -2,7 +2,15 @@
  * Implementation classes for the Publication manifest. See 'manifest.ts' for the visible interfaces.
  */
 
-import { PublicationManifest, LinkedResource, LocalizableString, Entity, ProgressionDirection } from './manifest';
+import {
+    PublicationManifest,
+    LinkedResource,
+    LocalizableString,
+    Entity,
+    Person,
+    Organization,
+    RecognizedTypes,
+    ProgressionDirection } from './manifest';
 
 // -------------------------------------------- Convenience variables -------------------------------------
 const a11y_properties = [
@@ -75,10 +83,21 @@ export class Terms {
         return [...this.array_of_literals, ...this.array_of_strings, ...this.array_of_urls, ...this.array_of_entities, ...this.array_of_links]
     }
 
+    get array_or_single_literals() {
+        return [...this.single_literal, ...this.array_of_literals];
+    }
+
+    get array_or_single_urls() {
+        return [...this.single_url, ...this.array_of_urls];
+    }
+
+
+
+
     /**
      * Return an array of all the terms
      */
-    all_terms(): string[] {
+    get all_terms() {
         return [
             ...this.single_literal, ...this.array_of_literals,
             ...this.array_of_strings,
@@ -129,9 +148,6 @@ export class Entity_Impl implements Entity {
         Entity_Impl.single_boolean,
         Entity_Impl.misc
     );
-    get terms() {
-        return Entity_Impl.terms;
-    }
 
     type       : string[];
     name       : LocalizableString[];
@@ -142,13 +158,41 @@ export class Entity_Impl implements Entity {
     [propName  : string] : any;
 };
 
+export class Person_Impl extends Entity_Impl  implements Person {};
+export class Organization_Impl extends Entity_Impl  implements Organization {};
+export type RecognizedTypes = Person_Impl | Organization_Impl | LinkedResource_Impl;
+
 /**
  * Localizable Strings, i.e., string values with possible languages
  */
 export class LocalizableString_Impl implements LocalizableString {
+    static single_literal:    string[] = ['value', 'language', 'direction'];
+    static array_of_literals: string[] = [];
+    static array_of_strings:  string[] = [];
+    static array_of_entities: string[] = [];
+    static array_of_links:    string[] = [];
+    static single_url:        string[] = [];
+    static array_of_urls:     string[] = [];
+    static single_boolean:    string[] = [];
+    static misc:              string[] = [];
+
+    static terms: Terms = new Terms(
+        LocalizableString_Impl.single_literal,
+        LocalizableString_Impl.array_of_literals,
+        LocalizableString_Impl.array_of_strings,
+        LocalizableString_Impl.array_of_entities,
+        LocalizableString_Impl.array_of_links,
+        LocalizableString_Impl.single_url,
+        LocalizableString_Impl.array_of_urls,
+        LocalizableString_Impl.single_boolean,
+        LocalizableString_Impl.misc
+    );
+
     value     : string;
     language  : string;
     direction : string;
+
+    [propName  : string] : any;
 };
 
 /**
@@ -177,9 +221,6 @@ export class LinkedResource_Impl implements LinkedResource {
         LinkedResource_Impl.single_boolean,
         LinkedResource_Impl.misc
     );
-    get terms() {
-        return LinkedResource_Impl.terms;
-    }
 
     url            : string;
     encodingFormat : string;
@@ -218,11 +259,8 @@ export class PublicationManifest_Impl implements PublicationManifest {
         PublicationManifest_Impl.single_boolean,
         PublicationManifest_Impl.misc
     );
-    get terms() {
-        return PublicationManifest_Impl.terms;
-    }
 
-    type                 : string[] = ['CreativeWork'];
+    type                 : string[];
     id                   : string = '';
     profile              : string = '';
     conformsTo           : string[];
