@@ -15,6 +15,9 @@ import {
     LinkedResource,
     LocalizableString,
     Entity,
+    Person,
+    Organization,
+    RecognizedTypes,
     ProgressionDirection
 } from './manifest';
 
@@ -23,8 +26,11 @@ import {
  ===================================================================================================== */
 import {
     Entity_Impl,
+    Person_Impl,
+    Organization_Impl,
     LocalizableString_Impl,
     LinkedResource_Impl,
+    RecognizedTypes_Impl,
     PublicationManifest_Impl,
     Terms,
     URL
@@ -45,6 +51,7 @@ import {
 } from './utilities';
 
 import * as url from 'url';
+import { Person_Impl } from './manifest_classes';
 
 /* ====================================================================================================
  Global objects and constants
@@ -100,19 +107,31 @@ const get_terms = (resource: any): Terms => {
  *
  * @param resource either a string or a (originally JSON) object
  */
-const create_Entity = (resource: any) : Entity => {
+const create_Entity = (resource: any) : Person|Organization => {
     if (resource === null || isBoolean(resource) || isNumber(resource) || isArray(resource)) {
         Global.logger.log(`Invalid entity ${resource}`, LogLevel.ValidationError);
         return undefined;
     } else if (isString(resource)) {
         const name = new LocalizableString_Impl();
         name.value = resource;
-        const new_entity = new Entity_Impl();
+        const new_entity = new Person_Impl();
         new_entity.name = [name];
         new_entity.type = ["Person"];
         return new_entity;
     } else if (isMap(resource)) {
-        const new_entity = new Entity_Impl;
+        let new_entity;
+        if (resource.type) {
+            if (resource.type.includes('Person')) {
+                new_entity = new Person_Impl;
+            } else if (resource.type.includes('Organization')) {
+                new_entity = new Organization_Impl;
+            } else {
+                resource.type.push('Person');
+                new_entity = new Person_Impl;
+            }
+        } else {
+            resource.type = ['Person']
+        }
         copy_object(resource, new_entity);
         return new_entity;
     } else {
@@ -184,11 +203,18 @@ const create_LinkedResource = (resource: any): LinkedResource => {
     } else if (isString(resource)) {
         const new_lr = new LinkedResource_Impl();
         new_lr.url = resource;
-        new_lr.type = ["LinkedResource"];
+        new_lr.type = ['LinkedResource'];
         return new_lr
     } else if (isMap(resource)) {
         const new_lr = new LinkedResource_Impl();
         copy_object(resource, new_lr);
+        if (new_lr.type) {
+            if (!new_lr.type.includes('LinkedResource')) {
+                new_lr.type.push('LinkedResource');
+            }
+        } else {
+            new_lr.type = ['LinkedResource']
+        }
         return new_lr;
     } else {
         // I am not sure this would occur at all but, just to be on the safe side...
@@ -341,8 +367,8 @@ export async function process_a_manifest(url: string, base: string, logger: Logg
  * @param term property term
  * @param value property value
  */
-function normalize_data(context: PublicationManifest_Impl|Entity_Impl|LinkedResource_Impl|LocalizableString_Impl, term: string, value: any): any {
-    const normalize_map = (item: PublicationManifest_Impl|Entity_Impl|LinkedResource_Impl|LocalizableString_Impl): any => {
+function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, term: string, value: any): any {
+    const normalize_map = (item: PublicationManifest_Impl|RecognizedTypes_Impl): any => {
         Object.getOwnPropertyNames(item).forEach( (key:string): void => {
             const keyValue = item[key];
             const normalized_keyValue = normalize_data(item, key, keyValue);
@@ -428,11 +454,16 @@ function normalize_data(context: PublicationManifest_Impl|Entity_Impl|LinkedReso
  * @param resource either a string or a (originally JSON) object
  */
 const convert_to_absolute_URL = (resource: any): URL => {
-    if (resource === null || !isString(resource)) {
+    if (!isString(Global.base) || Global.base === '' || Global.base === null) {
+        Global.logger.log(`Invalid base ${Global.base} [Required value]`, LogLevel.ValidationError);
+        return undefined;
+    }
+    if (!isString(resource)  || resource === '' || resource === null ) {
         Global.logger.log(`Invalid relative URL ${resource} [Required value]`, LogLevel.ValidationError);
         return undefined;
     } else {
         const new_url = url.resolve(Global.base, resource);
+        // The check URL function checks the validity of the URL and whether it is a Web URL
         return check_url(new_url, Global.logger) ? new_url : undefined;
     }
 }
@@ -522,7 +553,7 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
 }
 
 
-function global_data_checks(context:  PublicationManifest_Impl|Entity_Impl|LinkedResource_Impl|LocalizableString_Impl, term: string, value: any): any {
+function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_Impl, term: string, value: any): any {
     const terms = get_terms(context);
 
     if (terms) {
@@ -621,7 +652,7 @@ function global_data_checks(context:  PublicationManifest_Impl|Entity_Impl|Linke
 }
 
 
-function verify_value_category(context:  PublicationManifest_Impl|Entity_Impl|LinkedResource_Impl|LocalizableString_Impl, term: string, value: any): boolean {
+function verify_value_category(context:  PublicationManifest_Impl|RecognizedTypes_Impl|LocalizableString_Impl, term: string, value: any): boolean {
     const check_expected_type = (terms: Terms, key: string, obj: any): any => {
         if( (terms.array_or_single_literals.includes(key) && !isString(value))                   ||
             (terms.array_of_strings.includes(key) && !(value instanceof LocalizableString_Impl)) ||
@@ -637,7 +668,7 @@ function verify_value_category(context:  PublicationManifest_Impl|Entity_Impl|Li
         }
     };
 
-    const check_expected_map = (obj: PublicationManifest_Impl|Entity_Impl|LinkedResource_Impl|LocalizableString_Impl): any => {
+    const check_expected_map = (obj: PublicationManifest_Impl|RecognizedTypes_Impl|LocalizableString_Impl): any => {
         const terms = get_terms(obj);
         const defined_terms = terms.array_terms;
         Object.getOwnPropertyNames(obj).forEach((key: string) => {

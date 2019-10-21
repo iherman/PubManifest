@@ -160,7 +160,7 @@ export class Entity_Impl implements Entity {
 
 export class Person_Impl extends Entity_Impl  implements Person {};
 export class Organization_Impl extends Entity_Impl  implements Organization {};
-export type RecognizedTypes = Person_Impl | Organization_Impl | LinkedResource_Impl;
+export type RecognizedTypes_Impl = Person_Impl | Organization_Impl | LinkedResource_Impl;
 
 /**
  * Localizable Strings, i.e., string values with possible languages
