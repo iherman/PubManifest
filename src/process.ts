@@ -17,7 +17,6 @@ import {
     Entity,
     Person,
     Organization,
-    RecognizedTypes,
     ProgressionDirection
 } from './manifest';
 
@@ -47,11 +46,11 @@ import {
     check_language_tag,
     check_direction_tag,
     isNumber, isArray, isMap, isString, isBoolean,
+    copy_object,
     fetch_json
 } from './utilities';
 
 import * as url from 'url';
-import { Person_Impl } from './manifest_classes';
 
 /* ====================================================================================================
  Global objects and constants
@@ -75,10 +74,14 @@ class Global  {
     static profile: string = '';
 }
 
-const copy_object = (resource: any, target: any): void => {
-    Object.getOwnPropertyNames(resource).forEach((key:string):void => target[key] = resource[key]);
-}
+/* Minor utilities */
 
+/**
+ * Get the Terms object assigned to a specific resource. See the definition of Terms for details.
+ *
+ * @param resource
+ * @returns instance of Terms
+ */
 const get_terms = (resource: any): Terms => {
     if (resource instanceof PublicationManifest_Impl) {
         return PublicationManifest_Impl.terms;
@@ -93,9 +96,17 @@ const get_terms = (resource: any): Terms => {
     }
 }
 
+/**
+ * Shorthand to check whether the object is a map that is used recursively for further checks.
+ *
+ * @param obj
+ */
+const recognized_type = (obj: any) => isMap(obj) && (obj instanceof Entity_Impl || obj instanceof LinkedResource_Impl);
 
 /* ====================================================================================================
- Utility functions on the processing steps
+ Direct utility functions in the processing steps
+
+ (Factored out for a better readability)
 ====================================================================================================== */
 
 /**
@@ -112,13 +123,12 @@ const create_Entity = (resource: any) : Person|Organization => {
         Global.logger.log(`Invalid entity ${resource}`, LogLevel.ValidationError);
         return undefined;
     } else if (isString(resource)) {
-        const name = new LocalizableString_Impl();
-        name.value = resource;
         const new_entity = new Person_Impl();
-        new_entity.name = [name];
+        new_entity.name = resource;
         new_entity.type = ["Person"];
         return new_entity;
     } else if (isMap(resource)) {
+        // Beyond setting the type, the returned value should have the right (Typescript) type
         let new_entity;
         if (resource.type) {
             if (resource.type.includes('Person')) {
@@ -135,7 +145,6 @@ const create_Entity = (resource: any) : Person|Organization => {
         copy_object(resource, new_entity);
         return new_entity;
     } else {
-        // I am not sure this would occur at all but, just to be on the safe side...
         return undefined;
         // Actually, returning undefined is a default action when no 'return' is present
         // but it is cleaner to make this explicit
@@ -169,12 +178,12 @@ const create_LocalizableString = (resource: any): LocalizableString => {
         const new_ls = resource as LocalizableString_Impl;
         if (new_ls.language) {
             if (new_ls.language === null) delete new_ls.language;
-        } else {
+        } else if (Global.lang !== ''){
             new_ls.language = Global.lang;
         }
         if (new_ls.direction) {
             if (new_ls.direction === null) delete new_ls.direction;
-        } else {
+        } else if (Global.dir !== '') {
             new_ls.direction = Global.dir;
         }
         return new_ls
@@ -225,7 +234,14 @@ const create_LinkedResource = (resource: any): LinkedResource => {
 }
 
 /* ====================================================================================================
- The main processing steps, as in the spec
+ The main processing steps, following the spec
+
+ Note that two aspects have not (yet) been implemented
+
+ - extracting default values from HTML
+ - extension points
+
+ The details of these are not really important in testing the spec...
 ====================================================================================================== */
 
 /**
@@ -240,12 +256,14 @@ const create_LinkedResource = (resource: any): LinkedResource => {
  * The check of the media types for step (3) (for the conformance test) is also not done. The details are not really relevant for
  * this testing implementations, the profile value is set to a default generic value.
  *
+ * Local specificity: when the document says 'failure is returned', this appears in the code as returning the
+ * Javascript value 'undefined'.
+ *
  * @async
  * @param url: address of the JSON file
  * @param base: base URL; if undefined or empty, fall back on the value of url
  * @param logger: an extra parameter to collect the error and warning messages
  * @return the processed manifest
- *
  */
 export async function process_a_manifest(url: string, base: string, logger: Logger): Promise<PublicationManifest> {
     // This is necessary to make the language and direction global extraction in a TS happy way...
@@ -256,6 +274,8 @@ export async function process_a_manifest(url: string, base: string, logger: Logg
 
     Global.logger = logger;
     // In the real world the value of base must be checked against invalid or malicious URL-s!
+    // The reuse of the url as a base is not specified in the standard, and is here simply to
+    // make testing easier. If the code is reused in real, this may have to be modified
     Global.base = (base === undefined || base === '') ? url : base;
 
     /* ============ The individual processing steps, following the spec ============== */
@@ -359,29 +379,45 @@ export async function process_a_manifest(url: string, base: string, logger: Logg
     return processed
 }
 
+
 /**
  *
  * Normalize Data. This corresponds to the main body of
  * [§4.3.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#normalize-data).
  *
+ * @param context 'context', in this case the object that has invoked the function
  * @param term property term
  * @param value property value
  */
 function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, term: string, value: any): any {
-    const normalize_map = (item: PublicationManifest_Impl|RecognizedTypes_Impl): any => {
-        Object.getOwnPropertyNames(item).forEach( (key:string): void => {
-            const keyValue = item[key];
-            const normalized_keyValue = normalize_data(item, key, keyValue);
-            if (normalized_keyValue !== undefined) {
-                item[key] = normalized_keyValue;
-            } else {
-                delete item[key];
-            }
-        })
+    /**
+     * Helper function, to make the code below a bit more readable: normalize the content of a map. This
+     * function calls (recursively) to the normalize_data function itself.
+     *
+     * Per spec if one of the values for a key in the map is undefined (i.e., 'failure') the key/value pair
+     * is removed from the map.
+     *
+     * @param item the map to be normalized
+     */
+    const normalize_map = (item: any): any => {
+        if (recognized_type(item)) {
+            Object.getOwnPropertyNames(item).forEach( (key:string): void => {
+                const keyValue = item[key];
+                const normalized_keyValue = normalize_data(item, key, keyValue);
+                if (normalized_keyValue !== undefined) {
+                    item[key] = normalized_keyValue;
+                } else {
+                    delete item[key];
+                }
+            })
+        }
         return item;
     }
-    // This is the really important part of 'context': the categorization of the terms
+
+    // This is the important part of 'context' in this implementation: the categorization of terms of the context map
     const terms = get_terms(context);
+
+    /* ============ The individual processing steps, following the spec ============== */
 
     /* Step: by default, the value should be the normalized value */
     let normalized = value;
@@ -390,13 +426,13 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
     if (term === '@context') return undefined;
 
     if (terms) {
-        // This is one of those objects that have assigned terms in the first place!
-        // In theory, any other objects can be added to the manifest and that should not be forbidden, just copied
+        // This is one of those objects that have assigned terms.
+        // In theory, any other objects can be added to the manifest and that should not be forbidden, just copied.
 
-        /* Step: if necessary, normalization should turn single value to a string with that value */
-        if (terms.array_terms.includes(term) && (isString(value) || isBoolean(value) || isNumber(value) || isMap(value || value === null))) {
+        /* Step: if necessary, normalization should turn single value to an array with that value */
+        if (terms.array_terms.includes(term) && (isString(value) || isBoolean(value) || isNumber(value) || isMap(value) || value === null)) {
             // The 'toArray' utility checks and, if necessary, converts to array
-            normalized = toArray(value);
+            normalized = [value];
         }
 
         /* Step: converting entities into real ones, even if the information we have is a simple string. */
@@ -419,8 +455,8 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
 
         /* Step a: create an absolute URL from a string */
         if (terms.single_url.includes(term)) {
+            // Note that the conversion function may return undefined, which is then forwarded back to the caller
             normalized = convert_to_absolute_URL(value);
-            return undefined;
         }
         /* Step b: create an array of absolute URLs from a strings */
         if (terms.array_of_urls.includes(term)) {
@@ -435,12 +471,11 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
     if (normalized !== undefined) {
         if (isArray(normalized)) {
             // Go through each entry, normalize, and remove any undefined value
-            normalized = normalized.map( (item: any) => (isMap(item) ? normalize_map(item) : item)).filter( (item: any) => item !== undefined )
+            normalized = normalized.map((item: any) => (isMap(item) ? normalize_map(item) : item)).filter((item: any) => item !== undefined);
         } else if (isMap(normalized)) {
             normalized = normalize_map(normalized);
         }
     }
-
     return normalized;
 }
 
@@ -480,13 +515,18 @@ const convert_to_absolute_URL = (resource: any): URL => {
 function data_validation(data: PublicationManifest_Impl): PublicationManifest_Impl {
     // Only those terms should be used which have a definition in the spec, others should be ignored
     const defined_terms = PublicationManifest_Impl.terms.array_terms;
-    /* Step: perform global data check */
+
+    /* ============ The individual processing steps, following the spec ============== */
+
+    /* Step: perform global data check. (That also includes value type checks.) */
     Object.getOwnPropertyNames(data).forEach((key:string): void => {
         if (defined_terms.includes(key)) {
             data[key] = global_data_checks(data, key, data[key]);
+            if (data[key] === undefined) {
+                delete data[key];
+            }
         }
     });
-
 
     /* Step: publication type */
     if (!data.type) {
@@ -503,7 +543,7 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
 
     /* Step: identifier check */
     if (!(data.id && isString(data.id) && data.id !== '')) {
-        Global.logger.log(`Missing or invalid identifier`, LogLevel.ValidationError);
+        Global.logger.log(`Missing or invalid identifier ${data.id}`, LogLevel.ValidationError);
     }
 
     /* Step: duration check */
@@ -540,7 +580,7 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
     /* Step: profile extension point (not implemented) */
 
     /* Step: run remove empty arrays */
-    // Care should be taken to run this only on objects that are part of the definition of this object!
+    // Care should be taken to run this only on entries that are part of the definition of this object!
     Object.getOwnPropertyNames(data).forEach((key:string): void => {
         if (defined_terms.includes(key)) {
             if (!(remove_empty_arrays(data[key]))) {
@@ -553,6 +593,16 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
 }
 
 
+/**
+ *
+ * Global Data Check. This corresponds to the main body of
+ * [§4.4.2.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#global-data-checks).
+ *
+ * @param context 'context', in this case the object that has invoked the function
+ * @param term property term
+ * @param value property value
+ * @return the normalized value or undefined, in case of error
+ */
 function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_Impl, term: string, value: any): any {
     const terms = get_terms(context);
 
@@ -560,25 +610,25 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
         /* Step: see if the term has a known value category and check that value. */
         // "known value category" means, in this case, that the term is known for the specific context
         if (terms.all_terms.includes(term)) {
-            // Call out to verify value category..., possibly return undefined
-
-            // check whether this is necessary! length, for example, is settled inline below, abridged could also be done...
-
+            if (verify_value_category(context, term, value) === undefined) {
+                return undefined;
+            }
         }
 
         /* Step: recursively to do data check at this point! */
         {
-            const map_data_check = (value_item: any): any => {
-                if (isMap(value_item)) {
-                    Object.getOwnPropertyNames(value_item).forEach((key): void => {
-                        const keyValue = value_item[key];
-                        value_item[key] = global_data_checks(value_item, key, keyValue);
-                        if (value_item[key] === undefined) {
-                            delete value_item[key]
+            const map_data_check = (item: any): any => {
+                if (recognized_type(item)) {
+                    // Check that the key is defined!!! Maybe using _.intersection?
+                    Object.getOwnPropertyNames(item).forEach((key): void => {
+                        const keyValue = item[key];
+                        item[key] = global_data_checks(item, key, keyValue);
+                        if (item[key] === undefined) {
+                            delete item[key]
                         }
                     })
                 }
-                return value_item;
+                return item;
             };
             if (isMap(value)) {
                 map_data_check(value);
@@ -616,6 +666,7 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
                     Global.logger.log(`Missing name for a Person or Organization [Required value]`, LogLevel.ValidationError);
                     return false;
                 } else {
+                    item.name = item.name.filter((name) => (name.value && name.value !== ''));
                     return true;
                 }
             });
@@ -647,57 +698,66 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
             });
         }
     }
-
     return value;
 }
 
 
+/**
+ *
+ * Global Data Check. This corresponds to the main body of
+ * [§4.4.2.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#verify-value-category).
+ *
+ * @param context 'context', in this case the object that has invoked the function
+ * @param term property term
+ * @param value property value
+ * @return true or false, depending on whether the value category check is successful or not
+ */
 function verify_value_category(context:  PublicationManifest_Impl|RecognizedTypes_Impl|LocalizableString_Impl, term: string, value: any): boolean {
-    const check_expected_type = (terms: Terms, key: string, obj: any): any => {
-        if( (terms.array_or_single_literals.includes(key) && !isString(value))                   ||
-            (terms.array_of_strings.includes(key) && !(value instanceof LocalizableString_Impl)) ||
-            (terms.array_of_entities.includes(key) && !(value instanceof Entity_Impl))           ||
-            (terms.array_of_links.includes(key) && !(value instanceof LinkedResource_Impl))      ||
-            (terms.array_or_single_urls.includes(key) && !isString(value))                       ||
-            (terms.single_boolean.includes(key) && !isBoolean(value)))
+    const check_expected_type = (keys: Terms, key: string, obj: any): any => {
+        if( (keys.array_or_single_literals.includes(key) && !isString(value))                   ||
+            (keys.array_of_strings.includes(key) && !(value instanceof LocalizableString_Impl)) ||
+            (keys.array_of_entities.includes(key) && !(value instanceof Entity_Impl))           ||
+            (keys.array_of_links.includes(key) && !(value instanceof LinkedResource_Impl))      ||
+            (keys.array_or_single_urls.includes(key) && !isString(value))                       ||
+            (keys.single_number.includes(key) && !isNumber(value))                              ||
+            (keys.single_boolean.includes(key) && !isBoolean(value)))
         {
             Global.logger.log(`Type validation error ${key}: ${value} [Required value]`, LogLevel.ValidationError);
-            return undefined;
+            return false;
         } else {
             return value;
         }
     };
 
     const check_expected_map = (obj: PublicationManifest_Impl|RecognizedTypes_Impl|LocalizableString_Impl): any => {
-        const terms = get_terms(obj);
-        const defined_terms = terms.array_terms;
+        const keys = get_terms(obj);
+        const defined_terms = keys.all_terms;
         Object.getOwnPropertyNames(obj).forEach((key: string) => {
             if (defined_terms.includes(key)) {
-                const check_result = check_expected_type(terms, key, obj[key]);
-                if(!(check_result)) {
+                const check_result = check_expected_type(keys, key, obj[key]);
+                if (!(check_result)) {
                     delete obj[key];
                 }
             }
         });
         // Check if there is any meaningful term left!
-        if( defined_terms.find( (key: string): boolean => Object.getOwnPropertyNames(obj).includes(key)) ) {
+        if (defined_terms.find((key: string): boolean => Object.getOwnPropertyNames(obj).includes(key))) {
             return obj;
         } else {
             return undefined;
         }
     };
 
-
     const terms = get_terms(context);
 
     if (terms.array_terms.includes(term)) {
-        if(!(isArray(value))) {
-            Global.logger.log(`Value should have been an array (${term})`, LogLevel.ValidationError);
-            return undefined;
+        if (!(isArray(value))) {
+            Global.logger.log(`Value should be an array (${term})`, LogLevel.ValidationError);
+            return false;
         } else {
             value = value.map((item: any): any => {
                 if (check_expected_type(terms, term, item)) {
-                    return  isMap(item) ? check_expected_map(item) : item;
+                    return isMap(item) ? check_expected_map(item) : item;
                 } else {
                     // wrong type
                     return false;
@@ -705,8 +765,15 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
             }).filter((item:any): boolean => item !== undefined);
             if (value.length === 0) {
                 Global.logger.log(`Empty array after value type check [Required value]`, LogLevel.ValidationError);
-                return undefined;
+                return false;
             }
+        }
+    } else if (terms.maps.includes(term)) {
+        if (!(isMap(value))) {
+            Global.logger.log(`Value should be a map (${term})`, LogLevel.ValidationError);
+            return false;
+        } else {
+            return check_expected_map(value) !== undefined
         }
     }
 
@@ -714,17 +781,13 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
 }
 
 
-
-
-
-
 /**
  *
- * Remove empty arrays. This corresponds to the main body of
+ * Remove empty arrays, and remove empty arrays from maps. This corresponds to the main body of
  * [§4.3.2.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#remove-empty-arrays).
  *
  * @param data the data to be checked
- * @return checked data (the final value of processed)
+ * @return false if the array is empty, true otherwise
  */
 function remove_empty_arrays(value: any): boolean {
     if (isArray(value) && value.length === 0) {

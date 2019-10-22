@@ -2,12 +2,17 @@ import * as validUrl from 'valid-url';
 import * as fetch from 'node-fetch';
 import * as _ from 'underscore';
 
-// const fetch = require('node-fetch');
-
 /* **************************** Get hold of a JSON file via its URL ********** */
 // This is for testing purposes, so all kinds of checks are not done...
-//
 
+/**
+ * Wrapper around the fetch function retrieving a JSON file.
+ *
+ * In real life, this should be more sophisticated, checking the media type of the resources, etc. For testing purposes the simple wrapper is enough
+ * @param request essentially, the URL of the manifest file to test with
+ * @returns the result of JSON processing (wrapped into a Promise)
+ * @async
+ */
 export  async function fetch_json(request: fetch.RequestInfo): Promise<any> {
     return new Promise(resolve => {
       fetch.default(request)
@@ -20,27 +25,46 @@ export  async function fetch_json(request: fetch.RequestInfo): Promise<any> {
 
 /* **************************** General utilities **************************** */
 
-
+/**
+ * Checks if the value is a bona fide number
+ * @param value
+ */
 export function isNumber(value :any ): boolean
 {
     return _.isNumber(value);
 }
 
+/**
+ * Checks if the value is an array
+ * @param value
+ */
 export function isArray(value: any): boolean
 {
     return _.isArray(value);
 }
 
+/**
+ * Checks if the value is a map (in infra term, ie, an object)
+ * @param value
+ */
 export function isMap(value: any): boolean
 {
     return _.isObject(value) && !_.isArray(value);
 }
 
+/**
+ * Checks if the value is a string
+ * @param value
+ */
 export function isString(value: any): boolean
 {
     return _.isString(value);
 }
 
+/**
+ * Checks if the value is a boolean
+ * @param value
+ */
 export function isBoolean(value: any): boolean
 {
     return _.isBoolean(value);
@@ -89,6 +113,7 @@ export function check_language_tag(value: string, logger: Logger): string {
     } else if (isString(value) && bcp_pattern.test(value)) {
         return value;
     } else {
+        logger.log(`Invalid BCP47 format for language tag ${value} [Required]`, LogLevel.ValidationError);
         return undefined;
     }
 }
@@ -106,8 +131,20 @@ export function check_direction_tag(value: string, logger: Logger): string {
     } else if (isString(value) && (value === 'ltr' || value === 'rtl')) {
         return value;
     } else {
+        logger.log(`Invalid base direction tag ${value} [Required]`, LogLevel.ValidationError);
         return undefined;
     }
+}
+
+/**
+ * (Shallow) copy of the object. It seems to be necessary to do it this way to ensure that the 'to' object
+ * gets and maintains the correct Typescript type
+ *
+ * @param from
+ * @param to
+ */
+export function copy_object(from: any, to: any): void {
+    Object.getOwnPropertyNames(from).forEach((key:string):void => to[key] = from[key]);
 }
 
 /* **************************** Logger **************************** */

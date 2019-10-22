@@ -1,3 +1,6 @@
+export type RecognizedTypes = Person | Organization | LinkedResource;
+
+
 export interface Entity {
     type?       : string[];
     name        : LocalizableString[];
@@ -7,14 +10,9 @@ export interface Entity {
     // [propName: string] : any;
 };
 
-export interface Person extends Entity {
-};
+export interface Person extends Entity {};
 
-export interface Organization extends Entity {
-};
-
-export type RecognizedTypes = Person | Organization | LinkedResource;
-
+export interface Organization extends Entity {};
 
 export interface LocalizableString {
     value      : string;

@@ -9,13 +9,13 @@ import {
     Entity,
     Person,
     Organization,
-    RecognizedTypes,
     ProgressionDirection } from './manifest';
 
 // -------------------------------------------- Convenience variables -------------------------------------
+
+// A11Y properties that have arrays of literals as values
 const a11y_properties = [
     'accessMode',
-    'accessModeSufficient',
     'accessibilityFeature',
     'accessibilityControl',
     'accessibilityHazard'
@@ -44,8 +44,16 @@ const creator_properties = [
  *
  * These arrays are used in generic method calls to handle, e.g., the creation and check of arrays of localizable strings.
  *
- * There is a method to return the full list of terms; for that to work, there is an extra array for miscellaneous terms that need
- * otherwise special consideration anyway (e.g., 'length')
+ * There is methods to return combination of terms, used by the main algorithm: all terms that refer to arrays, to literals, resp. URL-s, in some ways (arrays or not), etc.
+ *
+ * The pattern used for this class is to
+ *
+ * - define a number of static variables for each class listing the relevant terms
+ * - define a static instance of the Terms class for each class using this terms.
+ *
+ * The reason for this pattern is that end user, who gets an instance of, say, the Entity_Impl class implementing the Entity interface
+ * can debug (e.g., dump the class into JSON) without being bothered by the various term arrays.
+ *
  */
 export class Terms {
     single_literal:    string[];
@@ -56,7 +64,9 @@ export class Terms {
     single_url:        string[];
     array_of_urls:     string[];
     single_boolean:    string[];
-    misc:              string[];
+    single_number:     string[];
+    single_misc:       string[];
+    array_of_miscs:    string[];
 
     constructor(single_literal:    string[],
                 array_of_literals: string[],
@@ -66,7 +76,9 @@ export class Terms {
                 single_url:        string[],
                 array_of_urls:     string[],
                 single_boolean:    string[],
-                misc:              string[]
+                single_number:     string[],
+                single_misc:       string[],
+                array_of_miscs:    string[],
                 ) {
         this.single_literal    = single_literal;
         this.array_of_literals = array_of_literals;
@@ -76,26 +88,51 @@ export class Terms {
         this.single_url        = single_url;
         this.array_of_urls     = array_of_urls;
         this.single_boolean    = single_boolean;
-        this.misc              = misc;
+        this.single_number     = single_number;
+        this.single_misc       = single_misc;
+        this.array_of_miscs    = array_of_miscs;
     }
 
+    /**
+     * All the terms that expect arrays as values
+     */
     get array_terms() {
-        return [...this.array_of_literals, ...this.array_of_strings, ...this.array_of_urls, ...this.array_of_entities, ...this.array_of_links]
+        return [
+            ...this.array_of_literals,
+            ...this.array_of_strings,
+            ...this.array_of_urls,
+            ...this.array_of_entities,
+            ...this.array_of_links,
+            ...this.array_of_miscs
+        ]
     }
 
+    /**
+     * All the terms that expect literals, either as individual values or arrays
+     */
     get array_or_single_literals() {
         return [...this.single_literal, ...this.array_of_literals];
     }
 
+    /**
+     * All the terms that expect URLs, either as individual values or arrays
+     */
     get array_or_single_urls() {
         return [...this.single_url, ...this.array_of_urls];
     }
 
-
-
+    /**
+     * All the terms that expect a single map (not an array of maps!)
+     */
+    get maps(): string[] {
+        // This method is special; the main algorithm refers to this, although it never return anything in practice: it corresponds to the case
+        // where there is a term whose value is a single map (as opposed to arrays). Such situation does not occur as of now, but
+        // it may in the future...
+        return [];
+    }
 
     /**
-     * Return an array of all the terms
+     * All the terms
      */
     get all_terms() {
         return [
@@ -104,7 +141,7 @@ export class Terms {
             ...this.array_of_entities, ...this.array_of_links,
             ...this.single_url, ...this.array_of_urls,
             ...this.single_boolean,
-            ...this.misc
+            ...this.single_misc, ...this.array_of_miscs
         ];
     }
 }
@@ -113,13 +150,10 @@ export class Terms {
 
 export type URL = string;
 
-// -------------------------------------------- toString utilities ------------------------------
-const obj_array_toString = <T>(objects: T[], join_string: string) :string => {
-    if (objects === undefined || objects.length === 0) return '';
-    return objects.map((obj: T) :string => obj.toString()).join(join_string);
-}
 
 // -------------------------------------------- Implementations of the manifest interfaces -------------------------------------
+export type RecognizedTypes_Impl = Person_Impl | Organization_Impl | LinkedResource_Impl;
+
 /**
  * Entities, ie, persons or organizations
  */
@@ -135,7 +169,9 @@ export class Entity_Impl implements Entity {
     static single_url:        string[] = [];
     static array_of_urls:     string[] = [];
     static single_boolean:    string[] = [];
-    static misc:              string[] = [];
+    static single_number:     string[] = [];
+    static single_misc:       string[] = [];
+    static array_of_miscs:    string[] = [];
 
     static terms: Terms = new Terms(
         Entity_Impl.single_literal,
@@ -146,7 +182,9 @@ export class Entity_Impl implements Entity {
         Entity_Impl.single_url,
         Entity_Impl.array_of_urls,
         Entity_Impl.single_boolean,
-        Entity_Impl.misc
+        Entity_Impl.single_number,
+        Entity_Impl.single_misc,
+        Entity_Impl.array_of_miscs
     );
 
     type       : string[];
@@ -160,7 +198,6 @@ export class Entity_Impl implements Entity {
 
 export class Person_Impl extends Entity_Impl  implements Person {};
 export class Organization_Impl extends Entity_Impl  implements Organization {};
-export type RecognizedTypes_Impl = Person_Impl | Organization_Impl | LinkedResource_Impl;
 
 /**
  * Localizable Strings, i.e., string values with possible languages
@@ -174,7 +211,9 @@ export class LocalizableString_Impl implements LocalizableString {
     static single_url:        string[] = [];
     static array_of_urls:     string[] = [];
     static single_boolean:    string[] = [];
-    static misc:              string[] = [];
+    static single_number:     string[] = [];
+    static single_misc:       string[] = [];
+    static array_of_miscs:    string[] = [];
 
     static terms: Terms = new Terms(
         LocalizableString_Impl.single_literal,
@@ -185,7 +224,9 @@ export class LocalizableString_Impl implements LocalizableString {
         LocalizableString_Impl.single_url,
         LocalizableString_Impl.array_of_urls,
         LocalizableString_Impl.single_boolean,
-        LocalizableString_Impl.misc
+        LocalizableString_Impl.single_number,
+        LocalizableString_Impl.single_misc,
+        LocalizableString_Impl.array_of_miscs
     );
 
     value     : string;
@@ -208,7 +249,9 @@ export class LinkedResource_Impl implements LinkedResource {
     static single_url:        string[] = ['url'];
     static array_of_urls:     string[] = [];
     static single_boolean:    string[] = [];
-    static misc:              string[] = ['length'];
+    static single_number:     string[] = ['length'];
+    static single_misc:       string[] = [];
+    static array_of_miscs:    string[] = [];
 
     static terms: Terms = new Terms(
         LinkedResource_Impl.single_literal,
@@ -219,7 +262,9 @@ export class LinkedResource_Impl implements LinkedResource {
         LinkedResource_Impl.single_url,
         LinkedResource_Impl.array_of_urls,
         LinkedResource_Impl.single_boolean,
-        LinkedResource_Impl.misc
+        LinkedResource_Impl.single_number,
+        LinkedResource_Impl.single_misc,
+        LinkedResource_Impl.array_of_miscs
     );
 
     url            : string;
@@ -246,7 +291,9 @@ export class PublicationManifest_Impl implements PublicationManifest {
     static single_url:        string[] = [];
     static array_of_urls:     string[] = ['url'];
     static single_boolean:    string[] = ['abridged'];
-    static misc:              string[] = [];
+    static single_number:     string[] = [];
+    static single_misc:       string[] = [];
+    static array_of_miscs:    string[] = ['accessModeSufficient'];
 
     static terms: Terms = new Terms(
         PublicationManifest_Impl.single_literal,
@@ -257,7 +304,9 @@ export class PublicationManifest_Impl implements PublicationManifest {
         PublicationManifest_Impl.single_url,
         PublicationManifest_Impl.array_of_urls,
         PublicationManifest_Impl.single_boolean,
-        PublicationManifest_Impl.misc
+        PublicationManifest_Impl.single_number,
+        PublicationManifest_Impl.single_misc,
+        PublicationManifest_Impl.array_of_miscs
     );
 
     type                 : string[];
