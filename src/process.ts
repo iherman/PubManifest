@@ -83,14 +83,10 @@ class Global  {
  * @returns instance of Terms
  */
 const get_terms = (resource: any): Terms => {
-    if (resource instanceof PublicationManifest_Impl) {
-        return PublicationManifest_Impl.terms;
-    } else if (resource instanceof Entity_Impl) {
-        return Entity_Impl.terms;
-    } else if (resource instanceof LinkedResource_Impl) {
-        return LinkedResource_Impl.terms;
-    } else if(resource instanceof LocalizableString_Impl) {
-        return LocalizableString_Impl.terms;
+    if (resource instanceof PublicationManifest_Impl || resource instanceof Entity_Impl ||
+        resource instanceof LinkedResource_Impl || resource instanceof LocalizableString_Impl)
+    {
+        return resource.terms
     } else {
         return undefined;
     }
@@ -349,14 +345,14 @@ export async function process_a_manifest(url: string, base: string, logger: Logg
             if (check_language_tag(lang, logger)) {
                 Global.lang = lang;
             } else {
-                logger.log(`Invalid language tag value (${lang}) [Required value]`, LogLevel.ValidationError);
+                logger.log(`Invalid language tag value (${lang}) [Required, value removed]`, LogLevel.ValidationError);
             }
         }
         if (dir !== '') {
             if (check_direction_tag(dir, logger)) {
                 Global.dir = dir;
             } else {
-                logger.log(`Invalid base direction value (${dir}) [Required Value]`, LogLevel.ValidationError);
+                logger.log(`Invalid base direction value (${dir}) [Required, value removed]`, LogLevel.ValidationError);
             }
         }
     }
@@ -490,11 +486,11 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
  */
 const convert_to_absolute_URL = (resource: any): URL => {
     if (!isString(Global.base) || Global.base === '' || Global.base === null) {
-        Global.logger.log(`Invalid base ${Global.base} [Required value]`, LogLevel.ValidationError);
+        Global.logger.log(`Invalid base ${Global.base} [Required, value removed]`, LogLevel.ValidationError);
         return undefined;
     }
     if (!isString(resource)  || resource === '' || resource === null ) {
-        Global.logger.log(`Invalid relative URL ${resource} [Required value]`, LogLevel.ValidationError);
+        Global.logger.log(`Invalid relative URL ${resource} [Required, value removed]`, LogLevel.ValidationError);
         return undefined;
     } else {
         const new_url = url.resolve(Global.base, resource);
@@ -514,7 +510,7 @@ const convert_to_absolute_URL = (resource: any): URL => {
  */
 function data_validation(data: PublicationManifest_Impl): PublicationManifest_Impl {
     // Only those terms should be used which have a definition in the spec, others should be ignored
-    const defined_terms = PublicationManifest_Impl.terms.array_terms;
+    const defined_terms = get_terms(data).array_terms;
 
     /* ============ The individual processing steps, following the spec ============== */
 
@@ -641,7 +637,7 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
         if (terms.array_of_strings.includes(term)) {
             value = value.filter( (item: LocalizableString_Impl): boolean => {
                 if (!item.value) {
-                    Global.logger.log(`Missing value for a Localizable String [Required value]`, LogLevel.ValidationError);
+                    Global.logger.log(`Missing value for a Localizable String [Required, value removed]`, LogLevel.ValidationError);
                     return false;
                 }
                 if (item.language) {
@@ -663,7 +659,7 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
         if (terms.array_of_entities.includes(term)) {
             value = value.filter((item: Entity): boolean => {
                 if (!item.name) {
-                    Global.logger.log(`Missing name for a Person or Organization [Required value]`, LogLevel.ValidationError);
+                    Global.logger.log(`Missing name for a Person or Organization [Required, value removed]`, LogLevel.ValidationError);
                     return false;
                 } else {
                     item.name = item.name.filter((name) => (name.value && name.value !== ''));
@@ -676,15 +672,15 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
         if (terms.array_of_links.includes(term)) {
             value = value.filter((resource: LinkedResource): boolean => {
                 if (!resource.url) {
-                    Global.logger.log(`URL is missing from a linked resource [Required value]`, LogLevel.ValidationError);
+                    Global.logger.log(`URL is missing from a linked resource [Required, value removed]`, LogLevel.ValidationError);
                     return false;
                 } else if (!check_url(resource.url, Global.logger)) {
-                    Global.logger.log(`${resource.url} is is not a valid URL [Required value]`, LogLevel.ValidationError);
+                    Global.logger.log(`${resource.url} is is not a valid URL [Required, value removed]`, LogLevel.ValidationError);
                     return false;
                 }
                 if (resource.length) {
                     if (!(isNumber(resource.length) && resource.length >= 0)) {
-                        Global.logger.log(`${resource.length} is is not a valid length [Required value]`, LogLevel.ValidationError);
+                        Global.logger.log(`${resource.length} is is not a valid length [Required, value removed]`, LogLevel.ValidationError);
                         return false;
                     }
                 }
@@ -722,7 +718,7 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
             (keys.single_number.includes(key) && !isNumber(value))                              ||
             (keys.single_boolean.includes(key) && !isBoolean(value)))
         {
-            Global.logger.log(`Type validation error ${key}: ${value} [Required value]`, LogLevel.ValidationError);
+            Global.logger.log(`Type validation error ${key}: ${value} [Required, value removed]`, LogLevel.ValidationError);
             return false;
         } else {
             return value;
@@ -764,7 +760,7 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
                 }
             }).filter((item:any): boolean => item !== undefined);
             if (value.length === 0) {
-                Global.logger.log(`Empty array after value type check [Required value]`, LogLevel.ValidationError);
+                Global.logger.log(`Empty array after value type check [Required, value removed]`, LogLevel.ValidationError);
                 return false;
             }
         }
