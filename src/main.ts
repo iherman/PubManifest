@@ -1,4 +1,3 @@
-import { PublicationManifest, LinkedResource, LocalizableString } from "./manifest";
 import { process_a_manifest } from "./process";
 import { Logger } from "./utilities";
 
