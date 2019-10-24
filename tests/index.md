@@ -48,8 +48,27 @@
     - no effect on output (value ignored)
   - Expected errors:
     - Validation error on incorrect base direction value
-- `test_9.json` Out of several (valid) language and direction setting, pick the last ones
+- `test_10.json` Out of several (valid) language and direction setting, pick the last ones
   - Expected actions:
     - strings should be set with `"language":"en"` and `"direction":"ltr"`
   - Expected errors:
     - none
+
+## [Data Validation](https://www.w3.org/TR/pub-manifest/#validate-data)
+
+- `test_21.json` Incorrect date format
+  - Expected actions:
+    - "datePublished" and "dateModified" should be removed from output
+  - Expected errors:
+    - incorrect publication dates
+- `test_22.json` Incorrect duration format
+  - Expected actions:
+    - "duration" should be removed from output
+  - Expected errors:
+    - incorrect duration format
+- `test_23.json` Correct duration and date formats
+  - Expected actions:
+    - "dateModified", "datePublished", and "duration" values should be present in the output
+  - Expected errors:
+    - none
+

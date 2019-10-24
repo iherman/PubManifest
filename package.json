@@ -34,6 +34,7 @@
     },
     "dependencies": {
         "content-type": "^1.0.4",
+        "moment": "^2.24.0",
         "node-fetch": "^2.6.0",
         "tsutils": "^3.17.1",
         "underscore": "^1.9.1",

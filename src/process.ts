@@ -52,6 +52,8 @@ import {
 import * as urlHandler from 'url';
 import * as validUrl from 'valid-url';
 import * as _ from 'underscore';
+import moment from 'moment';
+
 
 // This should really be an underscore function...
 const isMap = (value: any): boolean => _.isObject(value) && !_.isArray(value) && !_.isFunction(value);
@@ -534,17 +536,29 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
 
     /* Step: duration check */
     if (data.duration) {
+        const durationCheck = RegExp('P((([0-9]*\.?[0-9]*)Y)?(([0-9]*\.?[0-9]*)M)?(([0-9]*\.?[0-9]*)W)?(([0-9]*\.?[0-9]*)D)?)?(T(([0-9]*\.?[0-9]*)H)?(([0-9]*\.?[0-9]*)M)?(([0-9]*\.?[0-9]*)S)?)?');
+        if (!(durationCheck.test(data.duration))) {
+            Global.logger.log_validation_error(`"${data.duration}" is an incorrect duration value`, null, true);
+            delete data.duration;
+        }
+
         // check the value and remove if wrong
     }
 
     /* Step: last modification date */
     if (data.dateModified) {
-        // check the value and remove if wrong
+        if (!moment(data.dateModified,moment.ISO_8601).isValid()) {
+            Global.logger.log_validation_error(`"${data.dateModified}" is an incorrect date string`, null, true);
+            delete data.dateModified;
+        }
     }
 
     /* Step: Publication date */
     if (data.datePublished) {
-        // check the value and remove if wrong
+        if (!moment(data.datePublished,moment.ISO_8601).isValid()) {
+            Global.logger.log_validation_error(`"${data.datePublished}" is an incorrect date string`, null, true);
+            delete data.datePublished;
+        }
     }
 
     /* Step: inLanguage */
