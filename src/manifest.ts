@@ -1,6 +1,5 @@
 export type RecognizedTypes = Person | Organization | LinkedResource;
 
-
 export interface Entity {
     type?       : string[];
     name        : LocalizableString[];
@@ -73,9 +72,6 @@ export interface PublicationManifest {
     readingOrder          : LinkedResource[];
     resources?            : LinkedResource[];
     links?                : LinkedResource[];
-
-    // [propName: string]    : any;
-
-
+    // [propName: string] : any;
 };
 

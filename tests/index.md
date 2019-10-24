@@ -1,0 +1,55 @@
+# Test files and short overview
+
+## ["Top Level" manifest processing](https://www.w3.org/TR/pub-manifest/#processing-algorithm)
+- `test_1.json` minimal viable manifest
+  - Expected actions:
+    - types, urls, name converted into lists of relevant maps
+    - reading progression set to default value
+    - profile value should be set to some default
+  - Expected errors:
+    - none
+- `test_2.json` context missing
+  - Expected actions:
+    - return empty
+  - Expected errors:
+    - Fatal error on missing context
+- `test_3.json` context incomplete
+  - Expected actions:
+    - return empty
+  - Expected errors:
+    - Fatal error on missing context
+- `test_4.json` no conformance
+  - Expected actions:
+    - set profile to user agent's default
+  - Expected errors:
+    - Validation error on missing conformance
+- `test_5.json` no known conformance value
+  - Expected actions:
+    - set profile to user agent's default
+  - Expected errors:
+    - Validation error on no known conformance
+- `test_6.json` Set valid global language value
+  - Expected actions:
+    - language `"en"` set for all strings
+  - Expected errors:
+    - none
+- `test_7.json` Set invalid global language value
+  - Expected actions:
+    - no effect on output (value ignored)
+  - Expected errors:
+    - Validation error on incorrect BCP47 value
+- `test_8.json` Set valid global direction value
+  - Expected actions:
+    - direction `"ltr"` set for all strings
+  - Expected errors:
+    - none
+- `test_9.json` Set invalid global direction value
+  - Expected actions:
+    - no effect on output (value ignored)
+  - Expected errors:
+    - Validation error on incorrect base direction value
+- `test_9.json` Out of several (valid) language and direction setting, pick the last ones
+  - Expected actions:
+    - strings should be set with `"language":"en"` and `"direction":"ltr"`
+  - Expected errors:
+    - none

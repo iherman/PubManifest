@@ -177,12 +177,9 @@ class PublicationManifestTerms extends Terms {
     array_of_miscs:    string[] = ['accessModeSufficient'];
 }
 
-// -------------------------------- Type alias for URL (which are strings, in fact) -------------
+// -------------------------------- Type aliases for URL (which are strings, in fact) -------------
 
 export type URL = string;
-
-
-// -------------------------------------------- Implementations of the manifest interfaces -------------------------------------
 export type RecognizedTypes_Impl = Person_Impl | Organization_Impl | LinkedResource_Impl;
 
 /**
@@ -245,7 +242,7 @@ export class LinkedResource_Impl implements LinkedResource {
  */
 export class PublicationManifest_Impl implements PublicationManifest {
     get terms(): PublicationManifestTerms {
-        return new EntityTerms();
+        return new PublicationManifestTerms();
     }
 
     type                 : string[];
