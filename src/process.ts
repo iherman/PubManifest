@@ -41,15 +41,20 @@ import {
 import {
     Logger,
     toArray,
-    check_url,
     check_language_tag,
     check_direction_tag,
-    isNumber, isArray, isMap, isString, isBoolean,
     copy_object,
+    recognized_type,
+    get_terms,
     fetch_json
 } from './utilities';
 
-import * as url from 'url';
+import * as urlHandler from 'url';
+import * as validUrl from 'valid-url';
+import * as _ from 'underscore';
+
+// This should really be an underscore function...
+const isMap = (value: any): boolean => _.isObject(value) && !_.isArray(value) && !_.isFunction(value);
 
 /* ====================================================================================================
  Global objects and constants
@@ -73,31 +78,6 @@ class Global  {
     static profile: string = '';
 }
 
-/* Minor utilities */
-
-/**
- * Get the Terms object assigned to a specific resource. See the definition of Terms for details.
- *
- * @param resource
- * @returns instance of Terms
- */
-const get_terms = (resource: any): Terms => {
-    if (resource instanceof PublicationManifest_Impl || resource instanceof Entity_Impl ||
-        resource instanceof LinkedResource_Impl || resource instanceof LocalizableString_Impl)
-    {
-        return resource.terms
-    } else {
-        return undefined;
-    }
-}
-
-/**
- * Shorthand to check whether the object is a map that is used recursively for further checks.
- *
- * @param obj
- */
-const recognized_type = (obj: any) => isMap(obj) && (obj instanceof Entity_Impl || obj instanceof LinkedResource_Impl);
-
 /* ====================================================================================================
  Direct utility functions in the processing steps
 
@@ -114,12 +94,14 @@ const recognized_type = (obj: any) => isMap(obj) && (obj instanceof Entity_Impl 
  * @param resource either a string or a (originally JSON) object
  */
 const create_Entity = (resource: any) : Person|Organization => {
-    if (resource === null || isBoolean(resource) || isNumber(resource) || isArray(resource)) {
+    if (resource === null || _.isBoolean(resource) || _.isNumber(resource) || _.isArray(resource)) {
         Global.logger.log_validation_error(`Invalid entity`, resource, true);
         return undefined;
-    } else if (isString(resource)) {
+    } else if (_.isString(resource)) {
         const new_entity = new Person_Impl();
-        new_entity.name = resource;
+        const new_person = new LocalizableString_Impl();
+        new_person.value = resource;
+        new_entity.name = [new_person];
         new_entity.type = ["Person"];
         return new_entity;
     } else if (isMap(resource)) {
@@ -157,10 +139,10 @@ const create_Entity = (resource: any) : Person|Organization => {
  * @param resource either a string or a (originally JSON) object
  */
 const create_LocalizableString = (resource: any): LocalizableString => {
-    if (resource === null ||isBoolean(resource) || isNumber(resource) || isArray(resource)) {
+    if (resource === null || _.isBoolean(resource) || _.isNumber(resource) || _.isArray(resource)) {
         Global.logger.log_validation_error(`Invalid localizable string`, resource, true );
         return undefined;
-    } else if (isString(resource)) {
+    } else if (_.isString(resource)) {
         const new_ls = new LocalizableString_Impl();
         new_ls.value = resource;
         if (Global.lang !== '') {
@@ -203,10 +185,10 @@ const create_LocalizableString = (resource: any): LocalizableString => {
  * @param resource either a string or a (originally JSON) object
  */
 const create_LinkedResource = (resource: any): LinkedResource => {
-    if (resource === null ||isBoolean(resource) || isNumber(resource) || isArray(resource)) {
+    if (resource === null || _.isBoolean(resource) || _.isNumber(resource) || _.isArray(resource)) {
         Global.logger.log_validation_error(`Invalid Linked Resource`, resource, true);
         return undefined;
-    } else if (isString(resource)) {
+    } else if (_.isString(resource)) {
         const new_lr = new LinkedResource_Impl();
         new_lr.url = resource;
         new_lr.type = ['LinkedResource'];
@@ -429,7 +411,7 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
         // In theory, any other objects can be added to the manifest and that should not be forbidden, just copied.
 
         /* Step: if necessary, normalization should turn single value to an array with that value */
-        if (terms.array_terms.includes(term) && (isString(value) || isBoolean(value) || isNumber(value) || isMap(value) || value === null)) {
+        if (terms.array_terms.includes(term) && (_.isString(value) || _.isBoolean(value) || _.isNumber(value) || isMap(value) || value === null)) {
             // The 'toArray' utility checks and, if necessary, converts to array
             normalized = [value];
         }
@@ -468,7 +450,7 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
     /* Step: recursively normalize the values of normalize */
     // A previous step may have set an undefined value, this has to be ignored, again just to be on the safe side
     if (normalized !== undefined) {
-        if (isArray(normalized)) {
+        if (_.isArray(normalized)) {
             // Go through each entry, normalize, and remove any undefined value
             normalized = normalized.map((item: any) => (isMap(item) ? normalize_map(item) : item)).filter((item: any) => item !== undefined);
         } else if (isMap(normalized)) {
@@ -488,17 +470,22 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
  * @param resource either a string or a (originally JSON) object
  */
 const convert_to_absolute_URL = (resource: any): URL => {
-    if (!isString(Global.base) || Global.base === '' || Global.base === null) {
+    if (!_.isString(Global.base) || Global.base === '' || Global.base === null) {
         Global.logger.log_validation_error(`Invalid base ${Global.base}`, null, true);
         return undefined;
     }
-    if (!isString(resource)  || resource === '' || resource === null ) {
+    if (!_.isString(resource)  || resource === '' || resource === null ) {
         Global.logger.log_validation_error(`Invalid relative URL ${resource}`, null, true);
         return undefined;
     } else {
-        const new_url = url.resolve(Global.base, resource);
-        // The check URL function checks the validity of the URL and whether it is a Web URL
-        return check_url(new_url, Global.logger) ? new_url : undefined;
+        const new_url = urlHandler.resolve(Global.base, resource);
+        // The check URL function checks the validity of the URL and whether it is a valid URL
+        if (validUrl.isUri(new_url) === undefined) {
+            Global.logger.log_validation_error(`${new_url} is an invalid URL`);
+            return undefined;
+        } else {
+            return new_url;
+        }
     }
 }
 
@@ -541,7 +528,7 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
     }
 
     /* Step: identifier check */
-    if (!(data.id && isString(data.id) && data.id !== '')) {
+    if (!(data.id && _.isString(data.id) && data.id !== '')) {
         Global.logger.log_validation_error(`Missing or invalid identifier`, data.id);
     }
 
@@ -630,7 +617,7 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
             };
             if (isMap(value)) {
                 map_data_check(value);
-            } else if (isArray(value)) {
+            } else if (_.isArray(value)) {
                 value = value.map(map_data_check);
             }
         }
@@ -677,12 +664,14 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
                 if (!resource.url) {
                     Global.logger.log_validation_error(`URL is missing from a linked resource in "${term}"`, resource, true);
                     return false;
-                } else if (!check_url(resource.url, Global.logger)) {
-                    Global.logger.log_validation_error(`${resource.url} is is not a valid URL`, null, true);
-                    return false;
+                } else {
+                    if (validUrl.isUri(resource.url) === undefined) {
+                        Global.logger.log_validation_error(`${resource.url} is is not a valid URL`, null, true);
+                        return false;
+                    }
                 }
                 if (resource.length) {
-                    if (!(isNumber(resource.length) && resource.length >= 0)) {
+                    if (!(_.isNumber(resource.length) && resource.length >= 0)) {
                         Global.logger.log_validation_error(`Linked Resource length is is invalid in  "${term}"`, resource, true);
                         return false;
                     }
@@ -716,7 +705,7 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
 
     const check_expected_type = (keys: Terms, key: string, obj: any): boolean => {
         if (keys.array_or_single_literals.includes(key)) {
-            return isString(obj);
+            return _.isString(obj);
         } else if (keys.array_of_strings.includes(key)) {
             return obj instanceof LocalizableString_Impl;
         } else if (keys.array_of_entities.includes(key)) {
@@ -724,11 +713,11 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
         } else if (keys.array_of_links.includes(key)) {
             return obj instanceof LinkedResource_Impl;
         } else if (keys.array_or_single_urls.includes(key)) {
-            return isString(obj);
+            return _.isString(obj);
         } else if (keys.single_number.includes(key)) {
-            return isNumber(obj);
+            return _.isNumber(obj);
         } else if (keys.single_boolean.includes(key)) {
-            return isBoolean(obj);
+            return _.isBoolean(obj);
         } else {
             // No constraint defined
             return true;
@@ -765,7 +754,7 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
     const terms = get_terms(context);
 
     if (terms.array_terms.includes(term)) {
-        if (!(isArray(value))) {
+        if (!(_.isArray(value))) {
             Global.logger.log_validation_error(`Value should be an array for "${term}"`, value );
             return false;
         } else {
@@ -806,7 +795,7 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
  * @return false if the array is empty, true otherwise
  */
 function remove_empty_arrays(value: any): boolean {
-    if (isArray(value) && value.length === 0) {
+    if (_.isArray(value) && value.length === 0) {
         return false;
     } else if (isMap(value)) {
         Object.getOwnPropertyNames(value).forEach((key:string): void => {

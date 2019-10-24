@@ -1,4 +1,14 @@
-import * as validUrl from 'valid-url';
+import {
+    Entity_Impl,
+    Person_Impl,
+    Organization_Impl,
+    LocalizableString_Impl,
+    LinkedResource_Impl,
+    RecognizedTypes_Impl,
+    PublicationManifest_Impl,
+    Terms,
+    URL
+} from './manifest_classes';
 import * as fetch from 'node-fetch';
 import * as _ from 'underscore';
 
@@ -25,50 +35,6 @@ export  async function fetch_json(request: fetch.RequestInfo): Promise<any> {
 
 /* **************************** General utilities **************************** */
 
-/**
- * Checks if the value is a bona fide number
- * @param value
- */
-export function isNumber(value :any ): boolean
-{
-    return _.isNumber(value);
-}
-
-/**
- * Checks if the value is an array
- * @param value
- */
-export function isArray(value: any): boolean
-{
-    return _.isArray(value);
-}
-
-/**
- * Checks if the value is a map (in infra term, ie, an object)
- * @param value
- */
-export function isMap(value: any): boolean
-{
-    return _.isObject(value) && !_.isArray(value) && !_.isFunction(value);
-}
-
-/**
- * Checks if the value is a string
- * @param value
- */
-export function isString(value: any): boolean
-{
-    return _.isString(value);
-}
-
-/**
- * Checks if the value is a boolean
- * @param value
- */
-export function isBoolean(value: any): boolean
-{
-    return _.isBoolean(value);
-}
 
 /**
  * Name tells it all: if the argument is  single value, it is encapsulated into
@@ -79,23 +45,6 @@ export function isBoolean(value: any): boolean
  */
 export function toArray(arg: any): any[] {
     return Array.isArray(arg) ? arg : [arg];
-}
-
-/**
- * Check an absolute URL; raise a logging message if needed, and return undefined if
- * it is not a proper URL
- *
- * @param value absolute URL
- * @param logger: logger for errors
- * @returns URL or undefined
- */
-export function check_url(value: string, logger: Logger): boolean {
-    if (validUrl.isUri(value) === undefined) {
-        logger.log_validation_error(`'${value}' is an invalid URL`);
-        return false;
-    } else {
-        return true;
-    }
 }
 
 // eslint-disable-next-line max-len
@@ -110,7 +59,7 @@ const bcp_pattern = RegExp('^(((en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak
 export function check_language_tag(value: string, logger: Logger): string {
     if (value === null) {
         return null;
-    } else if (isString(value) && bcp_pattern.test(value)) {
+    } else if (_.isString(value) && bcp_pattern.test(value)) {
         return value;
     } else {
         logger.log_validation_error(`Invalid BCP47 format for language tag ${value}`, null, true);
@@ -128,7 +77,7 @@ export function check_language_tag(value: string, logger: Logger): string {
 export function check_direction_tag(value: string, logger: Logger): string {
     if (value === null) {
         return null;
-    } else if (isString(value) && (value === 'ltr' || value === 'rtl')) {
+    } else if (_.isString(value) && (value === 'ltr' || value === 'rtl')) {
         return value;
     } else {
         logger.log_validation_error(`Invalid base direction tag (${value})`, null, true);
@@ -145,9 +94,33 @@ export function check_direction_tag(value: string, logger: Logger): string {
  */
 export function copy_object(from: any, to: any): void {
     Object.getOwnPropertyNames(from).forEach((key:string):void => to[key] = from[key]);
-    // To test whether this would work with Typescript:
-    // to = _.clone(from);
 }
+
+/**
+ * Shorthand to check whether the object is a map that should be used recursively for further checks.
+ *
+ * @param obj
+ */
+export function recognized_type(obj: any): boolean {
+    return _.isObject(obj) && (obj instanceof Entity_Impl || obj instanceof LinkedResource_Impl);
+}
+
+/**
+ * Get the Terms object assigned to a specific resource. See the definition of Terms for details.
+ *
+ * @param resource
+ * @returns an instance of Terms
+ */
+export function get_terms(resource: any): Terms {
+    if (resource instanceof PublicationManifest_Impl || resource instanceof Entity_Impl ||
+        resource instanceof LinkedResource_Impl || resource instanceof LocalizableString_Impl)
+    {
+        return resource.terms
+    } else {
+        return undefined;
+    }
+}
+
 
 /* **************************** Logger **************************** */
 
