@@ -46,6 +46,8 @@ import {
     copy_object,
     recognized_type,
     get_terms,
+    remove_url_fragment,
+    get_resources,
     fetch_json
 } from './utilities';
 
@@ -575,6 +577,65 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
         if (check_result === undefined) data.readingProgression = ProgressionDirection.ltr;
     } else {
         data.readingProgression = ProgressionDirection.ltr;
+    }
+
+    /* Step: remove duplicate links on Linked Resource arrays */
+    {
+        const unique_links = (list: LinkedResource[], list_name: string): LinkedResource[] => {
+            const ulist =  _.uniq(list, false, (item: LinkedResource): URL => item.url);
+            if (ulist.length === list.length) {
+                // nothing was removed
+                return list;
+            } else {
+                Global.logger.log_validation_error(`Duplicate URL-s removed from "${list_name}"`, null, true);
+                return ulist;
+            }
+        }
+        if (data.readingOrder) data.readingOrder = unique_links(data.readingOrder, "readingOrder");
+        if (data.resources) data.resources = unique_links(data.resources, "resources");
+        if (data.links) data.links = unique_links(data.links, "links");
+    }
+
+    /* Step: check and remove common resources among reading order, resources, and links */
+    {
+        interface duplicate_info {
+            l1: LinkedResource[],
+            l2: LinkedResource[],
+            c: URL[]
+        }
+        let commons: duplicate_info;
+        const check_duplicates = (list1: LinkedResource[], list2: LinkedResource[]): duplicate_info => {
+            const l1_urls = (list1 === undefined) ? [] : get_resources(list1);
+            const l2_urls = (list2 === undefined) ? [] : get_resources(list2);
+            const c = _.intersection(l1_urls, l2_urls);
+            let l1: LinkedResource[] = [], l2: LinkedResource[] = [];
+            if (c.length !== 0) {
+                l1 = list1.filter((item) => c.includes(remove_url_fragment(item.url)) === false);
+                l2 = list2.filter((item) => c.includes(remove_url_fragment(item.url)) === false);
+            }
+            return {l1, l2, c}
+        }
+
+        commons = check_duplicates(data.readingOrder, data.resources);
+        if (commons.c.length !== 0) {
+            Global.logger.log_validation_error(`Common URL-s in "readingOrder" and "resources": ${commons.c}`, null, true);
+            data.readingOrder = commons.l1;
+            data.resources = commons.l2
+        }
+
+        commons = check_duplicates(data.readingOrder, data.links);
+        if (commons.c.length !== 0) {
+            Global.logger.log_validation_error(`Common URL-s in "readingOrder" and "links": ${commons.c}`, null, true);
+            data.readingOrder = commons.l1;
+            data.links = commons.l2
+        }
+
+        commons = check_duplicates(data.resources, data.links);
+        if (commons.c.length !== 0) {
+            Global.logger.log_validation_error(`Common URL-s in "resources" and "links": ${commons.c}`, null, true);
+            data.resources = commons.l1;
+            data.links = commons.l2
+        }
     }
 
     /* Step: profile extension point (not implemented) */

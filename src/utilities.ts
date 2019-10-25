@@ -1,4 +1,14 @@
 import {
+    PublicationManifest,
+    LinkedResource,
+    LocalizableString,
+    Entity,
+    Person,
+    Organization,
+    ProgressionDirection
+} from './manifest';
+
+import {
     Entity_Impl,
     Person_Impl,
     Organization_Impl,
@@ -9,8 +19,10 @@ import {
     Terms,
     URL
 } from './manifest_classes';
+
 import * as fetch from 'node-fetch';
 import * as _ from 'underscore';
+import * as urlHandler from 'url';
 
 /* **************************** Get hold of a JSON file via its URL ********** */
 // This is for testing purposes, so all kinds of checks are not done...
@@ -121,6 +133,33 @@ export function get_terms(resource: any): Terms {
     }
 }
 
+/**
+ * Remove the fragment from a URL
+ */
+export function remove_url_fragment(url: URL): URL {
+    let parsed = urlHandler.parse(url);
+    delete parsed.hash;
+    return urlHandler.format(parsed);
+}
+
+/**
+ * Compare two URLs with their fragments removed
+ * @param url1 C
+ * @param url2
+ */
+export function compare_urls(url1: URL, url2: URL): boolean {
+    return remove_url_fragment((url1)) === remove_url_fragment(url2)
+}
+
+/**
+ * Get the url values out of Linked Resource objects.
+ *
+ * Note that this method should only be invoked from places where the resources all have their `url` terms set.
+ *
+ */
+export function get_resources(resources: LinkedResource[]): URL[] {
+    return resources.map((item: LinkedResource) => remove_url_fragment(item.url))
+}
 
 /* **************************** Logger **************************** */
 
@@ -149,7 +188,7 @@ export class Logger {
      */
     private log(target: string[], message: string, obj: any, required: boolean) : void {
         let final_message = obj === null ? `${message}` : `${message} (${JSON.stringify(obj)})`;
-        if (required) final_message = `${final_message}; [Required feature]`;
+        if (required) final_message = `${final_message}; [Removing data]`;
         target.push(final_message);
     }
 

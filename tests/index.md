@@ -111,6 +111,24 @@
   - Expected errors:
     - validation error on invalid URL, and a validation error on removing the corresponding Linked Resource
 
+- `test_282105.json` common resources between `readingOrder` and `resources`
+  - Expected actions:
+    - In both `readingOrder` and in `resources` the resources referring to `common1.html` and `common.html2` are removed
+  - Expected errors:
+    - validation error on common URL-s
+
+- `test_282106.json` common resources between `readingOrder` and `links`
+  - Expected actions:
+    - In both `readingOrder` and in `links` the resources referring to `common1.html` and `common.html2` are removed
+  - Expected errors:
+    - validation error on common URL-s
+
+- `test_282107.json` duplicate resources `readingOrder`
+  - Expected actions:
+    - The duplicate `chapter1.html` and `chapter2.html` entries are removed from  `readingOrder`
+  - Expected errors:
+    - validation error on duplicate entries
+
 ## 2.8.22 [Resource List](https://www.w3.org/TR/pub-manifest/#resource-list)
 
 - `test_282201.json` A single resource is turned into an array of Linked Resources
@@ -131,7 +149,20 @@
   - Expected errors:
     - validation error on invalid URL
 
-## 2.8.23 [Resource List](https://www.w3.org/TR/pub-manifest/#resource-list)
+- `test_282204_json` common resources between `resources` and `links`
+  - Expected actions:
+    - In both `resources` and in `links` the resources referring to `common1.html` and `common.html2` are removed
+  - Expected errors:
+    - validation error on common URL-s
+
+- `test_282205.json` duplicate resources `resources`
+  - Expected actions:
+    - The duplicate  `link1.html` and `link2.html` entries are removed from  `readingOrder`
+  - Expected errors:
+    - validation error on duplicate entries
+
+
+## 2.8.23 [Links](https://www.w3.org/TR/pub-manifest/#resource-list)
 
 - `test_282301.json` A single resource is turned into an array of Linked Resources
   - Expected actions:
@@ -150,3 +181,9 @@
     - The second entry in `links` is generated without change
   - Expected errors:
     - none
+
+- `test_282304.json` duplicate resources `links`
+  - Expected actions:
+    - The duplicate `link1.html` and `link2.html` entries are removed from  `links`
+  - Expected errors:
+    - validation error on duplicate entries
