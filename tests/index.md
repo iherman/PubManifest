@@ -1,74 +1,90 @@
 # Test files and short overview
 
-## ["Top Level" manifest processing](https://www.w3.org/TR/pub-manifest/#processing-algorithm)
-- `test_1.json` minimal viable manifest
-  - Expected actions:
-    - types, urls, name converted into lists of relevant maps
-    - reading progression set to default value
-    - profile value should be set to some default
-  - Expected errors:
-    - none
-- `test_2.json` context missing
+## 2.4 [Manifest contexts](https://www.w3.org/TR/pub-manifest/#manifest-context)
+
+- `test_2401.json` context missing
   - Expected actions:
     - return empty
   - Expected errors:
     - Fatal error on missing context
-- `test_3.json` context incomplete
+- `test_2402.json` context incomplete
   - Expected actions:
     - return empty
   - Expected errors:
     - Fatal error on missing context
-- `test_4.json` no conformance
-  - Expected actions:
-    - set profile to user agent's default
-  - Expected errors:
-    - Validation error on missing conformance
-- `test_5.json` no known conformance value
-  - Expected actions:
-    - set profile to user agent's default
-  - Expected errors:
-    - Validation error on no known conformance
-- `test_6.json` Set valid global language value
+
+## 2.5 [Manifest Language and Direction](https://www.w3.org/TR/pub-manifest/#manifest-lang-dir)
+
+- `test_2501.json` Set valid global language value
   - Expected actions:
     - language `"en"` set for all strings
   - Expected errors:
     - none
-- `test_7.json` Set invalid global language value
+- `test_2502.json` Set invalid global language value
   - Expected actions:
     - no effect on output (value ignored)
   - Expected errors:
     - Validation error on incorrect BCP47 value
-- `test_8.json` Set valid global direction value
+- `test_2503.json` Set valid global direction value
   - Expected actions:
     - direction `"ltr"` set for all strings
   - Expected errors:
     - none
-- `test_9.json` Set invalid global direction value
+- `test_2504.json` Set invalid global direction value
   - Expected actions:
     - no effect on output (value ignored)
   - Expected errors:
     - Validation error on incorrect base direction value
-- `test_10.json` Out of several (valid) language and direction setting, pick the last ones
+- `test_2505.json` Out of several (valid) language and direction setting, pick the last ones
   - Expected actions:
     - strings should be set with `"language":"en"` and `"direction":"ltr"`
   - Expected errors:
     - none
 
-## [Data Validation](https://www.w3.org/TR/pub-manifest/#validate-data)
+## 2.6 [Publication types](https://www.w3.org/TR/pub-manifest/#profile-types)
 
-- `test_21.json` Incorrect date format
+- TODO: CreativeWork is added by default
+
+## 2.7 [Profile Conformance](https://www.w3.org/TR/pub-manifest/#profile-conformance)
+
+- `test_2701.json` no conformance
   - Expected actions:
-    - "datePublished" and "dateModified" should be removed from output
+    - set profile to user agent's default
   - Expected errors:
-    - incorrect publication dates
-- `test_22.json` Incorrect duration format
+    - Validation error on missing conformance
+- `test_2702.json` no known conformance value
+  - Expected actions:
+    - set profile to user agent's default
+  - Expected errors:
+    - Validation error on no known conformance
+
+## 2.8.16 [Duration](https://www.w3.org/TR/pub-manifest/#duration)
+
+- `test_281601.json` Incorrect duration format
   - Expected actions:
     - "duration" should be removed from output
   - Expected errors:
     - incorrect duration format
-- `test_23.json` Correct duration and date formats
+
+- `test_281602.json` Correct duration
   - Expected actions:
-    - "dateModified", "datePublished", and "duration" values should be present in the output
+    - "duration" value should be present in the output
   - Expected errors:
     - none
+
+## 2.8.17-18 [Last Modification Date](https://www.w3.org/TR/pub-manifest/#last-modification-date) and [Publication Date](https://www.w3.org/TR/pub-manifest/#publication-date)
+
+- `test_281701.json` Incorrect date format
+  - Expected actions:
+    - "datePublished" and "dateModified" should be removed from output
+  - Expected errors:
+    - incorrect publication dates
+- `test_281702.json` Correct date formats
+  - Expected actions:
+    - "dateModified", "datePublished" values should be present in the output
+  - Expected errors:
+    - none
+
+
+
 
