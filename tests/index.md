@@ -161,7 +161,6 @@
   - Expected errors:
     - validation error on duplicate entries
 
-
 ## 2.8.23 [Links](https://www.w3.org/TR/pub-manifest/#resource-list)
 
 - `test_282301.json` A single resource is turned into an array of Linked Resources

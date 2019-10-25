@@ -60,6 +60,19 @@ import moment from 'moment';
 // This should really be an underscore function...
 const isMap = (value: any): boolean => _.isObject(value) && !_.isArray(value) && !_.isFunction(value);
 
+interface ObjCallback {
+    (term: string): void
+}
+/**
+ * Wrapper around a repetitive idiom of calling a callback function on all keys of an object
+ *
+ * @param obj
+ * @param callback
+ */
+const process_object_keys = (obj: object, callback: ObjCallback) => {
+    Object.getOwnPropertyNames(obj).forEach(callback);
+}
+
 /* ====================================================================================================
  Global objects and constants
  ====================================================================================================== */
@@ -345,13 +358,13 @@ export async function generate_representation(url: string, base: string, logger:
     }
 
     /* Step: go (recursively!) through all the term in manifest, normalize the value, an set it in processed */
-    Object.getOwnPropertyNames(manifest).forEach( (term:string): void => {
+    process_object_keys(manifest, (term:string): void => {
         const value = manifest[term];
         const normalized = normalize_data(processed, term, value);
         if (normalized !== undefined) {
             processed[term] = normalized;
         }
-    })
+    });
 
     /* Step: Data validation */
     processed = data_validation(processed)
@@ -384,7 +397,7 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
      */
     const normalize_map = (item: any): any => {
         if (recognized_type(item)) {
-            Object.getOwnPropertyNames(item).forEach( (key:string): void => {
+            process_object_keys(item, (key:string): void => {
                 const keyValue = item[key];
                 const normalized_keyValue = normalize_data(item, key, keyValue);
                 if (normalized_keyValue !== undefined) {
@@ -392,7 +405,7 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
                 } else {
                     delete item[key];
                 }
-            })
+            });
         }
         return item;
     }
@@ -509,7 +522,7 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
     /* ============ The individual processing steps, following the spec ============== */
 
     /* Step: perform global data check. (That also includes value type checks.) */
-    Object.getOwnPropertyNames(data).forEach((key:string): void => {
+    process_object_keys(data, (key:string): void => {
         if (defined_terms.includes(key)) {
             data[key] = global_data_checks(data, key, data[key]);
             if (data[key] === undefined) {
@@ -580,15 +593,16 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
     }
 
     /* Step: remove duplicate links on Linked Resource arrays */
+    /* NOTE: this may have to be removed if the restriction on repeated URI-s is removed! */
     {
         const unique_links = (list: LinkedResource[], list_name: string): LinkedResource[] => {
-            const ulist =  _.uniq(list, false, (item: LinkedResource): URL => item.url);
-            if (ulist.length === list.length) {
+            const cleaned_list =  _.uniq(list, false, (item: LinkedResource): URL => item.url);
+            if (cleaned_list.length === list.length) {
                 // nothing was removed
                 return list;
             } else {
                 Global.logger.log_validation_error(`Duplicate URL-s removed from "${list_name}"`, null, true);
-                return ulist;
+                return cleaned_list;
             }
         }
         if (data.readingOrder) data.readingOrder = unique_links(data.readingOrder, "readingOrder");
@@ -642,7 +656,8 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
 
     /* Step: run remove empty arrays */
     // Care should be taken to run this only on entries that are part of the definition of this object!
-    Object.getOwnPropertyNames(data).forEach((key:string): void => {
+
+    process_object_keys(data, (key:string): void => {
         if (defined_terms.includes(key)) {
             if (!(remove_empty_arrays(data[key]))) {
                 delete data[key];
@@ -680,7 +695,7 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
             const map_data_check = (item: any): any => {
                 if (recognized_type(item)) {
                     // Check that the key is defined!!! Maybe using _.intersection?
-                    Object.getOwnPropertyNames(item).forEach((key): void => {
+                    process_object_keys(item, (key: string): void => {
                         const keyValue = item[key];
                         item[key] = global_data_checks(item, key, keyValue);
                         if (item[key] === undefined) {
@@ -743,6 +758,7 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
                     if (validUrl.isUri(resource.url) === undefined) {
                         Global.logger.log_validation_error(`"${resource.url}" is is not a valid URL`, null, true);
                         return false;
+                    /* NOTE: this may have to be removed if the restriction on fragments is removed! */
                     } else if (['readingOrder', 'resources'].includes(term) && urlHandler.parse(resource.url).hash !== null) {
                         Global.logger.log_validation_error(`"${resource.url}" must not contain a fragment for "${term}"`, null, true);
                         return false;
@@ -813,7 +829,7 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
     const verify_map = (obj: PublicationManifest_Impl|RecognizedTypes_Impl|LocalizableString_Impl): boolean => {
         const keys = get_terms(obj);
         const defined_terms = keys.all_terms;
-        Object.getOwnPropertyNames(obj).forEach((key: string) => {
+        process_object_keys(obj, (key: string): void => {
             if (defined_terms.includes(key)) {
                 const check_result = verify_value_category(obj, key, obj[key])
                 if (!(check_result)) {
@@ -821,6 +837,7 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
                 }
             }
         });
+
         // Check if there is any meaningful term left!
         if (defined_terms.find((key: string): boolean => Object.getOwnPropertyNames(obj).includes(key))) {
             return true;
@@ -876,7 +893,7 @@ function remove_empty_arrays(value: any): boolean {
     if (_.isArray(value) && value.length === 0) {
         return false;
     } else if (isMap(value)) {
-        Object.getOwnPropertyNames(value).forEach((key:string): void => {
+        process_object_keys(value, (key:string): void => {
             const keyValue = value[key];
             if (!remove_empty_arrays(keyValue)) {
                 delete value[key]
