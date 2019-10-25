@@ -85,6 +85,68 @@
   - Expected errors:
     - none
 
+## 2.8.21 [Default Reading Order](https://www.w3.org/TR/pub-manifest/#default-reading-order)
 
+- `test_282101.json` A single resource is turned into an array of Linked Resources
+  - Expected actions:
+    - `readingOrder` is an array of a single object, with the URL turned into absolute
+  - Expected errors:
+    - none
 
+- `test_282102.json` Invalid URL is removed from reading order list
+  - Expected actions:
+    - The second entry in `readingOrder` is removed from the final list
+  - Expected errors:
+    - validation error on invalid URL, and a validation error on removing the corresponding Linked Resource
 
+- `test_282103.json` URL with a fragment is removed from reading order list
+  - Expected actions:
+    - The second entry in `readingOrder` is removed from the final list
+  - Expected errors:
+    - validation error on invalid URL, and a validation error on removing the corresponding Linked Resource
+
+- `test_282104.json` missing `readingOrder` is replaced by a default
+  - Expected actions:
+    - A `readingOrder` is added with a single link set to the HTML Node's Document.URL. If none provided, validation error
+  - Expected errors:
+    - validation error on invalid URL, and a validation error on removing the corresponding Linked Resource
+
+## 2.8.22 [Resource List](https://www.w3.org/TR/pub-manifest/#resource-list)
+
+- `test_282201.json` A single resource is turned into an array of Linked Resources
+  - Expected actions:
+    - `resources` is an array of a single object, with the URL turned into absolute
+  - Expected errors:
+    - none
+
+- `test_282202.json` Invalid URL is removed from reading order list
+  - Expected actions:
+    - The second entry in `resources` is removed from the final list
+  - Expected errors:
+    - validation error on invalid URL
+
+- `test_282203.json` URL with a fragment is removed from reading order list
+  - Expected actions:
+    - The second entry in `resources` is removed from the final list
+  - Expected errors:
+    - validation error on invalid URL
+
+## 2.8.23 [Resource List](https://www.w3.org/TR/pub-manifest/#resource-list)
+
+- `test_282301.json` A single resource is turned into an array of Linked Resources
+  - Expected actions:
+    - `links` is an array of a single object, with the URL turned into absolute
+  - Expected errors:
+    - none
+
+- `test_282302.json` Invalid URL is removed from reading order list
+  - Expected actions:
+    - The second entry in `links` is removed from the final list
+  - Expected errors:
+    - validation error on invalid URL
+
+- `test_282303.json` URL with a fragment is accepted
+  - Expected actions:
+    - The second entry in `links` is generated without change
+  - Expected errors:
+    - none

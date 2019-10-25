@@ -680,7 +680,10 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
                     return false;
                 } else {
                     if (validUrl.isUri(resource.url) === undefined) {
-                        Global.logger.log_validation_error(`${resource.url} is is not a valid URL`, null, true);
+                        Global.logger.log_validation_error(`"${resource.url}" is is not a valid URL`, null, true);
+                        return false;
+                    } else if (['readingOrder', 'resources'].includes(term) && urlHandler.parse(resource.url).hash !== null) {
+                        Global.logger.log_validation_error(`"${resource.url}" must not contain a fragment for "${term}"`, null, true);
                         return false;
                     }
                 }
