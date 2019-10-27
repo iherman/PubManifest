@@ -48,7 +48,9 @@ const creator_properties = [
 
 // -------------------------------------------- Categorization of terms -------------------------------------
 /**
- * Categorization of terms per value types: arrays for terms as single literal values, multiple literal values (ie, must be turned into an array of strings),
+ * Categorization of terms per value types.
+ *
+ * A wrapper around arrays for terms as single literal values, multiple literal values (ie, must be turned into an array of strings),
  * single localizable string and an array of localizable strings, array of entities, array of linked resources, urls, booleans, etc.
  *
  * These arrays are used in generic method calls to handle, e.g., the creation and check of arrays of localizable strings.
@@ -223,7 +225,7 @@ export type RecognizedTypes_Impl = Person_Impl | Organization_Impl | LinkedResou
  * Implementation of [[Entity]], superclass for [[Person_Impl]] or [[Organization_Impl]]
  */
 export class Entity_Impl implements Entity {
-    /** A [[Term]] instance referring to the terms defined for [[Entity]] */
+    /** A [[Terms]] instance referring to the terms defined for [[Entity]] */
     get terms(): Terms {
         return new EntityTerms();
     }
@@ -251,7 +253,7 @@ export class Organization_Impl extends Entity_Impl  implements Organization {};
  * Implementation for [[LocalizableString]]
  */
 export class LocalizableString_Impl implements LocalizableString {
-    /** A [[Term]] instance referring to the terms defined for [[LocalizableString]] */
+    /** A [[Terms]] instance referring to the terms defined for [[LocalizableString]] */
     get terms(): Terms {
         return new LocalizableStringTerms();
     }
@@ -267,7 +269,7 @@ export class LocalizableString_Impl implements LocalizableString {
  * Implementation for [[LinkedResource]]
  */
 export class LinkedResource_Impl implements LinkedResource {
-    /** A [[Term]] instance referring to the terms defined for [[LinkedResource]] */
+    /** A [[Terms]] instance referring to the terms defined for [[LinkedResource]] */
     get terms(): Terms {
         return new LinkedResourceTerms();
     }
@@ -288,7 +290,7 @@ export class LinkedResource_Impl implements LinkedResource {
  * Implementation for [[PublicationManifest]]
  */
 export class PublicationManifest_Impl implements PublicationManifest {
-    /** A [[Term]] instance referring to the terms defined for [[PublicationManifest]] */
+    /** A [[Terms]] instance referring to the terms defined for [[PublicationManifest]] */
     get terms(): PublicationManifestTerms {
         return new PublicationManifestTerms();
     }
