@@ -1,15 +1,15 @@
 /**
  * Implementation (with minor omission, see comments) of the Processing steps as define in
- * [§4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#manifest-processing).
+ * [§4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing).
  *
- * Note, however, that the HTML related functions (e.g., extracting `<title>`) is _not_ implemented
- * at this point.
+ * The functions, including their names, follow, as far as possible, the names used in the specification.
+ *
  */
 
-/* ===================================================================================================
-  The interfaces defining the manifest interfaces. This is what the external world should
+/**
+ * The interfaces defining the manifest interfaces. This is what the external world should
   'see' in the return value, i.e., _processed_
- ===================================================================================================== */
+ */
 import {
     PublicationManifest,
     LinkedResource,
@@ -20,9 +20,9 @@ import {
     ProgressionDirection
 } from './manifest';
 
-/* ===================================================================================================
- The implementations for the official interfaces, i.e., the bona fide classes
- ===================================================================================================== */
+/**
+ * The implementations for the official interfaces, i.e., the bona fide classes
+ */
 import {
     Entity_Impl,
     Person_Impl,
@@ -35,9 +35,10 @@ import {
     URL
 } from './manifest_classes';
 
-/* ====================================================================================================
- Various utilities
- ====================================================================================================== */
+
+/**
+ * Various utilities
+ */
 import {
     Logger,
     toArray,
@@ -60,11 +61,14 @@ import moment from 'moment';
 // This should really be an underscore function...
 const isMap = (value: any): boolean => _.isObject(value) && !_.isArray(value) && !_.isFunction(value);
 
+/**
+ * Callback type definition to define the `process_object_keys` function in a TS happy way...
+ */
 interface ObjCallback {
     (term: string): void
 }
 /**
- * Wrapper around a repetitive idiom of calling a callback function on all keys of an object
+ * Wrapper around a repetitive idiom of calling a callback function on all keys of an object.
  *
  * @param obj
  * @param callback
@@ -82,6 +86,11 @@ const process_object_keys = (obj: object, callback: ObjCallback) => {
  * (This still has to stabilize in the spec)
  */
 const default_profile = 'https://www.w3.org/TR/pub-manifest/';
+
+/**
+ * The "known" profiles. This is just for testing purposes; a real life implementation should include
+ * the URI-s for the profiles the user agent implements.
+ */
 const known_profiles = [default_profile, 'https://www.w3.org/TR/audiobooks/']
 
 /**
@@ -106,7 +115,7 @@ class Global  {
  * The input argument may be a string or an existing object; the specs describes how a full
  * class instance should be created.
  *
- * This is used for the implementation of step §4.3.1/3.
+ * This corresponds to §4.3.1/3.
  *
  * @param resource either a string or a (originally JSON) object
  */
@@ -151,7 +160,7 @@ const create_Entity = (resource: any) : Person|Organization => {
  * The input argument may be a string or an existing object; the specs describes how a full
  * class instance should be created.
  *
- * This is used for the implementation of step §4.3.1/4.
+ * This corresponds to §4.3.1/4.
  *
  * @param resource either a string or a (originally JSON) object
  */
@@ -197,7 +206,7 @@ const create_LocalizableString = (resource: any): LocalizableString => {
  * The input argument may be a string or an existing object; the specs describes how a full
  * class instance should be created.
  *
- * This is used for the implementation of step §4.3.1/5.
+ * This corresponds to §4.3.1/5.
  *
  * @param resource either a string or a (originally JSON) object
  */
@@ -246,22 +255,15 @@ const create_LinkedResource = (resource: any): LinkedResource => {
  *
  * Note, however, that this function does a little bit more. Whereas the official processing steps
  * start with the json _text_, and delegates the access to this to a profile, this function shortcuts this,
- * and starts with the URL of the JSON file. Because the goal of all this is checking the processing algorithm,
- * there is no implementation of the extraction from an HTML file, etc.
- *
- * The check of the media types for step (3) (for the conformance test) is also not done. The details are not really relevant for
- * this testing implementations, the profile value is set to a default generic value.
- *
- * Local specificity: when the document says 'failure is returned', this appears in the code as returning the
- * Javascript value 'undefined'.
+ * and starts with the URL of the JSON file.
  *
  * @async
  * @param url: address of the JSON file
  * @param base: base URL; if undefined or empty, fall back on the value of url
- * @param logger: an extra parameter to collect the error and warning messages
+ * @param logger: an extra parameter to collect the error messages in one place, to be then processed by the caller
  * @return the processed manifest
  */
-export async function generate_representation(url: string, base: string, logger: Logger): Promise<PublicationManifest> {
+export async function generate_representation(url: URL, base: URL, logger: Logger): Promise<PublicationManifest> {
     // This is necessary to make the language and direction global extraction in a TS happy way...
     interface lang_dir {
         language?: string;
@@ -481,9 +483,9 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
 /**
  * Create a new absolute URL
  *
- * This is used for the implementation of step §4.3.1/5.
-  * [§4.3.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#convert-absolute-url).
-*
+ * This is used for the implementation of step §4.3.1/5, i.e.,
+* [§4.3.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#convert-absolute-url).
+ *
  * @param resource either a string or a (originally JSON) object
  */
 const convert_to_absolute_URL = (resource: any): URL => {
@@ -883,7 +885,7 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
 
 /**
  *
- * Remove empty arrays, and remove empty arrays from maps. This corresponds to the main body of
+ * Remove empty arrays, and, if applicable, remove empty arrays from maps. This corresponds to the main body of
  * [§4.3.2.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#remove-empty-arrays).
  *
  * @param data the data to be checked

@@ -1,4 +1,7 @@
 "use strict";
+/**
+ * Various utilities
+ */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -16,17 +19,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const validUrl = __importStar(require("valid-url"));
+const manifest_classes_1 = require("./manifest_classes");
 const fetch = __importStar(require("node-fetch"));
 const _ = __importStar(require("underscore"));
+const urlHandler = __importStar(require("url"));
 /* **************************** Get hold of a JSON file via its URL ********** */
 // This is for testing purposes, so all kinds of checks are not done...
 /**
  * Wrapper around the fetch function retrieving a JSON file.
  *
- * In real life, this should be more sophisticated, checking the media type of the resources, etc. For testing purposes the simple wrapper is enough
+ * In real life, this should be more sophisticated, checking the media type of the resources, security issues, etc. For testing purposes the simple wrapper is enough
+ *
  * @param request essentially, the URL of the manifest file to test with
- * @returns the result of JSON processing (wrapped into a Promise)
+ * @returns the result of JSON processing, i.e., an object (wrapped into a Promise)
  * @async
  */
 function fetch_json(request) {
@@ -44,74 +49,15 @@ exports.fetch_json = fetch_json;
 ;
 /* **************************** General utilities **************************** */
 /**
- * Checks if the value is a bona fide number
- * @param value
- */
-function isNumber(value) {
-    return _.isNumber(value);
-}
-exports.isNumber = isNumber;
-/**
- * Checks if the value is an array
- * @param value
- */
-function isArray(value) {
-    return _.isArray(value);
-}
-exports.isArray = isArray;
-/**
- * Checks if the value is a map (in infra term, ie, an object)
- * @param value
- */
-function isMap(value) {
-    return _.isObject(value) && !_.isArray(value) && !_.isFunction(value);
-}
-exports.isMap = isMap;
-/**
- * Checks if the value is a string
- * @param value
- */
-function isString(value) {
-    return _.isString(value);
-}
-exports.isString = isString;
-/**
- * Checks if the value is a boolean
- * @param value
- */
-function isBoolean(value) {
-    return _.isBoolean(value);
-}
-exports.isBoolean = isBoolean;
-/**
  * Name tells it all: if the argument is  single value, it is encapsulated into
  * an array. Used for Localizable String, Linked Resources, etc.
  *
- * @param {any} arg - the input value or array of values
- * @returns {any[]}
+ * @param arg - the input value or array of values
  */
 function toArray(arg) {
     return Array.isArray(arg) ? arg : [arg];
 }
 exports.toArray = toArray;
-/**
- * Check an absolute URL; raise a logging message if needed, and return undefined if
- * it is not a proper URL
- *
- * @param value absolute URL
- * @param logger: logger for errors
- * @returns URL or undefined
- */
-function check_url(value, logger) {
-    if (validUrl.isUri(value) === undefined) {
-        logger.log_validation_error(`'${value}' is an invalid URL`);
-        return false;
-    }
-    else {
-        return true;
-    }
-}
-exports.check_url = check_url;
 // eslint-disable-next-line max-len
 const bcp_pattern = RegExp('^(((en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang))|((([A-Za-z]{2,3}(-(?<extlang>[A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+))$');
 /**
@@ -119,13 +65,13 @@ const bcp_pattern = RegExp('^(((en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak
  *
  * @param value language tag
  * @param logger logger for errors
- * @returns the same language tag is returned
+ * @returns the same language tag is returned, if valid, `undefined` otherwise. If the input value is `null`, it is returned unchanged.
  */
 function check_language_tag(value, logger) {
     if (value === null) {
         return null;
     }
-    else if (isString(value) && bcp_pattern.test(value)) {
+    else if (_.isString(value) && bcp_pattern.test(value)) {
         return value;
     }
     else {
@@ -139,13 +85,13 @@ exports.check_language_tag = check_language_tag;
  *
  * @param value direction tag
  * @param logger logger for errors
- * @returns the same direction tag is returned
+ * @returns the same direction tag is returned, if valid, `undefined` otherwise. If the input value is `null`, it is returned unchanged.
  */
 function check_direction_tag(value, logger) {
     if (value === null) {
         return null;
     }
-    else if (isString(value) && (value === 'ltr' || value === 'rtl')) {
+    else if (_.isString(value) && (value === 'ltr' || value === 'rtl')) {
         return value;
     }
     else {
@@ -158,18 +104,58 @@ exports.check_direction_tag = check_direction_tag;
  * (Shallow) copy of the object. It seems to be necessary to do it this way to ensure that the 'to' object
  * gets and maintains the correct Typescript type
  *
- * @param from
- * @param to
  */
 function copy_object(from, to) {
     Object.getOwnPropertyNames(from).forEach((key) => to[key] = from[key]);
-    // To test whether this would work with Typescript:
-    // to = _.clone(from);
 }
 exports.copy_object = copy_object;
+/**
+ * Shorthand to check whether the object is a map that should be used recursively for further checks, i.e.,
+ * whether it is an Entity or a Linked Resource
+ *
+ */
+function recognized_type(obj) {
+    return _.isObject(obj) && (obj instanceof manifest_classes_1.Entity_Impl || obj instanceof manifest_classes_1.LinkedResource_Impl);
+}
+exports.recognized_type = recognized_type;
+/**
+ * Get the `Terms` object assigned to a specific resource. See the definition of `Terms` for details.
+ *
+ * @param resource
+ * @returns an instance of Terms
+ */
+function get_terms(resource) {
+    if (resource instanceof manifest_classes_1.PublicationManifest_Impl || resource instanceof manifest_classes_1.Entity_Impl ||
+        resource instanceof manifest_classes_1.LinkedResource_Impl || resource instanceof manifest_classes_1.LocalizableString_Impl) {
+        return resource.terms;
+    }
+    else {
+        return undefined;
+    }
+}
+exports.get_terms = get_terms;
+/**
+ * Remove the fragment id part from a URL
+ */
+function remove_url_fragment(url) {
+    let parsed = urlHandler.parse(url);
+    delete parsed.hash;
+    return urlHandler.format(parsed);
+}
+exports.remove_url_fragment = remove_url_fragment;
+/**
+ * Get the url values out of lists of Linked Resources, with (possible) fragment ID-s removed.
+ *
+ * Note that this method should only be invoked from places where the resources all have their `url` terms set.
+ *
+ */
+function get_resources(resources) {
+    return resources.map((item) => remove_url_fragment(item.url));
+}
+exports.get_resources = get_resources;
 /* **************************** Logger **************************** */
 /**
- * Simple logger class to record errors and warnings for subsequent display
+ * Simple logger class to record errors and warnings for subsequent display.
  */
 class Logger {
     constructor() {
@@ -178,10 +164,6 @@ class Logger {
     }
     get validation_errors() { return this._validation_errors; }
     get fatal_errors() { return this._fatal_errors; }
-    // constructor() {
-    //     this._validation_errors = [];
-    //     this._fatal_errors = [];
-    // }
     /**
      * Log an error
      *
@@ -193,7 +175,7 @@ class Logger {
     log(target, message, obj, required) {
         let final_message = obj === null ? `${message}` : `${message} (${JSON.stringify(obj)})`;
         if (required)
-            final_message = `${final_message}; [Required feature]`;
+            final_message = `${final_message}; [Removing data]`;
         target.push(final_message);
     }
     /**
@@ -217,17 +199,15 @@ class Logger {
         this.log(this._fatal_errors, message, obj, required);
     }
     /**
-     * Display all the errors as one string.
+     * Display all the fatal errors as one string.
      *
-     * @returns {string}
      */
     fatal_errors_toString() {
         return Logger._display(this.fatal_errors, 'Fatal Errors:');
     }
     /**
-     * Display all the warnings as one string.
+     * Display all the validation errors as one string.
      *
-     * @returns {string}
      */
     validation_errors_toString() {
         return Logger._display(this.validation_errors, 'Validation Errors:');
@@ -235,7 +215,6 @@ class Logger {
     /**
      * Display all the messages as one string.
      *
-     * @returns {string}
      */
     toString() {
         return `${this.validation_errors_toString()}\n${this.fatal_errors_toString()}`;
@@ -244,9 +223,8 @@ class Logger {
      * Generate a string for a category of messages.
      *
      * @static
-     * @param {string[]} messages - set of messages to display.
-     * @param {string} start - a text preceding the previous.
-     * @returns {string}
+     * @param messages - set of messages to display.
+     * @param start - a text preceding the previous.
      */
     static _display(messages, start) {
         let retval = start;

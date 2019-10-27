@@ -1,3 +1,10 @@
+/**
+ * Various utilities
+ */
+
+/**
+ * The core interfaces that are implemented in project
+ */
 import {
     PublicationManifest,
     LinkedResource,
@@ -30,9 +37,10 @@ import * as urlHandler from 'url';
 /**
  * Wrapper around the fetch function retrieving a JSON file.
  *
- * In real life, this should be more sophisticated, checking the media type of the resources, etc. For testing purposes the simple wrapper is enough
+ * In real life, this should be more sophisticated, checking the media type of the resources, security issues, etc. For testing purposes the simple wrapper is enough
+ *
  * @param request essentially, the URL of the manifest file to test with
- * @returns the result of JSON processing (wrapped into a Promise)
+ * @returns the result of JSON processing, i.e., an object (wrapped into a Promise)
  * @async
  */
 export  async function fetch_json(request: fetch.RequestInfo): Promise<any> {
@@ -52,8 +60,7 @@ export  async function fetch_json(request: fetch.RequestInfo): Promise<any> {
  * Name tells it all: if the argument is  single value, it is encapsulated into
  * an array. Used for Localizable String, Linked Resources, etc.
  *
- * @param {any} arg - the input value or array of values
- * @returns {any[]}
+ * @param arg - the input value or array of values
  */
 export function toArray(arg: any): any[] {
     return Array.isArray(arg) ? arg : [arg];
@@ -66,7 +73,7 @@ const bcp_pattern = RegExp('^(((en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak
  *
  * @param value language tag
  * @param logger logger for errors
- * @returns the same language tag is returned
+ * @returns the same language tag is returned, if valid, `undefined` otherwise. If the input value is `null`, it is returned unchanged.
  */
 export function check_language_tag(value: string, logger: Logger): string {
     if (value === null) {
@@ -84,7 +91,7 @@ export function check_language_tag(value: string, logger: Logger): string {
  *
  * @param value direction tag
  * @param logger logger for errors
- * @returns the same direction tag is returned
+ * @returns the same direction tag is returned, if valid, `undefined` otherwise. If the input value is `null`, it is returned unchanged.
  */
 export function check_direction_tag(value: string, logger: Logger): string {
     if (value === null) {
@@ -101,24 +108,22 @@ export function check_direction_tag(value: string, logger: Logger): string {
  * (Shallow) copy of the object. It seems to be necessary to do it this way to ensure that the 'to' object
  * gets and maintains the correct Typescript type
  *
- * @param from
- * @param to
  */
 export function copy_object(from: any, to: any): void {
     Object.getOwnPropertyNames(from).forEach((key:string):void => to[key] = from[key]);
 }
 
 /**
- * Shorthand to check whether the object is a map that should be used recursively for further checks.
+ * Shorthand to check whether the object is a map that should be used recursively for further checks, i.e.,
+ * whether it is an Entity or a Linked Resource
  *
- * @param obj
  */
 export function recognized_type(obj: any): boolean {
     return _.isObject(obj) && (obj instanceof Entity_Impl || obj instanceof LinkedResource_Impl);
 }
 
 /**
- * Get the Terms object assigned to a specific resource. See the definition of Terms for details.
+ * Get the `Terms` object assigned to a specific resource. See the definition of `Terms` for details.
  *
  * @param resource
  * @returns an instance of Terms
@@ -134,7 +139,7 @@ export function get_terms(resource: any): Terms {
 }
 
 /**
- * Remove the fragment from a URL
+ * Remove the fragment id part from a URL
  */
 export function remove_url_fragment(url: URL): URL {
     let parsed = urlHandler.parse(url);
@@ -143,16 +148,7 @@ export function remove_url_fragment(url: URL): URL {
 }
 
 /**
- * Compare two URLs with their fragments removed
- * @param url1 C
- * @param url2
- */
-export function compare_urls(url1: URL, url2: URL): boolean {
-    return remove_url_fragment((url1)) === remove_url_fragment(url2)
-}
-
-/**
- * Get the url values out of Linked Resource objects.
+ * Get the url values out of lists of Linked Resources, with (possible) fragment ID-s removed.
  *
  * Note that this method should only be invoked from places where the resources all have their `url` terms set.
  *
@@ -164,7 +160,7 @@ export function get_resources(resources: LinkedResource[]): URL[] {
 /* **************************** Logger **************************** */
 
 /**
- * Simple logger class to record errors and warnings for subsequent display
+ * Simple logger class to record errors and warnings for subsequent display.
  */
 export class Logger {
     private _validation_errors: string[] = [];
@@ -172,11 +168,6 @@ export class Logger {
 
     private _fatal_errors: string[]      = [];
     get fatal_errors() : string[] { return this._fatal_errors; }
-
-    // constructor() {
-    //     this._validation_errors = [];
-    //     this._fatal_errors = [];
-    // }
 
     /**
      * Log an error
@@ -215,18 +206,16 @@ export class Logger {
     }
 
     /**
-     * Display all the errors as one string.
+     * Display all the fatal errors as one string.
      *
-     * @returns {string}
      */
     fatal_errors_toString() : string {
         return Logger._display(this.fatal_errors, 'Fatal Errors:');
     }
 
     /**
-     * Display all the warnings as one string.
+     * Display all the validation errors as one string.
      *
-     * @returns {string}
      */
     validation_errors_toString() : string {
         return Logger._display(this.validation_errors, 'Validation Errors:');
@@ -235,7 +224,6 @@ export class Logger {
     /**
      * Display all the messages as one string.
      *
-     * @returns {string}
      */
     toString() : string {
         return `${this.validation_errors_toString()}\n${this.fatal_errors_toString()}`;
@@ -245,9 +233,8 @@ export class Logger {
      * Generate a string for a category of messages.
      *
      * @static
-     * @param {string[]} messages - set of messages to display.
-     * @param {string} start - a text preceding the previous.
-     * @returns {string}
+     * @param messages - set of messages to display.
+     * @param start - a text preceding the previous.
      */
     private static _display(messages: string[], start: string) : string {
         let retval = start;

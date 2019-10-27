@@ -1,10 +1,10 @@
 "use strict";
 /**
  * Implementation (with minor omission, see comments) of the Processing steps as define in
- * [§4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#manifest-processing).
+ * [§4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing).
  *
- * Note, however, that the HTML related functions (e.g., extracting `<title>`) is _not_ implemented
- * at this point.
+ * The functions, including their names, follow, as far as possible, the names used in the specification.
+ *
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -22,21 +22,38 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-/* ===================================================================================================
-  The interfaces defining the manifest interfaces. This is what the external world should
+/**
+ * The interfaces defining the manifest interfaces. This is what the external world should
   'see' in the return value, i.e., _processed_
- ===================================================================================================== */
+ */
 const manifest_1 = require("./manifest");
-/* ===================================================================================================
- The implementations for the official interfaces, i.e., the bona fide classes
- ===================================================================================================== */
+/**
+ * The implementations for the official interfaces, i.e., the bona fide classes
+ */
 const manifest_classes_1 = require("./manifest_classes");
-/* ====================================================================================================
- Various utilities
- ====================================================================================================== */
+/**
+ * Various utilities
+ */
 const utilities_1 = require("./utilities");
-const url = __importStar(require("url"));
+const urlHandler = __importStar(require("url"));
+const validUrl = __importStar(require("valid-url"));
+const _ = __importStar(require("underscore"));
+const moment_1 = __importDefault(require("moment"));
+// This should really be an underscore function...
+const isMap = (value) => _.isObject(value) && !_.isArray(value) && !_.isFunction(value);
+/**
+ * Wrapper around a repetitive idiom of calling a callback function on all keys of an object.
+ *
+ * @param obj
+ * @param callback
+ */
+const process_object_keys = (obj, callback) => {
+    Object.getOwnPropertyNames(obj).forEach(callback);
+};
 /* ====================================================================================================
  Global objects and constants
  ====================================================================================================== */
@@ -45,6 +62,10 @@ const url = __importStar(require("url"));
  * (This still has to stabilize in the spec)
  */
 const default_profile = 'https://www.w3.org/TR/pub-manifest/';
+/**
+ * The "known" profiles. This is just for testing purposes; a real life implementation should include
+ * the URI-s for the profiles the user agent implements.
+ */
 const known_profiles = [default_profile, 'https://www.w3.org/TR/audiobooks/'];
 /**
  * "Global" object; these values help in streamlining some of the functions
@@ -55,28 +76,6 @@ Global.lang = '';
 Global.dir = '';
 Global.base = '';
 Global.profile = '';
-/* Minor utilities */
-/**
- * Get the Terms object assigned to a specific resource. See the definition of Terms for details.
- *
- * @param resource
- * @returns instance of Terms
- */
-const get_terms = (resource) => {
-    if (resource instanceof manifest_classes_1.PublicationManifest_Impl || resource instanceof manifest_classes_1.Entity_Impl ||
-        resource instanceof manifest_classes_1.LinkedResource_Impl || resource instanceof manifest_classes_1.LocalizableString_Impl) {
-        return resource.terms;
-    }
-    else {
-        return undefined;
-    }
-};
-/**
- * Shorthand to check whether the object is a map that is used recursively for further checks.
- *
- * @param obj
- */
-const recognized_type = (obj) => utilities_1.isMap(obj) && (obj instanceof manifest_classes_1.Entity_Impl || obj instanceof manifest_classes_1.LinkedResource_Impl);
 /* ====================================================================================================
  Direct utility functions in the processing steps
 
@@ -87,22 +86,24 @@ const recognized_type = (obj) => utilities_1.isMap(obj) && (obj instanceof manif
  * The input argument may be a string or an existing object; the specs describes how a full
  * class instance should be created.
  *
- * This is used for the implementation of step §4.3.1/3.
+ * This corresponds to §4.3.1/3.
  *
  * @param resource either a string or a (originally JSON) object
  */
 const create_Entity = (resource) => {
-    if (resource === null || utilities_1.isBoolean(resource) || utilities_1.isNumber(resource) || utilities_1.isArray(resource)) {
+    if (resource === null || _.isBoolean(resource) || _.isNumber(resource) || _.isArray(resource)) {
         Global.logger.log_validation_error(`Invalid entity`, resource, true);
         return undefined;
     }
-    else if (utilities_1.isString(resource)) {
+    else if (_.isString(resource)) {
         const new_entity = new manifest_classes_1.Person_Impl();
-        new_entity.name = resource;
+        const new_person = new manifest_classes_1.LocalizableString_Impl();
+        new_person.value = resource;
+        new_entity.name = [new_person];
         new_entity.type = ["Person"];
         return new_entity;
     }
-    else if (utilities_1.isMap(resource)) {
+    else if (isMap(resource)) {
         // Beyond setting the type, the returned value should have the right (Typescript) type
         let new_entity;
         if (resource.type) {
@@ -135,16 +136,16 @@ const create_Entity = (resource) => {
  * The input argument may be a string or an existing object; the specs describes how a full
  * class instance should be created.
  *
- * This is used for the implementation of step §4.3.1/4.
+ * This corresponds to §4.3.1/4.
  *
  * @param resource either a string or a (originally JSON) object
  */
 const create_LocalizableString = (resource) => {
-    if (resource === null || utilities_1.isBoolean(resource) || utilities_1.isNumber(resource) || utilities_1.isArray(resource)) {
+    if (resource === null || _.isBoolean(resource) || _.isNumber(resource) || _.isArray(resource)) {
         Global.logger.log_validation_error(`Invalid localizable string`, resource, true);
         return undefined;
     }
-    else if (utilities_1.isString(resource)) {
+    else if (_.isString(resource)) {
         const new_ls = new manifest_classes_1.LocalizableString_Impl();
         new_ls.value = resource;
         if (Global.lang !== '') {
@@ -155,7 +156,7 @@ const create_LocalizableString = (resource) => {
         }
         return new_ls;
     }
-    else if (utilities_1.isMap(resource)) {
+    else if (isMap(resource)) {
         const new_ls = new manifest_classes_1.LocalizableString_Impl();
         utilities_1.copy_object(resource, new_ls);
         if (new_ls.language) {
@@ -186,22 +187,22 @@ const create_LocalizableString = (resource) => {
  * The input argument may be a string or an existing object; the specs describes how a full
  * class instance should be created.
  *
- * This is used for the implementation of step §4.3.1/5.
+ * This corresponds to §4.3.1/5.
  *
  * @param resource either a string or a (originally JSON) object
  */
 const create_LinkedResource = (resource) => {
-    if (resource === null || utilities_1.isBoolean(resource) || utilities_1.isNumber(resource) || utilities_1.isArray(resource)) {
+    if (resource === null || _.isBoolean(resource) || _.isNumber(resource) || _.isArray(resource)) {
         Global.logger.log_validation_error(`Invalid Linked Resource`, resource, true);
         return undefined;
     }
-    else if (utilities_1.isString(resource)) {
+    else if (_.isString(resource)) {
         const new_lr = new manifest_classes_1.LinkedResource_Impl();
         new_lr.url = resource;
         new_lr.type = ['LinkedResource'];
         return new_lr;
     }
-    else if (utilities_1.isMap(resource)) {
+    else if (isMap(resource)) {
         const new_lr = new manifest_classes_1.LinkedResource_Impl();
         utilities_1.copy_object(resource, new_lr);
         if (new_lr.type) {
@@ -237,19 +238,12 @@ const create_LinkedResource = (resource) => {
  *
  * Note, however, that this function does a little bit more. Whereas the official processing steps
  * start with the json _text_, and delegates the access to this to a profile, this function shortcuts this,
- * and starts with the URL of the JSON file. Because the goal of all this is checking the processing algorithm,
- * there is no implementation of the extraction from an HTML file, etc.
- *
- * The check of the media types for step (3) (for the conformance test) is also not done. The details are not really relevant for
- * this testing implementations, the profile value is set to a default generic value.
- *
- * Local specificity: when the document says 'failure is returned', this appears in the code as returning the
- * Javascript value 'undefined'.
+ * and starts with the URL of the JSON file.
  *
  * @async
  * @param url: address of the JSON file
  * @param base: base URL; if undefined or empty, fall back on the value of url
- * @param logger: an extra parameter to collect the error and warning messages
+ * @param logger: an extra parameter to collect the error messages in one place, to be then processed by the caller
  * @return the processed manifest
  */
 function generate_representation(url, base, logger) {
@@ -345,7 +339,7 @@ function generate_representation(url, base, logger) {
             }
         }
         /* Step: go (recursively!) through all the term in manifest, normalize the value, an set it in processed */
-        Object.getOwnPropertyNames(manifest).forEach((term) => {
+        process_object_keys(manifest, (term) => {
             const value = manifest[term];
             const normalized = normalize_data(processed, term, value);
             if (normalized !== undefined) {
@@ -380,8 +374,8 @@ function normalize_data(context, term, value) {
      * @param item the map to be normalized
      */
     const normalize_map = (item) => {
-        if (recognized_type(item)) {
-            Object.getOwnPropertyNames(item).forEach((key) => {
+        if (utilities_1.recognized_type(item)) {
+            process_object_keys(item, (key) => {
                 const keyValue = item[key];
                 const normalized_keyValue = normalize_data(item, key, keyValue);
                 if (normalized_keyValue !== undefined) {
@@ -395,7 +389,7 @@ function normalize_data(context, term, value) {
         return item;
     };
     // This is the important part of 'context' in this implementation: the categorization of terms of the context map
-    const terms = get_terms(context);
+    const terms = utilities_1.get_terms(context);
     // console.log(`\n@@@@ ${JSON.stringify(terms)}`)
     /* ============ The individual processing steps, following the spec ============== */
     /* Step: by default, the value should be the normalized value */
@@ -407,7 +401,7 @@ function normalize_data(context, term, value) {
         // This is one of those objects that have assigned terms.
         // In theory, any other objects can be added to the manifest and that should not be forbidden, just copied.
         /* Step: if necessary, normalization should turn single value to an array with that value */
-        if (terms.array_terms.includes(term) && (utilities_1.isString(value) || utilities_1.isBoolean(value) || utilities_1.isNumber(value) || utilities_1.isMap(value) || value === null)) {
+        if (terms.array_terms.includes(term) && (_.isString(value) || _.isBoolean(value) || _.isNumber(value) || isMap(value) || value === null)) {
             // The 'toArray' utility checks and, if necessary, converts to array
             normalized = [value];
         }
@@ -440,11 +434,11 @@ function normalize_data(context, term, value) {
     /* Step: recursively normalize the values of normalize */
     // A previous step may have set an undefined value, this has to be ignored, again just to be on the safe side
     if (normalized !== undefined) {
-        if (utilities_1.isArray(normalized)) {
+        if (_.isArray(normalized)) {
             // Go through each entry, normalize, and remove any undefined value
-            normalized = normalized.map((item) => (utilities_1.isMap(item) ? normalize_map(item) : item)).filter((item) => item !== undefined);
+            normalized = normalized.map((item) => (isMap(item) ? normalize_map(item) : item)).filter((item) => item !== undefined);
         }
-        else if (utilities_1.isMap(normalized)) {
+        else if (isMap(normalized)) {
             normalized = normalize_map(normalized);
         }
     }
@@ -453,24 +447,30 @@ function normalize_data(context, term, value) {
 /**
  * Create a new absolute URL
  *
- * This is used for the implementation of step §4.3.1/5.
-  * [§4.3.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#convert-absolute-url).
-*
+ * This is used for the implementation of step §4.3.1/5, i.e.,
+* [§4.3.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#convert-absolute-url).
+ *
  * @param resource either a string or a (originally JSON) object
  */
 const convert_to_absolute_URL = (resource) => {
-    if (!utilities_1.isString(Global.base) || Global.base === '' || Global.base === null) {
+    if (!_.isString(Global.base) || Global.base === '' || Global.base === null) {
         Global.logger.log_validation_error(`Invalid base ${Global.base}`, null, true);
         return undefined;
     }
-    if (!utilities_1.isString(resource) || resource === '' || resource === null) {
+    if (!_.isString(resource) || resource === '' || resource === null) {
         Global.logger.log_validation_error(`Invalid relative URL ${resource}`, null, true);
         return undefined;
     }
     else {
-        const new_url = url.resolve(Global.base, resource);
-        // The check URL function checks the validity of the URL and whether it is a Web URL
-        return utilities_1.check_url(new_url, Global.logger) ? new_url : undefined;
+        const new_url = urlHandler.resolve(Global.base, resource);
+        // The check URL function checks the validity of the URL and whether it is a valid URL
+        if (validUrl.isUri(new_url) === undefined) {
+            Global.logger.log_validation_error(`${new_url} is an invalid URL`);
+            return undefined;
+        }
+        else {
+            return new_url;
+        }
     }
 };
 /**
@@ -483,10 +483,10 @@ const convert_to_absolute_URL = (resource) => {
  */
 function data_validation(data) {
     // Only those terms should be used which have a definition in the spec, others should be ignored
-    const defined_terms = get_terms(data).array_terms;
+    const defined_terms = utilities_1.get_terms(data).array_terms;
     /* ============ The individual processing steps, following the spec ============== */
     /* Step: perform global data check. (That also includes value type checks.) */
-    Object.getOwnPropertyNames(data).forEach((key) => {
+    process_object_keys(data, (key) => {
         if (defined_terms.includes(key)) {
             data[key] = global_data_checks(data, key, data[key]);
             if (data[key] === undefined) {
@@ -502,24 +502,35 @@ function data_validation(data) {
     /* Step: accessibility */
     if (data.accessModeSufficient) {
         data.accessModeSufficient = data.accessModeSufficient.filter((ams) => {
-            return utilities_1.isMap(ams) && ams.type && ams.type === 'ItemList';
+            return isMap(ams) && ams.type && ams.type === 'ItemList';
         });
     }
     /* Step: identifier check */
-    if (!(data.id && utilities_1.isString(data.id) && data.id !== '')) {
+    if (!(data.id && _.isString(data.id) && data.id !== '')) {
         Global.logger.log_validation_error(`Missing or invalid identifier`, data.id);
     }
     /* Step: duration check */
     if (data.duration) {
+        const durationCheck = RegExp('P((([0-9]*\.?[0-9]*)Y)?(([0-9]*\.?[0-9]*)M)?(([0-9]*\.?[0-9]*)W)?(([0-9]*\.?[0-9]*)D)?)?(T(([0-9]*\.?[0-9]*)H)?(([0-9]*\.?[0-9]*)M)?(([0-9]*\.?[0-9]*)S)?)?');
+        if (!(durationCheck.test(data.duration))) {
+            Global.logger.log_validation_error(`"${data.duration}" is an incorrect duration value`, null, true);
+            delete data.duration;
+        }
         // check the value and remove if wrong
     }
     /* Step: last modification date */
     if (data.dateModified) {
-        // check the value and remove if wrong
+        if (!moment_1.default(data.dateModified, moment_1.default.ISO_8601).isValid()) {
+            Global.logger.log_validation_error(`"${data.dateModified}" is an incorrect date string`, null, true);
+            delete data.dateModified;
+        }
     }
     /* Step: Publication date */
     if (data.datePublished) {
-        // check the value and remove if wrong
+        if (!moment_1.default(data.datePublished, moment_1.default.ISO_8601).isValid()) {
+            Global.logger.log_validation_error(`"${data.datePublished}" is an incorrect date string`, null, true);
+            delete data.datePublished;
+        }
     }
     /* Step: inLanguage */
     if (data.inLanguage) {
@@ -537,10 +548,64 @@ function data_validation(data) {
     else {
         data.readingProgression = manifest_1.ProgressionDirection.ltr;
     }
+    /* Step: remove duplicate links on Linked Resource arrays */
+    /* NOTE: this may have to be removed if the restriction on repeated URI-s is removed! */
+    {
+        const unique_links = (list, list_name) => {
+            const cleaned_list = _.uniq(list, false, (item) => item.url);
+            if (cleaned_list.length === list.length) {
+                // nothing was removed
+                return list;
+            }
+            else {
+                Global.logger.log_validation_error(`Duplicate URL-s removed from "${list_name}"`, null, true);
+                return cleaned_list;
+            }
+        };
+        if (data.readingOrder)
+            data.readingOrder = unique_links(data.readingOrder, "readingOrder");
+        if (data.resources)
+            data.resources = unique_links(data.resources, "resources");
+        if (data.links)
+            data.links = unique_links(data.links, "links");
+    }
+    /* Step: check and remove common resources among reading order, resources, and links */
+    {
+        let commons;
+        const check_duplicates = (list1, list2) => {
+            const l1_urls = (list1 === undefined) ? [] : utilities_1.get_resources(list1);
+            const l2_urls = (list2 === undefined) ? [] : utilities_1.get_resources(list2);
+            const c = _.intersection(l1_urls, l2_urls);
+            let l1 = [], l2 = [];
+            if (c.length !== 0) {
+                l1 = list1.filter((item) => c.includes(utilities_1.remove_url_fragment(item.url)) === false);
+                l2 = list2.filter((item) => c.includes(utilities_1.remove_url_fragment(item.url)) === false);
+            }
+            return { l1, l2, c };
+        };
+        commons = check_duplicates(data.readingOrder, data.resources);
+        if (commons.c.length !== 0) {
+            Global.logger.log_validation_error(`Common URL-s in "readingOrder" and "resources": ${commons.c}`, null, true);
+            data.readingOrder = commons.l1;
+            data.resources = commons.l2;
+        }
+        commons = check_duplicates(data.readingOrder, data.links);
+        if (commons.c.length !== 0) {
+            Global.logger.log_validation_error(`Common URL-s in "readingOrder" and "links": ${commons.c}`, null, true);
+            data.readingOrder = commons.l1;
+            data.links = commons.l2;
+        }
+        commons = check_duplicates(data.resources, data.links);
+        if (commons.c.length !== 0) {
+            Global.logger.log_validation_error(`Common URL-s in "resources" and "links": ${commons.c}`, null, true);
+            data.resources = commons.l1;
+            data.links = commons.l2;
+        }
+    }
     /* Step: profile extension point (not implemented) */
     /* Step: run remove empty arrays */
     // Care should be taken to run this only on entries that are part of the definition of this object!
-    Object.getOwnPropertyNames(data).forEach((key) => {
+    process_object_keys(data, (key) => {
         if (defined_terms.includes(key)) {
             if (!(remove_empty_arrays(data[key]))) {
                 delete data[key];
@@ -560,7 +625,7 @@ function data_validation(data) {
  * @return the normalized value or undefined, in case of error
  */
 function global_data_checks(context, term, value) {
-    const terms = get_terms(context);
+    const terms = utilities_1.get_terms(context);
     if (terms) {
         /* Step: see if the term has a known value category and check that value. */
         // "known value category" means, in this case, that the term is known for the specific context
@@ -572,9 +637,9 @@ function global_data_checks(context, term, value) {
         /* Step: recursively to do data check at this point! */
         {
             const map_data_check = (item) => {
-                if (recognized_type(item)) {
+                if (utilities_1.recognized_type(item)) {
                     // Check that the key is defined!!! Maybe using _.intersection?
-                    Object.getOwnPropertyNames(item).forEach((key) => {
+                    process_object_keys(item, (key) => {
                         const keyValue = item[key];
                         item[key] = global_data_checks(item, key, keyValue);
                         if (item[key] === undefined) {
@@ -584,10 +649,10 @@ function global_data_checks(context, term, value) {
                 }
                 return item;
             };
-            if (utilities_1.isMap(value)) {
+            if (isMap(value)) {
                 map_data_check(value);
             }
-            else if (utilities_1.isArray(value)) {
+            else if (_.isArray(value)) {
                 value = value.map(map_data_check);
             }
         }
@@ -633,12 +698,19 @@ function global_data_checks(context, term, value) {
                     Global.logger.log_validation_error(`URL is missing from a linked resource in "${term}"`, resource, true);
                     return false;
                 }
-                else if (!utilities_1.check_url(resource.url, Global.logger)) {
-                    Global.logger.log_validation_error(`${resource.url} is is not a valid URL`, null, true);
-                    return false;
+                else {
+                    if (validUrl.isUri(resource.url) === undefined) {
+                        Global.logger.log_validation_error(`"${resource.url}" is is not a valid URL`, null, true);
+                        return false;
+                        /* NOTE: this may have to be removed if the restriction on fragments is removed! */
+                    }
+                    else if (['readingOrder', 'resources'].includes(term) && urlHandler.parse(resource.url).hash !== null) {
+                        Global.logger.log_validation_error(`"${resource.url}" must not contain a fragment for "${term}"`, null, true);
+                        return false;
+                    }
                 }
                 if (resource.length) {
-                    if (!(utilities_1.isNumber(resource.length) && resource.length >= 0)) {
+                    if (!(_.isNumber(resource.length) && resource.length >= 0)) {
                         Global.logger.log_validation_error(`Linked Resource length is is invalid in  "${term}"`, resource, true);
                         return false;
                     }
@@ -669,7 +741,7 @@ function global_data_checks(context, term, value) {
 function verify_value_category(context, term, value) {
     const check_expected_type = (keys, key, obj) => {
         if (keys.array_or_single_literals.includes(key)) {
-            return utilities_1.isString(obj);
+            return _.isString(obj);
         }
         else if (keys.array_of_strings.includes(key)) {
             return obj instanceof manifest_classes_1.LocalizableString_Impl;
@@ -681,13 +753,13 @@ function verify_value_category(context, term, value) {
             return obj instanceof manifest_classes_1.LinkedResource_Impl;
         }
         else if (keys.array_or_single_urls.includes(key)) {
-            return utilities_1.isString(obj);
+            return _.isString(obj);
         }
         else if (keys.single_number.includes(key)) {
-            return utilities_1.isNumber(obj);
+            return _.isNumber(obj);
         }
         else if (keys.single_boolean.includes(key)) {
-            return utilities_1.isBoolean(obj);
+            return _.isBoolean(obj);
         }
         else {
             // No constraint defined
@@ -702,9 +774,9 @@ function verify_value_category(context, term, value) {
         return check_result;
     };
     const verify_map = (obj) => {
-        const keys = get_terms(obj);
+        const keys = utilities_1.get_terms(obj);
         const defined_terms = keys.all_terms;
-        Object.getOwnPropertyNames(obj).forEach((key) => {
+        process_object_keys(obj, (key) => {
             if (defined_terms.includes(key)) {
                 const check_result = verify_value_category(obj, key, obj[key]);
                 if (!(check_result)) {
@@ -720,16 +792,16 @@ function verify_value_category(context, term, value) {
             return false;
         }
     };
-    const terms = get_terms(context);
+    const terms = utilities_1.get_terms(context);
     if (terms.array_terms.includes(term)) {
-        if (!(utilities_1.isArray(value))) {
+        if (!(_.isArray(value))) {
             Global.logger.log_validation_error(`Value should be an array for "${term}"`, value);
             return false;
         }
         else {
             value = value.map((item) => {
                 if (check_expected_type_and_report(terms, term, item)) {
-                    return utilities_1.isMap(item) ? verify_map(item) : item;
+                    return isMap(item) ? verify_map(item) : item;
                 }
                 else {
                     // wrong type
@@ -746,7 +818,7 @@ function verify_value_category(context, term, value) {
         }
     }
     else if (terms.maps.includes(term)) {
-        if (!(utilities_1.isMap(value))) {
+        if (!(isMap(value))) {
             Global.logger.log_validation_error(`Value should be a map for "${term}"`, value);
             return false;
         }
@@ -758,18 +830,18 @@ function verify_value_category(context, term, value) {
 }
 /**
  *
- * Remove empty arrays, and remove empty arrays from maps. This corresponds to the main body of
+ * Remove empty arrays, and, if applicable, remove empty arrays from maps. This corresponds to the main body of
  * [§4.3.2.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#remove-empty-arrays).
  *
  * @param data the data to be checked
  * @return false if the array is empty, true otherwise
  */
 function remove_empty_arrays(value) {
-    if (utilities_1.isArray(value) && value.length === 0) {
+    if (_.isArray(value) && value.length === 0) {
         return false;
     }
-    else if (utilities_1.isMap(value)) {
-        Object.getOwnPropertyNames(value).forEach((key) => {
+    else if (isMap(value)) {
+        process_object_keys(value, (key) => {
             const keyValue = value[key];
             if (!remove_empty_arrays(keyValue)) {
                 delete value[key];

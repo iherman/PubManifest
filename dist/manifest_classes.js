@@ -3,15 +3,24 @@
  * Implementation classes for the Publication manifest. See 'manifest.ts' for the visible interfaces.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * The core interfaces that are implemented in this module
+ */
 const manifest_1 = require("./manifest");
 // -------------------------------------------- Convenience variables -------------------------------------
-// A11Y properties that have arrays of literals as values
+// A11Y properties that have lists of literals as values
+/**
+ * A11Y properties that have lists of literals as values
+ */
 const a11y_properties = [
     'accessMode',
     'accessibilityFeature',
     'accessibilityControl',
     'accessibilityHazard'
 ];
+/**
+ * List of creator properties (all refer to an array of [[Entity]])
+ */
 const creator_properties = [
     'artist',
     'author',
@@ -36,7 +45,7 @@ const creator_properties = [
  *
  * There is methods to return combination of terms, used by the main algorithm: all terms that refer to arrays, to literals, resp. URL-s, in some ways (arrays or not), etc.
  *
- * The pattern used for this class is to
+ * The pattern used for these classes is to
  *
  * - define a number of static variables for each class listing the relevant terms
  * - define a static instance of the Terms class for each class using this terms.
@@ -47,7 +56,7 @@ const creator_properties = [
  */
 class Terms {
     /**
-     * All the terms that expect arrays as values
+     * Terms that expect arrays as values
      */
     get array_terms() {
         return [
@@ -60,28 +69,25 @@ class Terms {
         ];
     }
     /**
-     * All the terms that expect literals, either as individual values or arrays
+     * Terms referring to literals, either as individual values or arrays
      */
     get array_or_single_literals() {
         return [...this.single_literal, ...this.array_of_literals];
     }
     /**
-     * All the terms that expect URLs, either as individual values or arrays
+     * Terms referring to URLs, either as individual values or arrays
      */
     get array_or_single_urls() {
         return [...this.single_url, ...this.array_of_urls];
     }
     /**
-     * All the terms that expect a single map (not an array of maps!)
+     * Terms referring to a single map (not used at present, added as a placeholder))
      */
     get maps() {
-        // This method is special; the main algorithm refers to this, although it never return anything in practice: it corresponds to the case
-        // where there is a term whose value is a single map (as opposed to arrays). Such situation does not occur as of now, but
-        // it may in the future...
         return [];
     }
     /**
-     * All the terms
+     * All terms defined for this type
      */
     get all_terms() {
         return [
@@ -95,6 +101,9 @@ class Terms {
     }
 }
 exports.Terms = Terms;
+/**
+ * Terms defined for Entities
+ */
 class EntityTerms extends Terms {
     constructor() {
         super(...arguments);
@@ -111,6 +120,9 @@ class EntityTerms extends Terms {
         this.array_of_miscs = [];
     }
 }
+/**
+ * Terms defined for Linked Resources
+ */
 class LinkedResourceTerms extends Terms {
     constructor() {
         super(...arguments);
@@ -127,6 +139,9 @@ class LinkedResourceTerms extends Terms {
         this.array_of_miscs = [];
     }
 }
+/**
+ * Terms defined for Localizable Strings
+ */
 class LocalizableStringTerms extends Terms {
     constructor() {
         super(...arguments);
@@ -143,6 +158,9 @@ class LocalizableStringTerms extends Terms {
         this.array_of_miscs = [];
     }
 }
+/**
+ * Terms defined for the (top level) Publication Manifest
+ */
 class PublicationManifestTerms extends Terms {
     constructor() {
         super(...arguments);
@@ -160,27 +178,35 @@ class PublicationManifestTerms extends Terms {
     }
 }
 /**
- * Entities, ie, persons or organizations
+ * Implementation of [[Entity]], superclass for [[Person_Impl]] or [[Organization_Impl]]
  */
 class Entity_Impl {
+    /** A [[Term]] instance referring to the terms defined for [[Entity]] */
     get terms() {
         return new EntityTerms();
     }
 }
 exports.Entity_Impl = Entity_Impl;
 ;
+/**
+ * Implementation for a [[Person]]
+ */
 class Person_Impl extends Entity_Impl {
 }
 exports.Person_Impl = Person_Impl;
 ;
+/**
+ * Implementation for a [[Organization]]
+ */
 class Organization_Impl extends Entity_Impl {
 }
 exports.Organization_Impl = Organization_Impl;
 ;
 /**
- * Localizable Strings, i.e., string values with possible languages
+ * Implementation for [[LocalizableString]]
  */
 class LocalizableString_Impl {
+    /** A [[Term]] instance referring to the terms defined for [[LocalizableString]] */
     get terms() {
         return new LocalizableStringTerms();
     }
@@ -188,9 +214,10 @@ class LocalizableString_Impl {
 exports.LocalizableString_Impl = LocalizableString_Impl;
 ;
 /**
- * Linked Resources (ie, references to publication resources)
+ * Implementation for [[LinkedResource]]
  */
 class LinkedResource_Impl {
+    /** A [[Term]] instance referring to the terms defined for [[LinkedResource]] */
     get terms() {
         return new LinkedResourceTerms();
     }
@@ -198,7 +225,7 @@ class LinkedResource_Impl {
 exports.LinkedResource_Impl = LinkedResource_Impl;
 ;
 /**
- * The top level class for a publication manifest
+ * Implementation for [[PublicationManifest]]
  */
 class PublicationManifest_Impl {
     constructor() {
@@ -208,6 +235,7 @@ class PublicationManifest_Impl {
         this.name = [];
         this.readingOrder = [];
     }
+    /** A [[Term]] instance referring to the terms defined for [[PublicationManifest]] */
     get terms() {
         return new PublicationManifestTerms();
     }
