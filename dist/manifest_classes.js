@@ -106,12 +106,12 @@ exports.Terms = Terms;
 class EntityTerms extends Terms {
     constructor() {
         super(...arguments);
-        this.single_literal = ['id'];
+        this.single_literal = [];
         this.array_of_literals = ['type', 'identifier'];
         this.array_of_strings = ['name'];
         this.array_of_entities = [];
         this.array_of_links = [];
-        this.single_url = [];
+        this.single_url = ['id'];
         this.array_of_urls = [];
         this.single_boolean = [];
         this.single_number = [];
@@ -163,12 +163,12 @@ class LocalizableStringTerms extends Terms {
 class PublicationManifestTerms extends Terms {
     constructor() {
         super(...arguments);
-        this.single_literal = ['dateModified', 'datePublished', 'id', 'readingProgression'];
+        this.single_literal = ['dateModified', 'datePublished', 'readingProgression'];
         this.array_of_literals = [...a11y_properties, 'inLanguage', 'type', 'conformsTo'];
         this.array_of_strings = ['name', 'accessibilitySummary'];
         this.array_of_entities = [...creator_properties];
         this.array_of_links = ['readingOrder', 'resources', 'links'];
-        this.single_url = [];
+        this.single_url = ['id'];
         this.array_of_urls = ['url'];
         this.single_boolean = ['abridged'];
         this.single_number = [];

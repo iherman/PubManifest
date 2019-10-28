@@ -141,12 +141,12 @@ export abstract class Terms {
  * Terms defined for [[Entity]] implementations.
  */
 class EntityTerms extends Terms {
-    single_literal:    string[] = ['id'];
+    single_literal:    string[] = [];
     array_of_literals: string[] = ['type', 'identifier'];
     array_of_strings:  string[] = ['name'];
     array_of_entities: string[] = [];
     array_of_links:    string[] = [];
-    single_url:        string[] = [];
+    single_url:        string[] = ['id'];
     array_of_urls:     string[] = [];
     single_boolean:    string[] = [];
     single_number:     string[] = [];
@@ -192,12 +192,12 @@ class LocalizableStringTerms extends Terms {
  * Terms defined for the [[PublicationManifest]] implementations
  */
 class PublicationManifestTerms extends Terms {
-    single_literal:    string[] = ['dateModified', 'datePublished', 'id', 'readingProgression'];
+    single_literal:    string[] = ['dateModified', 'datePublished', 'readingProgression'];
     array_of_literals: string[] = [...a11y_properties, 'inLanguage', 'type', 'conformsTo'];
     array_of_strings:  string[] = ['name', 'accessibilitySummary'];
     array_of_entities: string[] = [...creator_properties];
     array_of_links:    string[] = ['readingOrder', 'resources', 'links'];
-    single_url:        string[] = [];
+    single_url:        string[] = ['id'];
     array_of_urls:     string[] = ['url'];
     single_boolean:    string[] = ['abridged'];
     single_number:     string[] = [];

@@ -56,7 +56,7 @@ async function main(url: string) {
 
 // Look at the process.argv for arguments
 // print process.argv
-const test_url = (process.argv[2] !== undefined) ? `${base}test_${process.argv[2]}.json` : `${base}test_${default_test}.json`;
+const test_url = (process.argv[2] !== undefined) ? `${base}test_${process.argv[2]}.jsonld` : `${base}test_${default_test}.jsonld`;
 main(test_url);
 
 

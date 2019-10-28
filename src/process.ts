@@ -575,10 +575,11 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
         })
     }
 
-    /* Step: identifier check */
-    if (!(data.id && _.isString(data.id) && data.id !== '')) {
-        Global.logger.log_validation_error(`Missing or invalid identifier`, data.id);
-    }
+    /* Step: identifier check; has been mostly done by virtue of checking the URL */
+    if (!data.id)
+        Global.logger.log_validation_error(`No id provided`);
+        // This removes the '' string, if present
+        delete data.id
 
     /* Step: duration check */
     if (data.duration) {

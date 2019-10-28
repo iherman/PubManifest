@@ -536,8 +536,14 @@ function data_validation(data) {
         });
     }
     /* Step: identifier check */
-    if (!(data.id && _.isString(data.id) && data.id !== '')) {
-        Global.logger.log_validation_error(`Missing or invalid identifier`, data.id);
+    if (data.id) {
+        if (!(_.isString(data.id) && data.id !== '')) {
+            Global.logger.log_validation_error(`Invalid identifier`, data.id, true);
+            delete data.id;
+        }
+    }
+    else {
+        Global.logger.log_validation_error(`Missing identifier`);
     }
     /* Step: duration check */
     if (data.duration) {

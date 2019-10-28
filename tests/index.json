@@ -1,0 +1,23 @@
+[
+    {
+        "chapter": "2.4",
+        "title": "Manifest contexts",
+        "url": "https://www.w3.org/TR/pub-manifest/#manifest-context",
+        "tests": [
+            {
+                "id" : "2401",
+                "description": "Missing Context",
+                "expected_actions": "return empty"
+                "validation_error": null,
+                "fatal_error": "missing context"
+            },
+            {
+                "id": "2402",
+                "description": "context incomplete",
+                "expected_actions": "return empty",
+                "validation_error": null,
+                "fatal_error": "missing context"
+            }
+        ]
+    }
+]
