@@ -539,19 +539,24 @@ const convert_to_absolute_URL = (resource: URL): URL => {
  */
 function data_validation(data: PublicationManifest_Impl): PublicationManifest_Impl {
     // Only those terms should be used which have a definition in the spec, others should be ignored
-    const defined_terms = get_terms(data).array_terms;
+    const terms = get_terms(data);
+    const defined_terms = terms.all_terms;
 
     /* ============ The individual processing steps, following the spec ============== */
-
     /* Step: perform global data check. (That also includes value type checks.) */
-    process_object_keys(data, (key:string): void => {
-        if (defined_terms.includes(key)) {
-            data[key] = global_data_checks(data, key, data[key]);
-            if (data[key] === undefined) {
-                delete data[key];
+    {
+        // The misc terms should be ignored for the global data checks, they deserve
+        // special treatment. That is why they are "misc"-s :-)
+        const regular_terms = _.difference(defined_terms, terms.array_of_miscs)
+        process_object_keys(data, (key:string): void => {
+            if (regular_terms.includes(key)) {
+                data[key] = global_data_checks(data, key, data[key]);
+                if (data[key] === undefined) {
+                    delete data[key];
+                }
             }
-        }
-    });
+        });
+    }
 
     /* Step: publication type */
     if (!data.type) {
@@ -562,7 +567,11 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
     /* Step: accessibility */
     if (data.accessModeSufficient) {
         data.accessModeSufficient = data.accessModeSufficient.filter((ams: any): boolean => {
-            return isMap(ams) && ams.type && ams.type === 'ItemList'
+            const check_value = isMap(ams) && ams.type && ams.type === 'ItemList'
+            if (!check_value) {
+                Global.logger.log_validation_error(`Value of "accessModeSufficient" is invalid`, ams, true);
+            }
+            return check_value;
         })
     }
 
@@ -708,6 +717,8 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
     if (terms) {
         /* Step: see if the term has a known value category and check that value. */
         // "known value category" means, in this case, that the term is known for the specific context
+        // the "misc" entries should be excluded, though; they have to go through an explicit check,
+        // that is whey they are "misc"-s...
         if (terms.all_terms.includes(term)) {
             if (verify_value_category(context, term, value) === false) {
                 return undefined;
@@ -900,8 +911,9 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
         } else {
             return verify_map(value);
         }
+    } else {
+        return check_expected_type_and_report(terms, term, value);
     }
-    return check_expected_type(terms, term, value);
 }
 
 

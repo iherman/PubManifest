@@ -2,7 +2,7 @@
 
 ## 2.4 [Manifest contexts](https://www.w3.org/TR/pub-manifest/#manifest-context)
 
-- `test_2401.json` context missing
+- `test_2401.json` Missing Context
   - Expected actions:
     - return empty
   - Expected errors:
@@ -57,6 +57,33 @@
     - set profile to user agent's default
   - Expected errors:
     - Validation error on no known conformance
+
+## 2.8.1.1 Abridged
+
+- `test_281101.json` Check invalid value for `abridged`
+  - Expected actions:
+    - the value of `abridged` should be removed from the result
+  - Expected error:
+    - validation error on `abridged`
+
+## 2.8.1.2. Accessibility
+
+- `test_281201.json` Check the simple a11y terms
+  - Expected actions:
+    - All values should be turned into arrays of literals
+  - Expected error: none
+
+- `test_281202.json` Separate test on `accessModeSufficient`: invalid input
+  - Expected actions:
+    - The illegal value ("visual") should be removed, the valid one stays
+  - Expected error:
+    - Validation error on the incorrect data
+
+- `test_281203.json` Separate test on `accessModeSufficient`: only invalid input
+  - Expected actions:
+    - Both values being invalid, the key should be removed altogether
+  - Expected error:
+    - Validation error on the incorrect data
 
 ## 2.8.16 [Duration](https://www.w3.org/TR/pub-manifest/#duration)
 

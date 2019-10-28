@@ -38,20 +38,19 @@ const creator_properties = [
 ];
 // -------------------------------------------- Categorization of terms -------------------------------------
 /**
- * Categorization of terms per value types: arrays for terms as single literal values, multiple literal values (ie, must be turned into an array of strings),
- * single localizable string and an array of localizable strings, array of entities, array of linked resources, urls, booleans, etc.
+ * Categorization of terms per value types.
  *
- * These arrays are used in generic method calls to handle, e.g., the creation and check of arrays of localizable strings.
- *
- * There is methods to return combination of terms, used by the main algorithm: all terms that refer to arrays, to literals, resp. URL-s, in some ways (arrays or not), etc.
+ * A wrapper around arrays for terms as single literal values, multiple literal values (i.e., that must be turned into an array of strings),
+ * single localizable string and an array of localizable strings, array of entities, array of linked resources, urls, booleans, etc. These arrays
+ * are used in generic method calls to handle, e.g., the creation and check of arrays of localizable strings. There are accessors to return combination of terms, used by the main algorithm: all terms that refer to arrays, to literals, resp. URL-s, in some ways (arrays or not), etc.
  *
  * The pattern used for these classes is to
  *
- * - define a number of static variables for each class listing the relevant terms
- * - define a static instance of the Terms class for each class using this terms.
+ * - define a number of static variables for each implementation class, listing the relevant terms
+ * - define an instance of the [[Terms]] class for each implementation class using this terms.
  *
- * The reason for this pattern is that end user, who gets an instance of, say, the Entity_Impl class implementing the Entity interface
- * can debug (e.g., dump the class into JSON) without being bothered by the various term arrays.
+ * The reason for this pattern is that end user, who gets an instance of, say, the [[Entity_Impl]] class implementing the [[Entity]] interface,
+ * can use generic methods to check, normalize, validate, etc., term values.
  *
  */
 class Terms {
@@ -102,7 +101,7 @@ class Terms {
 }
 exports.Terms = Terms;
 /**
- * Terms defined for Entities
+ * Terms defined for [[Entity]] implementations.
  */
 class EntityTerms extends Terms {
     constructor() {
@@ -121,7 +120,7 @@ class EntityTerms extends Terms {
     }
 }
 /**
- * Terms defined for Linked Resources
+ * Terms defined for [[LinkedResource]] implementations
  */
 class LinkedResourceTerms extends Terms {
     constructor() {
@@ -140,7 +139,7 @@ class LinkedResourceTerms extends Terms {
     }
 }
 /**
- * Terms defined for Localizable Strings
+ * Terms defined for [[LocalizableString]] implementations
  */
 class LocalizableStringTerms extends Terms {
     constructor() {
@@ -159,7 +158,7 @@ class LocalizableStringTerms extends Terms {
     }
 }
 /**
- * Terms defined for the (top level) Publication Manifest
+ * Terms defined for the [[PublicationManifest]] implementations
  */
 class PublicationManifestTerms extends Terms {
     constructor() {
@@ -181,7 +180,7 @@ class PublicationManifestTerms extends Terms {
  * Implementation of [[Entity]], superclass for [[Person_Impl]] or [[Organization_Impl]]
  */
 class Entity_Impl {
-    /** A [[Term]] instance referring to the terms defined for [[Entity]] */
+    /** A [[Terms]] instance referring to the terms defined for [[Entity]] */
     get terms() {
         return new EntityTerms();
     }
@@ -206,7 +205,7 @@ exports.Organization_Impl = Organization_Impl;
  * Implementation for [[LocalizableString]]
  */
 class LocalizableString_Impl {
-    /** A [[Term]] instance referring to the terms defined for [[LocalizableString]] */
+    /** A [[Terms]] instance referring to the terms defined for [[LocalizableString]] */
     get terms() {
         return new LocalizableStringTerms();
     }
@@ -217,7 +216,7 @@ exports.LocalizableString_Impl = LocalizableString_Impl;
  * Implementation for [[LinkedResource]]
  */
 class LinkedResource_Impl {
-    /** A [[Term]] instance referring to the terms defined for [[LinkedResource]] */
+    /** A [[Terms]] instance referring to the terms defined for [[LinkedResource]] */
     get terms() {
         return new LinkedResourceTerms();
     }
@@ -235,7 +234,7 @@ class PublicationManifest_Impl {
         this.name = [];
         this.readingOrder = [];
     }
-    /** A [[Term]] instance referring to the terms defined for [[PublicationManifest]] */
+    /** A [[Terms]] instance referring to the terms defined for [[PublicationManifest]] */
     get terms() {
         return new PublicationManifestTerms();
     }
