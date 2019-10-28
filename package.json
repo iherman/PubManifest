@@ -1,5 +1,5 @@
 {
-    "name": "pubmanifest",
+    "name": "PubManifest",
     "version": "1.0.0",
     "description": "Processing of a publication manifests into a Typescript internal representation.",
     "main": "dist/main.js",

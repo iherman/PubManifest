@@ -1,5 +1,5 @@
 /**
- * Implementation (with minor omission, see comments) of the Processing steps as define in
+ * Implementation (with minor omission, see comments) of the Processing steps as defined in
  * [§4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing).
  *
  * Because the primary goal of all this is checking the processing algorithm,

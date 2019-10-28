@@ -1,8 +1,12 @@
 /**
- * Implementation (with minor omission, see comments) of the Processing steps as define in
- * [§4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing).
+ * Implementation of the Processing Steps.
+ *
+ * (As defined in
+ * [§4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing)).
  *
  * The functions, including their names, follow, as far as possible, the names used in the specification.
+ *
+ * The main entry of the module is [[generate_representation]].
  *
  */
 
@@ -58,11 +62,17 @@ import * as _ from 'underscore';
 import moment from 'moment';
 
 
-// This should really be an underscore function...
+/**
+ * Check whether an object is a “map” object (i.e., not an array or a function in Javascript sense).
+ *
+ * (This should really be an underscore function...)
+ *
+ * @param value
+ */
 const isMap = (value: any): boolean => _.isObject(value) && !_.isArray(value) && !_.isFunction(value);
 
 /**
- * Callback type definition to define the `process_object_keys` function in a TS happy way...
+ * Callback type definition to define the [[process_object_keys]] function in a TS happy way...
  */
 interface ObjCallback {
     (term: string): void
@@ -83,7 +93,7 @@ const process_object_keys = (obj: object, callback: ObjCallback) => {
 
 /**
  * The URL of the 'default' profile for the conformance.
- * (This still has to stabilize in the spec)
+ * (This still has to be stabilize in the spec.)
  */
 const default_profile = 'https://www.w3.org/TR/pub-manifest/';
 
@@ -94,13 +104,21 @@ const default_profile = 'https://www.w3.org/TR/pub-manifest/';
 const known_profiles = [default_profile, 'https://www.w3.org/TR/audiobooks/']
 
 /**
- * "Global" object; these values help in streamlining some of the functions
+ * "Global" object.
+ *
+ * These values are, conceptually, global variables shared among functions.
+ *
  */
 class Global  {
+    /** A [[Logger]] instance used to store the fatal and validation errors during processing. */
     static logger:  Logger;
+    /** Global language tag declaration */
     static lang:    string = '';
+    /** Global base direction declaration */
     static dir:     string = '';
-    static base:    string = '';
+    /** Global base URL */
+    static base:    URL = '';
+    /** Final profile for the User Agent (stored only for testing purpose, not really used). */
     static profile: string = '';
 }
 
@@ -111,13 +129,13 @@ class Global  {
 ====================================================================================================== */
 
 /**
- * Create a new entity, i.e., either a Person or an Organization.
+ * Create a new entity, i.e., either a [[Person_Impl]] or an [[Organization_Impl]].
  * The input argument may be a string or an existing object; the specs describes how a full
  * class instance should be created.
  *
- * This corresponds to §4.3.1/3.
+ * This corresponds to [§4.4.1/3](https://www.w3.org/TR/pub-manifest/#normalize-data).
  *
- * @param resource either a string or a (originally JSON) object
+ * @param resource - either a string or a (originally JSON) object
  */
 const create_Entity = (resource: any) : Person|Organization => {
     if (resource === null || _.isBoolean(resource) || _.isNumber(resource) || _.isArray(resource)) {
@@ -156,13 +174,13 @@ const create_Entity = (resource: any) : Person|Organization => {
 }
 
 /**
- * Create a new localizable string
+ * Create a new [[LocalizableString_Impl]].
  * The input argument may be a string or an existing object; the specs describes how a full
  * class instance should be created.
  *
- * This corresponds to §4.3.1/4.
+ * This corresponds to [§4.4.1/4](https://www.w3.org/TR/pub-manifest/#normalize-data).
  *
- * @param resource either a string or a (originally JSON) object
+ * @param resource - either a string or a (originally JSON) object
  */
 const create_LocalizableString = (resource: any): LocalizableString => {
     if (resource === null || _.isBoolean(resource) || _.isNumber(resource) || _.isArray(resource)) {
@@ -202,13 +220,13 @@ const create_LocalizableString = (resource: any): LocalizableString => {
 
 
 /**
- * Create a new Linked Resource
+ * Create a new [[LinkedResource_Impl]].
  * The input argument may be a string or an existing object; the specs describes how a full
  * class instance should be created.
  *
- * This corresponds to §4.3.1/5.
+ * This corresponds to [§4.4.1/5](https://www.w3.org/TR/pub-manifest/#normalize-data).
  *
- * @param resource either a string or a (originally JSON) object
+ * @param resource - either a string or a (originally JSON) object
  */
 const create_LinkedResource = (resource: any): LinkedResource => {
     if (resource === null || _.isBoolean(resource) || _.isNumber(resource) || _.isArray(resource)) {
@@ -251,17 +269,19 @@ const create_LinkedResource = (resource: any): LinkedResource => {
 
 /**
  * Process the manifest. This corresponds to the main body of
- * [§4.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#processing-algorithm).
+ * [§4.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#processing-algorithm).
  *
- * Note, however, that this function does a little bit more. Whereas the official processing steps
- * start with the json _text_, and delegates the access to this to a profile, this function shortcuts this,
- * and starts with the URL of the JSON file.
+ * _This is the main (and only) entry point to the module._
+ *
+ * Note that this function does a little bit more than what is in the specification. Whereas the official processing steps
+ * start with the json _text_ as an argument, and delegates the access to original JSON to a specific profile, this function shortcuts this
+ * and starts with the URL of the JSON file, which is used to fetch the JSON object (hence also the async nature of the function).
  *
  * @async
- * @param url: address of the JSON file
- * @param base: base URL; if undefined or empty, fall back on the value of url
- * @param logger: an extra parameter to collect the error messages in one place, to be then processed by the caller
- * @return the processed manifest
+ * @param url - address of the JSON file
+ * @param base - base URL; if undefined or empty, fall back on the value of url
+ * @param logger - an extra parameter to collect the error messages in one place, to be then processed by the caller
+ * @return - the processed manifest
  */
 export async function generate_representation(url: URL, base: URL, logger: Logger): Promise<PublicationManifest> {
     // This is necessary to make the language and direction global extraction in a TS happy way...
@@ -381,11 +401,12 @@ export async function generate_representation(url: URL, base: URL, logger: Logge
 /**
  *
  * Normalize Data. This corresponds to the main body of
- * [§4.3.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#normalize-data).
+ * [§4.4.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#normalize-data).
  *
- * @param context 'context', in this case the object that has invoked the function
- * @param term property term
- * @param value property value
+ * @param context - 'context', i.e., the object on which the function has been invoked
+ * @param term - property term
+ * @param value - property value
+ * @returns - the “normalized” value, or `undefined` if a fatal error occurs
  */
 function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, term: string, value: any): any {
     /**
@@ -414,8 +435,6 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
 
     // This is the important part of 'context' in this implementation: the categorization of terms of the context map
     const terms = get_terms(context);
-
-    // console.log(`\n@@@@ ${JSON.stringify(terms)}`)
 
     /* ============ The individual processing steps, following the spec ============== */
 
@@ -484,11 +503,12 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
  * Create a new absolute URL
  *
  * This is used for the implementation of step §4.3.1/5, i.e.,
-* [§4.3.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#convert-absolute-url).
+* [§4.4.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#convert-absolute-url).
  *
- * @param resource either a string or a (originally JSON) object
+ * @param resource - the (absolute or relative) URL
+ * @returns - the absolute URL using the `base` value of [[Global]], or `undefined` in case of error (e.g., invalid URL)
  */
-const convert_to_absolute_URL = (resource: any): URL => {
+const convert_to_absolute_URL = (resource: URL): URL => {
     if (!_.isString(Global.base) || Global.base === '' || Global.base === null) {
         Global.logger.log_validation_error(`Invalid base ${Global.base}`, null, true);
         return undefined;
@@ -512,10 +532,10 @@ const convert_to_absolute_URL = (resource: any): URL => {
 /**
  *
  * Data Validation. This corresponds to the main body of
- * [§4.3.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#validate-data).
+ * [§4.4.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#validate-data).
  *
- * @param data the data to be checked
- * @return checked data (the final value of processed)
+ * @param data - the data to be checked
+ * @return - checked data (becomes the final value of `processed` in [[generate_representation]] before returned to the caller)
  */
 function data_validation(data: PublicationManifest_Impl): PublicationManifest_Impl {
     // Only those terms should be used which have a definition in the spec, others should be ignored
@@ -676,10 +696,12 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
  * Global Data Check. This corresponds to the main body of
  * [§4.4.2.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#global-data-checks).
  *
- * @param context 'context', in this case the object that has invoked the function
- * @param term property term
- * @param value property value
- * @return the normalized value or undefined, in case of error
+ * This is a recursive function.
+ *
+ * @param context - 'context', i.e., the object on which the function has been invoked
+ * @param term - property term
+ * @param value - property value
+ * @return - the normalized value or `undefined`, in case of error
  */
 function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_Impl, term: string, value: any): any {
     const terms = get_terms(context);
@@ -789,13 +811,13 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
 
 /**
  *
- * Global Data Check. This corresponds to the main body of
+ * Verify the value category. This corresponds to the main body of
  * [§4.4.2.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#verify-value-category).
  *
- * @param context 'context', in this case the object that has invoked the function
- * @param term property term
- * @param value property value
- * @return true or false, depending on whether the value category check is successful or not
+ * @param context - 'context', in this case the object that has invoked the function
+ * @param term - property term
+ * @param value - property value
+ * @return - result of the category check
  */
 function verify_value_category(context:  PublicationManifest_Impl|RecognizedTypes_Impl|LocalizableString_Impl, term: string, value: any): boolean {
 
@@ -885,11 +907,14 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
 
 /**
  *
- * Remove empty arrays, and, if applicable, remove empty arrays from maps. This corresponds to the main body of
+ * Remove empty arrays. This corresponds to the main body of
  * [§4.3.2.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#remove-empty-arrays).
  *
- * @param data the data to be checked
- * @return false if the array is empty, true otherwise
+ * The function is a slight misnomer: it checks whether the incoming value is an array and, if yes, checks whether it is empty or not; however
+ * if the value is an objects, it looks for the constituent arrays and removes the empty ones from the object.
+ *
+ * @param value - the data to be checked
+ * @return - `false` if the the value is an empty array, `true` otherwise
  */
 function remove_empty_arrays(value: any): boolean {
     if (_.isArray(value) && value.length === 0) {
