@@ -7,7 +7,7 @@
         "test": "ts-node src/main.ts",
         "build": "tsc",
         "run": "node dist/main.js",
-        "doc": "typedoc --out docs src/"
+        "doc": "typedoc --disableOutputCheck --out docs src/"
     },
     "license": "W3C-20150513",
     "keywords": [
