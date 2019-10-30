@@ -395,6 +395,22 @@ export async function generate_representation(url: URL, base: URL, logger: Logge
     /* Step: calculate the set of unique URL-s  */
     processed.uniqueResources = obtain_list_of_unique_resources(processed.readingOrder, processed.resources);
 
+    /* Step: Remove entries in "links" whose URL also appear in 'bounds' */
+    if (processed.links) {
+        processed.links = processed.links.filter((link: LinkedResource): boolean => {
+            const check_result = processed.uniqueResources.includes(remove_url_fragment(link.url));
+            if (check_result) {
+                Global.logger.log_validation_error(`${link.url} appear in "links" but is within the bounds of the publication`, null, true);
+                return false;
+            } else {
+                return true;
+            }
+        });
+        if (processed.links.length === 0) {
+            delete processed.links;
+        }
+    }
+
     /* Step: return processed */
     return processed
 }
@@ -635,29 +651,6 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
                 return true;
             } else {
                 Global.logger.log_validation_error(`Duplicate URL "${item.url}" removed from "resources"`, null, true);
-            }
-        });
-    }
-
-    /* Step: remove entries in 'link' whose URL appear in resources or the reading order */
-    if (data.links) {
-        // check the presence of a url in an array of linked resources
-        const check_url_in_links = (item_list: LinkedResource[], value: URL): boolean => {
-            if (item_list !== undefined) {
-                return get_resources(item_list).includes(value);
-            } else {
-                false;
-            }
-        };
-
-        data.links = data.links.filter((item: LinkedResource): boolean => {
-            const url = remove_url_fragment(item.url);
-            const check_result = check_url_in_links(data.readingOrder, url) || check_url_in_links(data.resources, url);
-            if (check_result) {
-                Global.logger.log_validation_error(`URL "${item.url}" in "links" also appears in the bounds of the publication`, null, true);
-                return false;
-            } else {
-                return true;
             }
         });
     }
