@@ -1,7 +1,0 @@
-include:
-    - "*.html"
-exclude:
-    - dist
-    - src
-    - tests
-    - typings

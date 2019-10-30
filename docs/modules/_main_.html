@@ -69,23 +69,8 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Implementation (with minor omission, see comments) of the Processing steps as defined in
-						<a href="https://www.w3.org/TR/pub-manifest/#manifest-processing">§4 of the Publication Manifest</a>.</p>
+						<p>This module is just a simple entry point, providing a rudimentary CLI.</p>
 					</div>
-					<p>Because the primary goal of all this is checking the processing algorithm,
-						there is (currently) no implementation of the extraction from an HTML file or handling extensions. Accordingly,
-					the &quot;Add HTML Defaults&quot; step (<a href="https://www.w3.org/TR/pub-manifest/#dfn-add-html-defaults">§4.4.3</a>) is not implemented either.</p>
-					<p>Implementation specificities:</p>
-					<ul>
-						<li>when the document says &#39;failure is returned&#39;, this appears in the code as returning the Javascript value <code>undefined</code> or, when the function returns a boolean, <code>false</code>.</li>
-						<li>the &#39;context&#39; is implemented via one of the <code>*_Impl</code> class instances corresponding to the TS Interface definitions for the internal representations. All these classes have a reference to a <a href="../classes/_manifest_classes_.terms.html">Terms</a> instance that classifies the terms defined for that class (type).
-							Note, however, that the HTML related functions (e.g., extracting <code>&lt;title&gt;</code>) is <em>not</em> implemented
-						at this point.</li>
-					</ul>
-					<p>Also, the implementation is a bit more complicated than it would be in Javascript, mainly due to the requirements of Typescript.
-						For example, the original object, parsed from JSON, cannot be directly modified and returned as <code>processed</code>; instead, Typescript classes, duly defined as
-					implementing the Typescript interfaces, must be created with the key/values set.</p>
-					<p>This module is just a simple entry point, providing a rudimentary CLI.</p>
 				</div>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -117,7 +102,7 @@
 					<div class="tsd-signature tsd-kind-icon">base<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"http://localhost:8001/LocalData/github/Publishing/PubManifest/tests/"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;http://localhost:8001/LocalData/github/Publishing/PubManifest/tests/&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/996bd77/src/main.ts#L27">main.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/f534b64/src/main.ts#L9">main.ts:9</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -133,7 +118,7 @@
 					<div class="tsd-signature tsd-kind-icon">default_<wbr>test<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"lo"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;lo&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/996bd77/src/main.ts#L32">main.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/f534b64/src/main.ts#L14">main.ts:14</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -148,7 +133,7 @@
 					<div class="tsd-signature tsd-kind-icon">test_<wbr>url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;(process.argv[2] !&#x3D;&#x3D; undefined) ? &#x60;${base}test_${process.argv[2]}.jsonld&#x60; : &#x60;${base}test_${default_test}.jsonld&#x60;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/996bd77/src/main.ts#L59">main.ts:59</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/f534b64/src/main.ts#L41">main.ts:41</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -165,7 +150,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/996bd77/src/main.ts#L46">main.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/f534b64/src/main.ts#L28">main.ts:28</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">

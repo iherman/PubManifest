@@ -67,10 +67,22 @@
 				<a href="#publication-manifest-processing" id="publication-manifest-processing" style="color: inherit; text-decoration: none;">
 					<h1>Publication Manifest Processing</h1>
 				</a>
-				<p>This is a proof-of-concept implementation, in Typescript and on top of <code>node.js</code>, of processing a <a href="https://w3c.github.io/pub-manifest">Publication Manifest</a> into an implementation of the finals  “map” (i.e., a Typescript class instance), as described in <a href="https://w3c.github.io/pub-manifest/#manifest-processing">§4 of the Publication Manifest specification</a>.</p>
-				<p>It is <em>not</em> a meaningful implementation insofar as it could be embedded in a full-blown Pub Manifest based User Agent implementation right away. Its main purpose is to check the correctness of the specification itself. In particular, it does not have a proper user interface and only a rudimentary command line interface.</p>
-				<p>Status 2019-10-27: the implementation is there, but not yet fully tested.</p>
+				<p>Implementation (with minor omissions, see below) of the Processing steps as defined in <a href="https://www.w3.org/TR/pub-manifest/#manifest-processing">§4 of the Publication Manifest</a>.</p>
+				<p>It is <em>not</em> a meaningful implementation insofar as it could be embedded in a full-blown User Agent implementation based on Publication Manifests right away. <em>Its main purpose is to check the correctness of the specification itself</em>. This means that, for example, necessary checks on, e.g., the security and validity on manifest URL-s are omitted. There is also (currently) no implementation of the extraction from an HTML file or handling profile extensions. Accordingly, the &quot;Add HTML Defaults&quot; step (<a href="https://www.w3.org/TR/pub-manifest/#dfn-add-html-defaults">§4.4.3</a>) is not implemented either. Finally, it does not have a proper user interface and only a rudimentary command line interface is available (see the <a href="modules/_main_.html#main">main</a> function).</p>
+				<a href="#implementation-specificities" id="implementation-specificities" style="color: inherit; text-decoration: none;">
+					<h2>Implementation specificities</h2>
+				</a>
+				<p>The implementation is in Typescript and on top of <code>node.js</code>.</p>
+				<ul>
+					<li>When the document says &#39;failure is returned&#39;, this appears in the code as returning the Javascript value <code>undefined</code> or, when the function returns a boolean, <code>false</code>.</li>
+					<li>The notion of a &#39;context&#39; in the algorithm is implemented via one of the <code>*_Impl</code> class instances corresponding to the TS Interface definitions for the internal representations (see <a href="modules/_manifest_.html">manifest</a> and <a href="modules/_manifest_classes_.html">manifest_classes</a> for details). All these classes have a reference to a <a href="classes/_manifest_classes_.terms.html">Terms</a> instance that classifies the terms defined for that class (type).</li>
+				</ul>
+				<p>Also, the implementation is a bit more complicated than it would be in Javascript, mainly due to the requirements of Typescript.
+					For example, the original object, parsed from JSON, cannot be directly modified and returned as <code>processed</code>; instead, Typescript classes, duly defined as
+				implementing the Typescript interfaces, must be created with the key/values set.</p>
+				<p>The project can be downloaded via cloning and and can be run via the standard npm processing.</p>
 				<hr>
+				<p>The documentation is also available <a href="https://iherman.github.io/PubManifest/">on-line</a>.</p>
 				<p>Ivan Herman (<a href="mailto:ivan@w3.org">ivan@w3.org</a>)</p>
 			</div>
 		</div>
