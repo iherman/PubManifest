@@ -15,6 +15,7 @@
   'see' in the return value, i.e., _processed_
  */
 import {
+    URL,
     PublicationManifest,
     LinkedResource,
     LocalizableString,
@@ -35,8 +36,7 @@ import {
     LinkedResource_Impl,
     RecognizedTypes_Impl,
     PublicationManifest_Impl,
-    Terms,
-    URL
+    Terms
 } from './manifest_classes';
 
 
@@ -45,6 +45,7 @@ import {
  */
 import {
     Logger,
+    OrderedSet,
     toArray,
     check_language_tag,
     check_direction_tag,
@@ -391,7 +392,8 @@ export async function generate_representation(url: URL, base: URL, logger: Logge
     /* Step: Data validation */
     processed = data_validation(processed)
 
-    /* Step: HTML defaults (not implemented)  */
+    /* Step: calculate the set of unique URL-s  */
+    processed.uniqueResources = obtain_list_of_unique_resources(processed.readingOrder, processed.resources);
 
     /* Step: return processed */
     return processed
@@ -624,64 +626,40 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
         data.readingProgression = ProgressionDirection.ltr;
     }
 
-    /* Step: remove duplicate links on Linked Resource arrays */
-    /* NOTE: this may have to be removed if the restriction on repeated URI-s is removed! */
-    {
-        const unique_links = (list: LinkedResource[], list_name: string): LinkedResource[] => {
-            const cleaned_list =  _.uniq(list, false, (item: LinkedResource): URL => item.url);
-            if (cleaned_list.length === list.length) {
-                // nothing was removed
-                return list;
+    /* Step: remove duplicate entries from 'resources' */
+    if (data.resources) {
+        const uniqueURLs = new OrderedSet<URL>();
+        data.resources = data.resources.filter((item: LinkedResource): boolean => {
+            const check = uniqueURLs.push(remove_url_fragment(item.url));
+            if (check) {
+                return true;
             } else {
-                Global.logger.log_validation_error(`Duplicate URL-s removed from "${list_name}"`, null, true);
-                return cleaned_list;
+                Global.logger.log_validation_error(`Duplicate URL "${item.url}" removed from "resources"`, null, true);
             }
-        }
-        if (data.readingOrder) data.readingOrder = unique_links(data.readingOrder, "readingOrder");
-        if (data.resources) data.resources = unique_links(data.resources, "resources");
-        if (data.links) data.links = unique_links(data.links, "links");
+        });
     }
 
-    /* Step: check and remove common resources among reading order, resources, and links */
-    {
-        interface duplicate_info {
-            l1: LinkedResource[],
-            l2: LinkedResource[],
-            c: URL[]
-        }
-        let commons: duplicate_info;
-        const check_duplicates = (list1: LinkedResource[], list2: LinkedResource[]): duplicate_info => {
-            const l1_urls = (list1 === undefined) ? [] : get_resources(list1);
-            const l2_urls = (list2 === undefined) ? [] : get_resources(list2);
-            const c = _.intersection(l1_urls, l2_urls);
-            let l1: LinkedResource[] = [], l2: LinkedResource[] = [];
-            if (c.length !== 0) {
-                l1 = list1.filter((item) => c.includes(remove_url_fragment(item.url)) === false);
-                l2 = list2.filter((item) => c.includes(remove_url_fragment(item.url)) === false);
+    /* Step: remove entries in 'link' whose URL appear in resources or the reading order */
+    if (data.links) {
+        // check the presence of a url in an array of linked resources
+        const check_url_in_links = (item_list: LinkedResource[], value: URL): boolean => {
+            if (item_list !== undefined) {
+                return get_resources(item_list).includes(value);
+            } else {
+                false;
             }
-            return {l1, l2, c}
-        }
+        };
 
-        commons = check_duplicates(data.readingOrder, data.resources);
-        if (commons.c.length !== 0) {
-            Global.logger.log_validation_error(`Common URL-s in "readingOrder" and "resources": ${commons.c}`, null, true);
-            data.readingOrder = commons.l1;
-            data.resources = commons.l2
-        }
-
-        commons = check_duplicates(data.readingOrder, data.links);
-        if (commons.c.length !== 0) {
-            Global.logger.log_validation_error(`Common URL-s in "readingOrder" and "links": ${commons.c}`, null, true);
-            data.readingOrder = commons.l1;
-            data.links = commons.l2
-        }
-
-        commons = check_duplicates(data.resources, data.links);
-        if (commons.c.length !== 0) {
-            Global.logger.log_validation_error(`Common URL-s in "resources" and "links": ${commons.c}`, null, true);
-            data.resources = commons.l1;
-            data.links = commons.l2
-        }
+        data.links = data.links.filter((item: LinkedResource): boolean => {
+            const url = remove_url_fragment(item.url);
+            const check_result = check_url_in_links(data.readingOrder, url) || check_url_in_links(data.resources, url);
+            if (check_result) {
+                Global.logger.log_validation_error(`URL "${item.url}" in "links" also appears in the bounds of the publication`, null, true);
+                return false;
+            } else {
+                return true;
+            }
+        });
     }
 
     /* Step: profile extension point (not implemented) */
@@ -941,4 +919,44 @@ function remove_empty_arrays(value: any): boolean {
         });
     }
     return true;
+}
+
+/**
+ *
+ *  Obtain a list of unique resources. This corresponds to the main body of
+ * [§5.4.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#obtain-pub-resource-list).
+ *
+ * @param reading_order
+ * @param resources
+ * @returns - the full list of unique resources
+ */
+function obtain_list_of_unique_resources(reading_order: LinkedResource[], resources: LinkedResource[]): URL[] {
+    const uniqueResources = new OrderedSet<URL>();
+    [reading_order, resources].forEach((list) => {
+        list.forEach((item) => {
+            appendURL(item, uniqueResources)
+        });
+    });
+    return uniqueResources.content;
+}
+
+
+/**
+ *
+ * Append URL. This corresponds to
+ * [§5.4.4.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#append-url).
+ *
+ * @param resource - The linked resource whose URL should be appended
+ * @param uniqueResources - List of unique resources
+ */
+function appendURL(resource: LinkedResource, uniqueResources: OrderedSet<URL>): OrderedSet<URL> {
+    if (resource.url) {
+        uniqueResources.push(remove_url_fragment(resource.url));
+    }
+    if (resource.alternate) {
+        resource.alternate.forEach((item) => {
+            appendURL(item, uniqueResources);
+        })
+    }
+    return uniqueResources;
 }

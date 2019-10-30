@@ -253,3 +253,33 @@ export class Logger {
         return retval;
     }
 }
+
+/* **************************** Ordered set **************************** */
+
+/**
+ * "Ordered Set", in the terminology of the infra standard, i.e, a wrapper around a list that contains mutually distinct values.
+ * that is pushed on the set.
+ *
+ * @typeparam T - simple type (numbers, booleans, strings), usable for an array's `includes` function.
+*/
+export class OrderedSet<T> {
+    private _content: T[] = [];
+
+    /**
+     * Push a new value to the set, if it is new.
+     *
+     * @param value - new value
+     * @returns - true if the value has been added (i.e., it is a new value), false otherwise.
+     */
+    push (value: T): boolean {
+        if (this._content.includes(value)) {
+            return false;
+        } else {
+            this._content.push(value);
+            return true;
+        }
+    }
+    get content(): T[] {
+        return this._content;
+    }
+}
