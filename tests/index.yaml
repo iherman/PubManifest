@@ -184,38 +184,16 @@ tests:
                 title: A single resource is turned into an array of Linked Resources
                 actions: readingOrder is an array of a single object, with the URL turned into absolute
                 errors: none
-
             -
                 id: 282102
                 title: Invalid URL is removed from reading order list
                 actions: The second entry in readingOrder is removed from the final list
                 errors: Validation error on invalid URL, and a validation error on removing the corresponding Linked Resource
-
             -
                 id: 282103
-                title: URL with a fragment is removed from reading order list
-                actions: The second entry in readingOrder is removed from the final list
-                errors: Validation error on invalid URL, and a validation error on removing the corresponding Linked Resource
-            -
-                id: 282104
                 title: missing readingOrder is replaced by a default
                 actions: A readingOrder is added with a single link set to the HTML Nodes Document.URL. If none provided, validation error
                 errors: Validation error on invalid URL, and a validation error on removing the corresponding Linked Resource
-            -
-                id: 282105
-                title: common resources between readingOrder and resources
-                actions: In both readingOrder and in resources the resources referring to common1.html and common.html2 are removed
-                errors: Validation error on common URL-s
-            -
-                id: 282106
-                title: common resources between readingOrder and links
-                actions: In both readingOrder and in links the resources referring to common1.html and common.html2 are removed
-                errors: Validation error on common URL-s
-            -
-                id: 282107
-                title: duplicate resources readingOrder
-                actions: The duplicate chapter1.html and chapter2.html entries are removed from  readingOrder
-                errors: Validation error on duplicate entries
 
     -
         section: §2.8.22 Resource List
@@ -228,24 +206,19 @@ tests:
                 errors: none
             -
                 id: 282202
-                title: Invalid URL is removed from reading order list
+                title: Invalid URL is removed from resources
                 actions: The second entry in resources is removed from the final list
                 errors: Validation error on invalid URL
             -
                 id: 282203
-                title: URL with a fragment is removed from reading order list
+                title: URL with a fragment is removed from resources
                 actions: The second entry in resources is removed from the final list
                 errors: Validation error on invalid URL
             -
                 id: 282204
-                title: common resources between resources and links
-                actions: In both resources and in links the resources referring to common1.html and common.html2 are removed
-                errors: Validation error on common URL-s
-            -
-                id: 282205
-                title: duplicate resources resources
-                actions: The duplicate  link1.html and link2.html entries are removed from  readingOrder
-                errors: Validation error on duplicate entries
+                title: duplicate URL-s removed from resources
+                actions: The third entry in resources is removed from the final list
+                errors: Validation error on invalid URL
 
     -
         section: §2.8.23 Links
@@ -266,9 +239,27 @@ tests:
                 title: URL with a fragment is accepted
                 actions: The second entry in links is generated without change
                 errors: none
-
             -
                 id: 282304
-                title: duplicate resources links
-                actions: The duplicate link1.html and link2.html entries are removed from  links
-                errors: Validation error on duplicate entries
+                title: entry in links appears in reading order
+                actions: The chapter1.html is removed from  links
+                errors: Validation error on a link appearing in bounds
+            -
+                id: 282305
+                title: entries in links appear in resources and in reading order, the latter with a fragment id. One of the entry in links is with a fragment, but should yield an error nevertheless
+                actions: The chapter1.html, link1.html, and link3.html are removed from  links
+                errors: Validation error on a link appearing in bounds
+    -
+        section: §3 Publication resources
+        ref: https://www.w3.org/TR/pub-manifest/#publication-resources
+        tests:
+            -
+                id: 301
+                title: Calculation of bounds removes fragment identifiers
+                actions: The uniqueResources array contains URL-s without fragments
+                errors: none
+            -
+                id: 302
+                title: Calculation of bounds removes duplicate entries
+                actions: The uniqueResources array contains unique URL-s only
+                errors: none

@@ -13,11 +13,10 @@ import {
     Entity,
     Person,
     Organization,
-    ProgressionDirection } from './manifest';
+    ProgressionDirection
+} from './manifest';
 
 // -------------------------------------------- Convenience variables -------------------------------------
-
-// A11Y properties that have lists of literals as values
 /**
  * A11Y properties that have lists of literals as values
  */

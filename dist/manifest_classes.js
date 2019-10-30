@@ -8,7 +8,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 const manifest_1 = require("./manifest");
 // -------------------------------------------- Convenience variables -------------------------------------
-// A11Y properties that have lists of literals as values
 /**
  * A11Y properties that have lists of literals as values
  */

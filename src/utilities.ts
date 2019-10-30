@@ -6,6 +6,7 @@
  * The core interfaces that are implemented in project
  */
 import {
+    URL,
     PublicationManifest,
     LinkedResource,
     LocalizableString,
@@ -23,8 +24,7 @@ import {
     LinkedResource_Impl,
     RecognizedTypes_Impl,
     PublicationManifest_Impl,
-    Terms,
-    URL
+    Terms
 } from './manifest_classes';
 
 import * as fetch from 'node-fetch';

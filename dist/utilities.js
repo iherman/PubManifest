@@ -245,4 +245,35 @@ class Logger {
     }
 }
 exports.Logger = Logger;
+/* **************************** Ordered set **************************** */
+/**
+ * "Ordered Set", in the terminology of the infra standard, i.e, a wrapper around a list that contains mutually distinct values.
+ * that is pushed on the set.
+ *
+ * @typeparam T - simple type (numbers, booleans, strings), usable for an array's `includes` function.
+*/
+class OrderedSet {
+    constructor() {
+        this._content = [];
+    }
+    /**
+     * Push a new value to the set, if it is new.
+     *
+     * @param value - new value
+     * @returns - true if the value has been added (i.e., it is a new value), false otherwise.
+     */
+    push(value) {
+        if (this._content.includes(value)) {
+            return false;
+        }
+        else {
+            this._content.push(value);
+            return true;
+        }
+    }
+    get content() {
+        return this._content;
+    }
+}
+exports.OrderedSet = OrderedSet;
 //# sourceMappingURL=utilities.js.map

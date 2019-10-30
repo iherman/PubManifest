@@ -367,7 +367,24 @@ function generate_representation(url, base, logger) {
         });
         /* Step: Data validation */
         processed = data_validation(processed);
-        /* Step: HTML defaults (not implemented)  */
+        /* Step: calculate the set of unique URL-s  */
+        processed.uniqueResources = obtain_list_of_unique_resources(processed.readingOrder, processed.resources);
+        /* Step: Remove entries in "links" whose URL also appear in 'bounds' */
+        if (processed.links) {
+            processed.links = processed.links.filter((link) => {
+                const check_result = processed.uniqueResources.includes(utilities_1.remove_url_fragment(link.url));
+                if (check_result) {
+                    Global.logger.log_validation_error(`${link.url} appear in "links" but is within the bounds of the publication`, null, true);
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            });
+            if (processed.links.length === 0) {
+                delete processed.links;
+            }
+        }
         /* Step: return processed */
         return processed;
     });
@@ -535,16 +552,11 @@ function data_validation(data) {
             return check_value;
         });
     }
-    /* Step: identifier check */
-    if (data.id) {
-        if (!(_.isString(data.id) && data.id !== '')) {
-            Global.logger.log_validation_error(`Invalid identifier`, data.id, true);
-            delete data.id;
-        }
-    }
-    else {
-        Global.logger.log_validation_error(`Missing identifier`);
-    }
+    /* Step: identifier check; has been mostly done by virtue of checking the URL */
+    if (!data.id)
+        Global.logger.log_validation_error(`No id provided`);
+    // This removes the '' string, if present
+    delete data.id;
     /* Step: duration check */
     if (data.duration) {
         const durationCheck = RegExp('P((([0-9]*\.?[0-9]*)Y)?(([0-9]*\.?[0-9]*)M)?(([0-9]*\.?[0-9]*)W)?(([0-9]*\.?[0-9]*)D)?)?(T(([0-9]*\.?[0-9]*)H)?(([0-9]*\.?[0-9]*)M)?(([0-9]*\.?[0-9]*)S)?)?');
@@ -552,7 +564,6 @@ function data_validation(data) {
             Global.logger.log_validation_error(`"${data.duration}" is an incorrect duration value`, null, true);
             delete data.duration;
         }
-        // check the value and remove if wrong
     }
     /* Step: last modification date */
     if (data.dateModified) {
@@ -584,59 +595,22 @@ function data_validation(data) {
     else {
         data.readingProgression = manifest_1.ProgressionDirection.ltr;
     }
-    /* Step: remove duplicate links on Linked Resource arrays */
-    /* NOTE: this may have to be removed if the restriction on repeated URI-s is removed! */
-    {
-        const unique_links = (list, list_name) => {
-            const cleaned_list = _.uniq(list, false, (item) => item.url);
-            if (cleaned_list.length === list.length) {
-                // nothing was removed
-                return list;
+    /* Step: remove duplicate entries, or entries with a fragment, from 'resources' */
+    if (data.resources) {
+        const uniqueURLs = new utilities_1.OrderedSet();
+        data.resources = data.resources.filter((item) => {
+            if (urlHandler.parse(item.url).hash !== null) {
+                Global.logger.log_validation_error(`URL "${item.url}" shouldn't have a fragment id`, null, true);
+                return false;
+            }
+            const check = uniqueURLs.push(utilities_1.remove_url_fragment(item.url));
+            if (check) {
+                return true;
             }
             else {
-                Global.logger.log_validation_error(`Duplicate URL-s removed from "${list_name}"`, null, true);
-                return cleaned_list;
+                Global.logger.log_validation_error(`Duplicate URL "${item.url}" removed from "resources"`, null, true);
             }
-        };
-        if (data.readingOrder)
-            data.readingOrder = unique_links(data.readingOrder, "readingOrder");
-        if (data.resources)
-            data.resources = unique_links(data.resources, "resources");
-        if (data.links)
-            data.links = unique_links(data.links, "links");
-    }
-    /* Step: check and remove common resources among reading order, resources, and links */
-    {
-        let commons;
-        const check_duplicates = (list1, list2) => {
-            const l1_urls = (list1 === undefined) ? [] : utilities_1.get_resources(list1);
-            const l2_urls = (list2 === undefined) ? [] : utilities_1.get_resources(list2);
-            const c = _.intersection(l1_urls, l2_urls);
-            let l1 = [], l2 = [];
-            if (c.length !== 0) {
-                l1 = list1.filter((item) => c.includes(utilities_1.remove_url_fragment(item.url)) === false);
-                l2 = list2.filter((item) => c.includes(utilities_1.remove_url_fragment(item.url)) === false);
-            }
-            return { l1, l2, c };
-        };
-        commons = check_duplicates(data.readingOrder, data.resources);
-        if (commons.c.length !== 0) {
-            Global.logger.log_validation_error(`Common URL-s in "readingOrder" and "resources": ${commons.c}`, null, true);
-            data.readingOrder = commons.l1;
-            data.resources = commons.l2;
-        }
-        commons = check_duplicates(data.readingOrder, data.links);
-        if (commons.c.length !== 0) {
-            Global.logger.log_validation_error(`Common URL-s in "readingOrder" and "links": ${commons.c}`, null, true);
-            data.readingOrder = commons.l1;
-            data.links = commons.l2;
-        }
-        commons = check_duplicates(data.resources, data.links);
-        if (commons.c.length !== 0) {
-            Global.logger.log_validation_error(`Common URL-s in "resources" and "links": ${commons.c}`, null, true);
-            data.resources = commons.l1;
-            data.links = commons.l2;
-        }
+        });
     }
     /* Step: profile extension point (not implemented) */
     /* Step: run remove empty arrays */
@@ -676,9 +650,15 @@ function global_data_checks(context, term, value) {
         }
         /* Step: recursively to do data check at this point! */
         {
+            /**
+             * Helper function to make the code a bit more readable: the recursive step
+             * to invoke the global data check on the key/value pair of a map.
+             *
+             * @param item - the map to be checked
+             * @returns - the original map but with key/value checked and, possibly, removed if error occurred
+             */
             const map_data_check = (item) => {
                 if (utilities_1.recognized_type(item)) {
-                    // Check that the key is defined!!! Maybe using _.intersection?
                     process_object_keys(item, (key) => {
                         const keyValue = item[key];
                         item[key] = global_data_checks(item, key, keyValue);
@@ -742,11 +722,6 @@ function global_data_checks(context, term, value) {
                     if (validUrl.isUri(resource.url) === undefined) {
                         Global.logger.log_validation_error(`"${resource.url}" is is not a valid URL`, null, true);
                         return false;
-                        /* NOTE: this may have to be removed if the restriction on fragments is removed! */
-                    }
-                    else if (['readingOrder', 'resources'].includes(term) && urlHandler.parse(resource.url).hash !== null) {
-                        Global.logger.log_validation_error(`"${resource.url}" must not contain a fragment for "${term}"`, null, true);
-                        return false;
                     }
                 }
                 if (resource.length) {
@@ -779,40 +754,59 @@ function global_data_checks(context, term, value) {
  * @return - result of the category check
  */
 function verify_value_category(context, term, value) {
-    const check_expected_type = (keys, key, obj) => {
+    /**
+     * Check a key/value pair's validity using the categorization defined in keys.
+     * @param keys - the [[Term]] instance controlling the value constraints
+     * @param key
+     * @param val - the value for the key
+     */
+    const check_expected_type = (keys, key, val) => {
         if (keys.array_or_single_literals.includes(key)) {
-            return _.isString(obj);
+            return _.isString(val);
         }
         else if (keys.array_of_strings.includes(key)) {
-            return obj instanceof manifest_classes_1.LocalizableString_Impl;
+            return val instanceof manifest_classes_1.LocalizableString_Impl;
         }
         else if (keys.array_of_entities.includes(key)) {
-            return obj instanceof manifest_classes_1.Entity_Impl;
+            return val instanceof manifest_classes_1.Entity_Impl;
         }
         else if (keys.array_of_links.includes(key)) {
-            return obj instanceof manifest_classes_1.LinkedResource_Impl;
+            return val instanceof manifest_classes_1.LinkedResource_Impl;
         }
         else if (keys.array_or_single_urls.includes(key)) {
-            return _.isString(obj);
+            return _.isString(val);
         }
         else if (keys.single_number.includes(key)) {
-            return _.isNumber(obj);
+            return _.isNumber(val);
         }
         else if (keys.single_boolean.includes(key)) {
-            return _.isBoolean(obj);
+            return _.isBoolean(val);
         }
         else {
             // No constraint defined
             return true;
         }
     };
-    const check_expected_type_and_report = (keys, key, obj) => {
-        const check_result = check_expected_type(keys, key, obj);
+    /**
+     * Check a key/value pair's validity using the categorization defined in keys; raise an validation error if the value is not valid
+     *
+     * @param keys - the [[Term]] instance controlling the value constraints
+     * @param key
+     * @param val - the value for the key
+     */
+    const check_expected_type_and_report = (keys, key, val) => {
+        const check_result = check_expected_type(keys, key, val);
         if (!check_result) {
             Global.logger.log_validation_error(`Type validation error for "${key}":`, value, true);
         }
         return check_result;
     };
+    /**
+     * (Recursively) verify the value categories for the key/value pairs in an object: it calls [[verify_value_category]] on all pairs.
+     * Usually returns true, except if, after all checks, the map is emptied.
+     *
+     * @param obj - the object to be checked.
+     */
     const verify_map = (obj) => {
         const keys = utilities_1.get_terms(obj);
         const defined_terms = keys.all_terms;
@@ -841,11 +835,16 @@ function verify_value_category(context, term, value) {
         else {
             value = value.map((item) => {
                 if (check_expected_type_and_report(terms, term, item)) {
-                    return isMap(item) ? verify_map(item) : item;
+                    if (isMap(item)) {
+                        return verify_map(item) ? item : undefined;
+                    }
+                    else {
+                        return item;
+                    }
                 }
                 else {
                     // wrong type
-                    return false;
+                    return undefined;
                 }
             }).filter((item) => item !== undefined);
             if (value.length === 0) {
@@ -894,5 +893,46 @@ function remove_empty_arrays(value) {
         });
     }
     return true;
+}
+/**
+ *
+ *  Obtain a list of unique resources. This corresponds to the main body of
+ * [§5.4.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#obtain-pub-resource-list).
+ *
+ * @param reading_order
+ * @param resources
+ * @returns - the full list of unique resources
+ */
+function obtain_list_of_unique_resources(reading_order, resources) {
+    const uniqueResources = new utilities_1.OrderedSet();
+    const collect_resources = (list) => {
+        list.forEach((item) => {
+            appendURL(item, uniqueResources);
+        });
+    };
+    if (reading_order !== undefined)
+        collect_resources(reading_order);
+    if (resources !== undefined)
+        collect_resources(resources);
+    return uniqueResources.content;
+}
+/**
+ *
+ * Append URL. This corresponds to
+ * [§5.4.4.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#append-url).
+ *
+ * @param resource - The linked resource whose URL should be appended
+ * @param uniqueResources - List of unique resources
+ */
+function appendURL(resource, uniqueResources) {
+    if (resource.url) {
+        uniqueResources.push(utilities_1.remove_url_fragment(resource.url));
+    }
+    if (resource.alternate) {
+        resource.alternate.forEach((item) => {
+            appendURL(item, uniqueResources);
+        });
+    }
+    return uniqueResources;
 }
 //# sourceMappingURL=process.js.map

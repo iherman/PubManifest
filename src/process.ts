@@ -606,13 +606,11 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
             Global.logger.log_validation_error(`"${data.duration}" is an incorrect duration value`, null, true);
             delete data.duration;
         }
-
-        // check the value and remove if wrong
     }
 
     /* Step: last modification date */
     if (data.dateModified) {
-        if (!moment(data.dateModified,moment.ISO_8601).isValid()) {
+        if (!moment(data.dateModified, moment.ISO_8601).isValid()) {
             Global.logger.log_validation_error(`"${data.dateModified}" is an incorrect date string`, null, true);
             delete data.dateModified;
         }
@@ -620,7 +618,7 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
 
     /* Step: Publication date */
     if (data.datePublished) {
-        if (!moment(data.datePublished,moment.ISO_8601).isValid()) {
+        if (!moment(data.datePublished, moment.ISO_8601).isValid()) {
             Global.logger.log_validation_error(`"${data.datePublished}" is an incorrect date string`, null, true);
             delete data.datePublished;
         }
@@ -642,10 +640,14 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
         data.readingProgression = ProgressionDirection.ltr;
     }
 
-    /* Step: remove duplicate entries from 'resources' */
+    /* Step: remove duplicate entries, or entries with a fragment, from 'resources' */
     if (data.resources) {
         const uniqueURLs = new OrderedSet<URL>();
         data.resources = data.resources.filter((item: LinkedResource): boolean => {
+            if (urlHandler.parse(item.url).hash !== null) {
+                Global.logger.log_validation_error(`URL "${item.url}" shouldn't have a fragment id`, null, true);
+                return false;
+            }
             const check = uniqueURLs.push(remove_url_fragment(item.url));
             if (check) {
                 return true;
@@ -659,7 +661,6 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
 
     /* Step: run remove empty arrays */
     // Care should be taken to run this only on entries that are part of the definition of this object!
-
     process_object_keys(data, (key:string): void => {
         if (defined_terms.includes(key)) {
             if (!(remove_empty_arrays(data[key]))) {
@@ -699,9 +700,15 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
 
         /* Step: recursively to do data check at this point! */
         {
+            /**
+             * Helper function to make the code a bit more readable: the recursive step
+             * to invoke the global data check on the key/value pair of a map.
+             *
+             * @param item - the map to be checked
+             * @returns - the original map but with key/value checked and, possibly, removed if error occurred
+             */
             const map_data_check = (item: any): any => {
                 if (recognized_type(item)) {
-                    // Check that the key is defined!!! Maybe using _.intersection?
                     process_object_keys(item, (key: string): void => {
                         const keyValue = item[key];
                         item[key] = global_data_checks(item, key, keyValue);
@@ -765,10 +772,6 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
                     if (validUrl.isUri(resource.url) === undefined) {
                         Global.logger.log_validation_error(`"${resource.url}" is is not a valid URL`, null, true);
                         return false;
-                    /* NOTE: this may have to be removed if the restriction on fragments is removed! */
-                    } else if (['readingOrder', 'resources'].includes(term) && urlHandler.parse(resource.url).hash !== null) {
-                        Global.logger.log_validation_error(`"${resource.url}" must not contain a fragment for "${term}"`, null, true);
-                        return false;
                     }
                 }
                 if (resource.length) {
@@ -803,36 +806,54 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
  * @return - result of the category check
  */
 function verify_value_category(context:  PublicationManifest_Impl|RecognizedTypes_Impl|LocalizableString_Impl, term: string, value: any): boolean {
-
-    const check_expected_type = (keys: Terms, key: string, obj: any): boolean => {
+    /**
+     * Check a key/value pair's validity using the categorization defined in keys.
+     * @param keys - the [[Term]] instance controlling the value constraints
+     * @param key
+     * @param val - the value for the key
+     */
+    const check_expected_type = (keys: Terms, key: string, val: any): boolean => {
         if (keys.array_or_single_literals.includes(key)) {
-            return _.isString(obj);
+            return _.isString(val);
         } else if (keys.array_of_strings.includes(key)) {
-            return obj instanceof LocalizableString_Impl;
+            return val instanceof LocalizableString_Impl;
         } else if (keys.array_of_entities.includes(key)) {
-            return obj instanceof Entity_Impl;
+            return val instanceof Entity_Impl;
         } else if (keys.array_of_links.includes(key)) {
-            return obj instanceof LinkedResource_Impl;
+            return val instanceof LinkedResource_Impl;
         } else if (keys.array_or_single_urls.includes(key)) {
-            return _.isString(obj);
+            return _.isString(val);
         } else if (keys.single_number.includes(key)) {
-            return _.isNumber(obj);
+            return _.isNumber(val);
         } else if (keys.single_boolean.includes(key)) {
-            return _.isBoolean(obj);
+            return _.isBoolean(val);
         } else {
             // No constraint defined
             return true;
         }
     };
 
-    const check_expected_type_and_report = (keys: Terms, key: string, obj: any): boolean => {
-        const check_result = check_expected_type(keys, key, obj);
+    /**
+     * Check a key/value pair's validity using the categorization defined in keys; raise an validation error if the value is not valid
+     *
+     * @param keys - the [[Term]] instance controlling the value constraints
+     * @param key
+     * @param val - the value for the key
+     */
+    const check_expected_type_and_report = (keys: Terms, key: string, val: any): boolean => {
+        const check_result = check_expected_type(keys, key, val);
         if (!check_result) {
             Global.logger.log_validation_error(`Type validation error for "${key}":`, value, true );
         }
         return check_result;
     };
 
+    /**
+     * (Recursively) verify the value categories for the key/value pairs in an object: it calls [[verify_value_category]] on all pairs.
+     * Usually returns true, except if, after all checks, the map is emptied.
+     *
+     * @param obj - the object to be checked.
+     */
     const verify_map = (obj: PublicationManifest_Impl|RecognizedTypes_Impl|LocalizableString_Impl): boolean => {
         const keys = get_terms(obj);
         const defined_terms = keys.all_terms;
@@ -862,10 +883,14 @@ function verify_value_category(context:  PublicationManifest_Impl|RecognizedType
         } else {
             value = value.map((item: any): any => {
                 if (check_expected_type_and_report(terms, term, item)) {
-                    return isMap(item) ? verify_map(item) : item;
+                    if (isMap(item)) {
+                        return verify_map(item) ? item : undefined;
+                    } else {
+                        return item;
+                    }
                 } else {
                     // wrong type
-                    return false;
+                    return undefined;
                 }
             }).filter((item:any): boolean => item !== undefined);
 
@@ -925,11 +950,13 @@ function remove_empty_arrays(value: any): boolean {
  */
 function obtain_list_of_unique_resources(reading_order: LinkedResource[], resources: LinkedResource[]): URL[] {
     const uniqueResources = new OrderedSet<URL>();
-    [reading_order, resources].forEach((list) => {
+    const collect_resources = (list: LinkedResource[]): void => {
         list.forEach((item) => {
             appendURL(item, uniqueResources)
         });
-    });
+    }
+    if (reading_order !== undefined) collect_resources(reading_order);
+    if (resources !== undefined) collect_resources(resources);
     return uniqueResources.content;
 }
 
