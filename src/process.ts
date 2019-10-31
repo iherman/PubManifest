@@ -654,10 +654,13 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
     /* Step: remove duplicate entries, or entries with a fragment, from 'resources' */
     if (data.resources) {
         const uniqueURLs = new OrderedSet<URL>();
-        data.resources.forEach((item: LinkedResource): void => {
+        data.resources = data.resources.filter((item: LinkedResource): boolean => {
             const check = uniqueURLs.push(remove_url_fragment(item.url));
             if (!check) {
-                Global.logger.log_validation_error(`Duplicate URL "${item.url}" removed from "resources"`, null, false);
+                Global.logger.log_validation_error(`Duplicate URL "${item.url}" removed from "resources"`, null, true);
+                return false;
+            } else {
+                return true;
             }
         });
     }
@@ -674,9 +677,9 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
                 return false;
             } else {
                 if (link["rel"] && link["rel"].length !== 0) {
-                    const intersection = _.intersection(link["rel"],["toc", "pagelist","cover"]);
+                    const intersection = _.intersection(link["rel"],["contents", "pagelist","cover"]);
                     if (intersection.length > 0) {
-                        Global.logger.log_validation_error(`Linked Resource in "links" includes ${intersection}`, link, true);
+                        Global.logger.log_validation_error(`Linked Resource in "links" includes "${intersection}"`, link, true);
                         return false;
                     }
                 }
