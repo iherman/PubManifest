@@ -13,7 +13,7 @@ const base = 'http://localhost:8001/LocalData/github/Publishing/PubManifest/test
  */
 const default_test = 'lo';
 
-import { generate_representation } from "./process";
+import { generate_internal_representation } from "./process";
 import { Logger } from "./utilities";
 
 
@@ -28,7 +28,7 @@ import { Logger } from "./utilities";
 async function main(url: string) {
     const logger = new Logger();
     try {
-        const manifest_object = await generate_representation(url, '', logger);
+        const manifest_object = await generate_internal_representation(url, '', logger);
         console.log(JSON.stringify(manifest_object, null, 4))
         console.log(logger.toString());
     } catch(e) {

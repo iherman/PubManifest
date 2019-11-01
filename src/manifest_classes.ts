@@ -6,17 +6,17 @@
  * The core interfaces that are implemented in this module
  */
 import {
+    URL,
     PublicationManifest,
     LinkedResource,
     LocalizableString,
     Entity,
     Person,
     Organization,
-    ProgressionDirection } from './manifest';
+    ProgressionDirection
+} from './manifest';
 
 // -------------------------------------------- Convenience variables -------------------------------------
-
-// A11Y properties that have lists of literals as values
 /**
  * A11Y properties that have lists of literals as values
  */
@@ -207,10 +207,6 @@ class PublicationManifestTerms extends Terms {
 
 // -------------------------------- Type aliases for URL (which are strings, in fact) -------------
 
-/**
- * This is just a type alias, i.e., a URL is simply a string, but it is better for the class documentations...
- */
-export type URL = string;
 
 /**
  * The notion of "recognizable types" appears in the processing algorithm section, although not
@@ -271,7 +267,7 @@ export class LinkedResource_Impl implements LinkedResource {
         return new LinkedResourceTerms();
     }
 
-    url            : string;
+    url            : URL;
     encodingFormat : string;
     name           : LocalizableString[];
     description    : LocalizableString;
@@ -293,7 +289,7 @@ export class PublicationManifest_Impl implements PublicationManifest {
     }
 
     type                 : string[];
-    id                   : string = '';
+    id                   : URL = '';
     profile              : string = '';
     conformsTo           : string[];
 
@@ -316,7 +312,7 @@ export class PublicationManifest_Impl implements PublicationManifest {
     readBy               : Entity[];
     translator           : Entity[];
 
-    url                  : string[];
+    url                  : URL[];
     duration             : string;
     inLanguage           : string[];
     dateModified         : string;
@@ -327,6 +323,7 @@ export class PublicationManifest_Impl implements PublicationManifest {
     readingOrder         : LinkedResource[] = [];
     resources            : LinkedResource[];
     links                : LinkedResource[];
+    uniqueResources      : URL[];
 
     [propName: string] : any;
 };

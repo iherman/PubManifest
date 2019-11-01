@@ -7,9 +7,12 @@
     "conformsTo": "https://www.w3.org/TR/pub-manifest/",
     "readingOrder": "chapter1.html",
     "links": [
-        "other_link1.html",
-        {
-            "url": "http://example.w3.org/#somefragment"
-        }
+        "link1.html",
+        "link2.html",
+        "link1.html",
+        "link3.html",
+        "link2.html",
+        "chapter1.html",
+        "link4.html"
     ]
 }

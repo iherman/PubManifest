@@ -8,8 +8,9 @@
     "readingOrder": "chapter1.html",
     "resources": [
         "other_link1.html",
+        "another_link2.html",
         {
-            "url": "http://example.w3.org/#somefragment"
+            "url": "other_link1.html"
         }
     ]
 }

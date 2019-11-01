@@ -5,6 +5,10 @@
  * follows, essentially, the [WebIDL appendix](https://www.w3.org/TR/pub-manifest/#internal-rep-data-model) of the spec; see there for more on the individual terms.
  */
 
+/**
+ * This is just a type alias, i.e., a URL is simply a string, but it is better for the class documentations...
+ */
+export type URL = string;
 
 /**
  * The notion of "recognizable types" appears in the processing algorithm section, although not
@@ -52,7 +56,7 @@ export enum ProgressionDirection {
  * A generic Linked Resource
  */
 export interface LinkedResource {
-    url                : string;
+    url                : URL;
     encodingFormat?    : string;
     name?              : LocalizableString[];
     description?       : LocalizableString;
@@ -68,7 +72,7 @@ export interface LinkedResource {
  */
 export interface PublicationManifest {
     type?                 : string[];
-    id?                   : string;
+    id?                   : URL;
     profile               : string;
     conformsTo            : string[];
 
@@ -91,7 +95,7 @@ export interface PublicationManifest {
     readBy?               : Entity[];
     translator?           : Entity[];
 
-    url?                  : string[];
+    url?                  : URL[];
     duration?             : string;
     inLanguage?           : string[];
     dateModified?         : string;
@@ -102,6 +106,7 @@ export interface PublicationManifest {
     readingOrder          : LinkedResource[];
     resources?            : LinkedResource[];
     links?                : LinkedResource[];
+    uniqueResources       : URL[];
     // [propName: string] : any;
 };
 

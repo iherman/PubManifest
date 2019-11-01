@@ -4,11 +4,5 @@
     "name" : "My Wonderful Book",
     "id" : "urn:isbn:1234567890",
     "url": "https://example.org/book",
-    "conformsTo": "https://www.w3.org/TR/pub-manifest/",
-    "readingOrder": [
-        "chapter1.html",
-        {
-            "url": "http://example.w3.org/#somefragment"
-        }
-    ]
+    "conformsTo": "https://www.w3.org/TR/pub-manifest/"
 }

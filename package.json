@@ -5,7 +5,7 @@
     "main": "dist/main.js",
     "scripts": {
         "test": "ts-node src/main.ts",
-        "build": "tsc",
+        "build": "tsc; typedoc --disableOutputCheck --out docs src/",
         "run": "node dist/main.js",
         "doc": "typedoc --disableOutputCheck --out docs src/"
     },
