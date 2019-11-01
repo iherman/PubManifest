@@ -25,7 +25,7 @@ export interface Entity {
     id?         : string;
     url?        : string;
     identifier? : string[];
-    // [propName: string] : any;
+    [propName: string] : any;
 };
 
 /**
@@ -64,7 +64,7 @@ export interface LinkedResource {
     integrity?         : string;
     length?            : number;
     alternate?         : LinkedResource[];
-    // [propName: string] : any;
+    [propName: string] : any;
 };
 
 /**
@@ -107,6 +107,6 @@ export interface PublicationManifest {
     resources?            : LinkedResource[];
     links?                : LinkedResource[];
     uniqueResources       : URL[];
-    // [propName: string] : any;
+    [propName: string] : any;
 };
 
