@@ -6,19 +6,27 @@
     "url": "https://example.org/book",
     "conformsTo": "https://www.w3.org/TR/pub-manifest/",
     "readingOrder": [
-        "chapter1.html",
-        "link3.html#fragment"
-    ],
-    "resources": [
-        "link1.html"
+        "chapter1.html"
     ],
     "links": [
         "link1.html",
-        "link2.html",
-        "link1.html#fragment",
+        {
+            "url": "link2.html",
+            "rel": "cover"
+        },
         "link3.html",
-        "link2.html",
-        "chapter1.html",
-        "link4.html"
+        {
+            "url": "link4.html",
+            "rel": "contents"
+        },
+        "link5.html",
+        {
+            "url": "link6.html",
+            "rel": ["pagelist", "something"]
+        },
+        {
+            "url": "link7.html",
+            "rel": "something"
+        }
     ]
 }

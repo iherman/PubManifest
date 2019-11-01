@@ -5,12 +5,14 @@
     "id" : "urn:isbn:1234567890",
     "url": "https://example.org/book",
     "conformsTo": "https://www.w3.org/TR/pub-manifest/",
-    "readingOrder": "chapter1.html",
-    "resources": [
-        "other_link1.html",
-        "another_link2.html",
+    "readingOrder": [
         {
-            "url": "other_link1.html"
+            "url": "chapter1.html",
+            "copyrightYear": "2015"
         }
-    ]
+    ],
+    "author": {
+        "name": "John Doe",
+        "orderBy": "Doe"
+    }
 }

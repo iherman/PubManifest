@@ -1,5 +1,5 @@
 title: PubManifest processing test suite
-date: 2019-10-29
+date: 2019-10-31
 tests:
     -
         section: §2.4 Manifest contexts
@@ -7,13 +7,13 @@ tests:
         tests:
             -
                 id: 2401
-                title: Missing Context
-                actions: return empty
+                description: Missing Context
+                actions: Return empty
                 errors: Fatal error on missing context
             -
                 id: 2402
-                title: context incomplete
-                actions: return empty
+                description: context incomplete
+                actions: Return empty
                 errors: Fatal error on missing context
 
     -
@@ -22,28 +22,28 @@ tests:
         tests:
             -
                 id: 2501
-                title: Set valid global language value
-                actions: language en set for all strings
+                description: Set valid global language value
+                actions: Language en set for all strings
                 errors:  none
             -
                 id: 2502
-                title: Set invalid global language value
-                actions: no effect on output (value ignored)
+                description: Set invalid global language value
+                actions: No effect on output (value ignored)
                 errors: Validation error on incorrect BCP47 value
             -
                 id: 2503
-                title: Set valid global direction value
-                actions: direction ltr set for all strings
+                description: Set valid global direction value
+                actions: Direction ltr set for all strings
                 errors: none
             -
                 id: 2504
-                title: Set invalid global direction value
-                actions: no effect on output (value ignored)
+                description: Set invalid global direction value
+                actions: No effect on output (value ignored)
                 errors: Validation error on incorrect base direction value
             -
                 id: 2505
-                title: Out of several (valid) language and direction setting, pick the last one
-                actions: strings should be set with language:en and direction:ltr
+                description: Out of several (valid) language and direction setting, pick the last one
+                actions: Strings should be set with language:en and direction:ltr
                 errors: none
 
     -
@@ -52,12 +52,12 @@ tests:
         tests:
             -
                 id: 2601
-                title: No type set
-                actions: the CreativeWork type should be added
+                description: No type set
+                actions: The CreativeWork type should be added
                 errors: Validation error (no type)
             -
                 id: 2602
-                title: CreativeWork type is not set, only Book
+                description: CreativeWork type is not set, only Book
                 actions: no change on the document
                 errors: None
 
@@ -67,13 +67,13 @@ tests:
         tests:
             -
                 id: 2701
-                title: no conformance
-                actions: set profile to user agents default
+                description: No conformance at all
+                actions: Set profile to user agents default
                 errors: Validation error on missing conformance
             -
                 id: 2702
-                title: no known conformance value
-                actions: set profile to user agents default
+                description: No known conformance value
+                actions: Set profile to user agents default
                 errors: Validation error on no known conformance
 
     -
@@ -82,8 +82,8 @@ tests:
         tests:
             -
                 id: 281101
-                title: Check invalid value for abridged
-                actions: the value of abridged should be removed from the result
+                description: Check invalid value for abridged
+                actions: The value of abridged should be removed from the result
                 Expected error: Validation error on abridged
 
     -
@@ -92,37 +92,37 @@ tests:
         tests:
             -
                 id: 281201
-                title: Check the simple a11y terms
+                description: Check the simple a11y terms
                 actions: All values should be turned into arrays of literals
                 Expected error: none
             -
                 id: 281202
-                title: Invalid accessModeSufficient value
+                description: Invalid accessModeSufficient value
                 actions: The illegal value (visual) should be removed
                 Expected error: Validation error on the incorrect data
             -
                 id: 281203
-                title: All values of accessModeSufficient are invalid
+                description: All values of accessModeSufficient are invalid
                 actions: Both values being invalid, the key should be removed altogether
                 Expected error: Validation error on the incorrect data
 
     -
         section: §2.8.1.3 Address
-        title: https://www.w3.org/TR/pub-manifest/#address
+        description: https://www.w3.org/TR/pub-manifest/#address
         tests:
             -
                 id: 281301
-                title: Turn relative URL into absolute
+                description: Turn relative URL into absolute
                 actions: Value of URL should be absolute
                 Expected error: none
             -
                 id: 281302
-                title: Turn all relative URLs into absolute
+                description: Turn all relative URLs into absolute
                 actions: Value of all URLs should be absolute
                 Expected error: none
             -
                 id: 281303
-                title: Invalid URL
+                description: Invalid URL
                 actions: The invalid URL should be removed
                 Expected error: Validation error on the URL
 
@@ -132,12 +132,12 @@ tests:
         tests:
             -
                 id: 281401
-                title: Invalid URL for ID
+                description: Invalid URL for ID
                 actions: Value of invalid URL should be removed
                 Expected error: Validation error on the URL
             -
                 id: 281402
-                title: Missing ID
+                description: Missing ID
                 actions: Output unchanged
                 Expected error: Validation error on the missing ID
 
@@ -147,12 +147,12 @@ tests:
         tests:
             -
                 id: 281601
-                title: Incorrect duration format
-                actions: duration should be removed from output
+                description: Incorrect duration format
+                actions: Duration should be removed from output
                 errors: Validation error on incorrect duration format
             -
                 id: 281602
-                title: Correct duration
+                description: Correct duration
                 actions: duration value should be present in the output
                 errors: none
 
@@ -166,13 +166,13 @@ tests:
         tests:
             -
                 id: 281701
-                title: Incorrect date format
+                description: Incorrect date format
                 actions: datePublished and dateModified should be removed from output
                 errors: incorrect publication dates
             -
                 id: 281702
-                title: Correct date formats
-                actions: dateModified and datePublished values should be present in the output
+                description: Correct date formats
+                actions: datePublished and dateModified values should be present in the output
                 errors: none
 
     -
@@ -181,19 +181,24 @@ tests:
         tests:
             -
                 id: 282101
-                title: A single resource is turned into an array of Linked Resources
+                description: A single resource is turned into an array of Linked Resources
                 actions: readingOrder is an array of a single object, with the URL turned into absolute
                 errors: none
             -
                 id: 282102
-                title: Invalid URL is removed from reading order list
+                description: Invalid URL is removed from reading order list
                 actions: The second entry in readingOrder is removed from the final list
                 errors: Validation error on invalid URL, and a validation error on removing the corresponding Linked Resource
             -
                 id: 282103
-                title: missing readingOrder is replaced by a default
+                description: missing readingOrder is replaced by a default
                 actions: A readingOrder is added with a single link set to the HTML Nodes Document.URL. If none provided, validation error
                 errors: Validation error on invalid URL, and a validation error on removing the corresponding Linked Resource
+            -
+                id: 282104
+                description: Repeated URLs generate warning but stay in the list
+                actions: The output does not change
+                errors: Validation error on repeated URLs
 
     -
         section: §2.8.22 Resource List
@@ -201,22 +206,17 @@ tests:
         tests:
             -
                 id: 282201
-                title: A single resource is turned into an array of Linked Resources
-                actions: resources is an array of a single object, with the URL turned into absolute
+                description: A single resource is turned into an array of Linked Resources
+                actions: Resources is an array of a single object, with the URL turned into absolute
                 errors: none
             -
                 id: 282202
-                title: Invalid URL is removed from resources
+                description: Invalid URL is removed from resources
                 actions: The second entry in resources is removed from the final list
                 errors: Validation error on invalid URL
             -
                 id: 282203
-                title: URL with a fragment is removed from resources
-                actions: The second entry in resources is removed from the final list
-                errors: Validation error on invalid URL
-            -
-                id: 282204
-                title: duplicate URL-s removed from resources
+                description: duplicate URL-s removed from resources
                 actions: The third entry in resources is removed from the final list
                 errors: Validation error on invalid URL
 
@@ -226,40 +226,54 @@ tests:
         tests:
             -
                 id: 282301
-                title: A single resource is turned into an array of Linked Resources
+                description: A single resource is turned into an array of Linked Resources
                 actions: links is an array of a single object, with the URL turned into absolute
                 errors: none
             -
                 id: 282302
-                title: Invalid URL is removed from reading order list
+                description: Invalid URL is removed from reading order list
                 actions: The second entry in links is removed from the final list
                 errors: Validation error on invalid URL
             -
                 id: 282303
-                title: URL with a fragment is accepted
-                actions: The second entry in links is generated without change
-                errors: none
+                description: entry in links appears in reading order
+                actions: chapter1.html is removed from  links
+                errors: Validation error on a link appearing in bounds
             -
                 id: 282304
-                title: entry in links appears in reading order
-                actions: The chapter1.html is removed from  links
+                description: entries in links appear in resources and in reading order, the latter with a fragment id. One of the entry in links is with a fragment, but should yield an error nevertheless
+                actions: The chapter1.html, link1.html, and link3.html are removed from  links
                 errors: Validation error on a link appearing in bounds
             -
                 id: 282305
-                title: entries in links appear in resources and in reading order, the latter with a fragment id. One of the entry in links is with a fragment, but should yield an error nevertheless
-                actions: The chapter1.html, link1.html, and link3.html are removed from  links
-                errors: Validation error on a link appearing in bounds
+                description: cover page, toc reference, or pagelist reference should not appear in links
+                actions: The links2.html, links4.html, and links6.html entries should be removed from the final links; others should be listed.
+                errors: Validation error on all three faulty links.
+    -
+        section: §2.8.3.2 Additional Manifest Properties
+        ref: https://www.w3.org/TR/pub-manifest/#extensibility-manifest-properties
+        tests:
+            -
+                id: 283201
+                description: Extra term values with, possibly, extra namespace declaration is accepted
+                actions: The manifest should leave the extra values in the output
+                errors: none
+            -
+                id: 283202
+                description: Extra term values in terms and in linked resources should be accepted in the output
+                actions: The manifest should leave the extra values in the output
+                errors: none
     -
         section: §3 Publication resources
         ref: https://www.w3.org/TR/pub-manifest/#publication-resources
         tests:
             -
                 id: 301
-                title: Calculation of bounds removes fragment identifiers
+                description: Calculation of bounds removes fragment identifiers
                 actions: The uniqueResources array contains URL-s without fragments
                 errors: none
             -
                 id: 302
-                title: Calculation of bounds removes duplicate entries
+                description: Calculation of bounds removes duplicate entries
                 actions: The uniqueResources array contains unique URL-s only
                 errors: none
