@@ -270,7 +270,7 @@ const create_LinkedResource = (resource) => {
  * @param logger - an extra parameter to collect the error messages in one place, to be then processed by the caller
  * @return - the processed manifest
  */
-function generate_representation(url, base, logger) {
+function generate_internal_representation(url, base, logger) {
     return __awaiter(this, void 0, void 0, function* () {
         Global.logger = logger;
         // In the real world the value of base must be checked against invalid or malicious URL-s!
@@ -372,28 +372,11 @@ function generate_representation(url, base, logger) {
         });
         /* Step: Data validation */
         processed = data_validation(processed);
-        // /* Step: calculate the set of unique URL-s  */
-        // processed.uniqueResources = obtain_list_of_unique_resources(processed.readingOrder, processed.resources);
-        // /* Step: Remove entries in "links" whose URL also appear in 'bounds' */
-        // if (processed.links) {
-        //     processed.links = processed.links.filter((link: LinkedResource): boolean => {
-        //         const check_result = processed.uniqueResources.includes(remove_url_fragment(link.url));
-        //         if (check_result) {
-        //             Global.logger.log_validation_error(`${link.url} appear in "links" but is within the bounds of the publication`, null, true);
-        //             return false;
-        //         } else {
-        //             return true;
-        //         }
-        //     });
-        //     if (processed.links.length === 0) {
-        //         delete processed.links;
-        //     }
-        // }
         /* Step: return processed */
         return processed;
     });
 }
-exports.generate_representation = generate_representation;
+exports.generate_internal_representation = generate_internal_representation;
 /**
  *
  * Normalize Data. This corresponds to the main body of
@@ -492,7 +475,7 @@ function normalize_data(context, term, value) {
     return normalized;
 }
 /**
- * Create a new absolute URL
+ * Convert to absolute URL
  *
  * This is used for the implementation of step §4.3.1/5, i.e.,
 * [§5.4.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#convert-absolute-url).
@@ -606,28 +589,18 @@ function data_validation(data) {
     else {
         data.readingProgression = manifest_1.ProgressionDirection.ltr;
     }
-    /* Step: remove duplicate entries, or entries with a fragment, from 'resources' */
-    if (data.resources) {
-        const uniqueURLs = new utilities_1.OrderedSet();
-        data.resources = data.resources.filter((item) => {
-            const check = uniqueURLs.push(utilities_1.remove_url_fragment(item.url));
-            if (!check) {
-                Global.logger.log_validation_error(`Duplicate URL "${item.url}" removed from "resources"`, null, true);
-                return false;
-            }
-            else {
-                return true;
-            }
-        });
+    /* Step: check duplication in resources and in the readingOrder, and also set the unique resources' entry */
+    {
+        const readingOrderURLs = (data.readingOrder) ? get_unique_URLs(data.readingOrder) : [];
+        const resourcesURLs = (data.resources) ? get_unique_URLs(data.resources) : [];
+        data.uniqueResources = _.union(readingOrderURLs, resourcesURLs);
     }
-    /* Step: calculate the set of unique URL-s  */
-    data.uniqueResources = obtain_list_of_unique_resources(data.readingOrder, data.resources);
     /* Step: Remove entries in "links" whose URL also appear in 'bounds' */
     if (data.links) {
         data.links = data.links.filter((link) => {
             const check_result = data.uniqueResources.includes(utilities_1.remove_url_fragment(link.url));
             if (check_result) {
-                Global.logger.log_validation_error(`${link.url} appear in "links" but is within the bounds of the publication`, null, true);
+                Global.logger.log_validation_error(`${link.url} appears in "links" but is within the bounds of the publication`, null, true);
                 return false;
             }
             else {
@@ -901,8 +874,33 @@ function verify_value_category(context, term, value) {
 }
 /**
  *
+ *  Obtain a list of unique resources. This corresponds to the main body of
+ * [§5.4.2.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#get-unique-urls).
+ *
+ * @param resources
+ * @returns - the full list of unique resources
+ */
+function get_unique_URLs(resources) {
+    const uniqueResources = new utilities_1.OrderedSet();
+    const get_url_from_link = (link) => {
+        const check_result = uniqueResources.push(utilities_1.remove_url_fragment(link.url));
+        if (!check_result) {
+            Global.logger.log_validation_error(`Duplicate value for ${link.url}`);
+        }
+    };
+    const get_all_urls_from_link = (link) => {
+        get_url_from_link(link);
+        if (link.alternate) {
+            link.alternate.forEach(get_all_urls_from_link);
+        }
+    };
+    resources.forEach(get_all_urls_from_link);
+    return uniqueResources.content;
+}
+/**
+ *
  * Remove empty arrays. This corresponds to the main body of
- * [§5.3.2.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#remove-empty-arrays).
+ * [§5.4.2.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#remove-empty-arrays).
  *
  * The function is a slight misnomer: it checks whether the incoming value is an array and, if yes, checks whether it is empty or not; however
  * if the value is an objects, it looks for the constituent arrays and removes the empty ones from the object.
@@ -923,49 +921,5 @@ function remove_empty_arrays(value) {
         });
     }
     return true;
-}
-/**
- *
- *  Obtain a list of unique resources. This corresponds to the main body of
- * [§5.4.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#obtain-pub-resource-list).
- *
- * @param reading_order
- * @param resources
- * @returns - the full list of unique resources
- */
-function obtain_list_of_unique_resources(reading_order, resources) {
-    const uniqueResources = new utilities_1.OrderedSet();
-    const collect_resources = (list) => {
-        list.forEach((item) => {
-            appendURL(item, uniqueResources);
-        });
-    };
-    if (reading_order !== undefined)
-        collect_resources(reading_order);
-    if (resources !== undefined)
-        collect_resources(resources);
-    return uniqueResources.content;
-}
-/**
- *
- * Append URL. This corresponds to
- * [§5.4.4.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#append-url).
- *
- * @param resource - The linked resource whose URL should be appended
- * @param uniqueResources - List of unique resources
- */
-function appendURL(resource, uniqueResources) {
-    if (resource.url) {
-        if (!uniqueResources.push(utilities_1.remove_url_fragment(resource.url))) {
-            // The value was already there
-            Global.logger.log_validation_error(`Duplicate value for ${resource.url}`);
-        }
-    }
-    if (resource.alternate) {
-        resource.alternate.forEach((item) => {
-            appendURL(item, uniqueResources);
-        });
-    }
-    return uniqueResources;
 }
 //# sourceMappingURL=process.js.map

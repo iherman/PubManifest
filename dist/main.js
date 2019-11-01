@@ -34,7 +34,7 @@ function main(url) {
     return __awaiter(this, void 0, void 0, function* () {
         const logger = new utilities_1.Logger();
         try {
-            const manifest_object = yield process_1.generate_representation(url, '', logger);
+            const manifest_object = yield process_1.generate_internal_representation(url, '', logger);
             console.log(JSON.stringify(manifest_object, null, 4));
             console.log(logger.toString());
         }

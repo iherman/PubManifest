@@ -289,7 +289,7 @@ const create_LinkedResource = (resource: any): LinkedResource => {
  * @param logger - an extra parameter to collect the error messages in one place, to be then processed by the caller
  * @return - the processed manifest
  */
-export async function generate_representation(url: URL, base: URL, logger: Logger): Promise<PublicationManifest> {
+export async function generate_internal_representation(url: URL, base: URL, logger: Logger): Promise<PublicationManifest> {
     // This is necessary to make the language and direction global extraction in a TS happy way...
     interface lang_dir {
         language?: string;
@@ -510,7 +510,7 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
 
 
 /**
- * Create a new absolute URL
+ * Convert to absolute URL
  *
  * This is used for the implementation of step §4.3.1/5, i.e.,
 * [§5.4.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#convert-absolute-url).

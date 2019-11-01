@@ -250,6 +250,20 @@ tests:
                 actions: The links2.html, links4.html, and links6.html entries should be removed from the final links; others should be listed.
                 errors: Validation error on all three faulty links.
     -
+        section: §2.8.3.2 Additional Manifest Properties
+        ref: https://www.w3.org/TR/pub-manifest/#extensibility-manifest-properties
+        tests:
+            -
+                id: 283201
+                description: Extra term values with, possibly, extra namespace declaration is accepted
+                actions: The manifest should leave the extra values in the output
+                errors: none
+            -
+                id: 283202
+                description: Extra term values in terms and in linked resources should be accepted in the output
+                actions: The manifest should leave the extra values in the output
+                errors: none
+    -
         section: §3 Publication resources
         ref: https://www.w3.org/TR/pub-manifest/#publication-resources
         tests:
