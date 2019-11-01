@@ -73,18 +73,12 @@ import moment from 'moment';
 const isMap = (value: any): boolean => _.isObject(value) && !_.isArray(value) && !_.isFunction(value);
 
 /**
- * Callback type definition to define the [[process_object_keys]] function in a TS happy way...
- */
-interface ObjCallback {
-    (term: string): void
-}
-/**
  * Wrapper around a repetitive idiom of calling a callback function on all keys of an object.
  *
  * @param obj
  * @param callback
  */
-const process_object_keys = (obj: object, callback: ObjCallback) => {
+const process_object_keys = (obj: object, callback: ((term:string)=>void)) => {
     Object.getOwnPropertyNames(obj).forEach(callback);
 }
 
@@ -294,6 +288,7 @@ export async function generate_internal_representation(url: URL, base: URL, logg
     interface lang_dir {
         language?: string;
         direction?: string;
+        [propName: string] : any;
     }
 
     Global.logger = logger;
