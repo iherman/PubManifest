@@ -778,13 +778,6 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
                         return false;
                     }
                 }
-                if (resource.alternate) {
-                    resource.alternate.forEach((alternate: LinkedResource): void => {
-                        if (!alternate.encodingFormat) {
-                            Global.logger.log_validation_error(`Alternate does not have an encoding format set`);
-                        }
-                    });
-                }
                 return true;
             });
         }

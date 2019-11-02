@@ -241,12 +241,12 @@ tests:
                 errors: Validation error on a link appearing in bounds
             -
                 id: 282304
-                description: entries in links appear in resources and in reading order, the latter with a fragment id. One of the entry in links is with a fragment, but should yield an error nevertheless
+                description: Entries in links appear in resources and in reading order, the latter with a fragment id. One of the entry in links is with a fragment, but should yield an error nevertheless
                 actions: The chapter1.html, link1.html, and link3.html are removed from  links
                 errors: Validation error on a link appearing in bounds
             -
                 id: 282305
-                description: cover page, toc reference, or pagelist reference should not appear in links
+                description: Cover page, toc reference, or pagelist reference should not appear in links
                 actions: The links2.html, links4.html, and links6.html entries should be removed from the final links; others should be listed.
                 errors: Validation error on all three faulty links.
     -
@@ -260,7 +260,7 @@ tests:
                 errors: none
             -
                 id: 283202
-                description: Extra term values in terms and in linked resources should be accepted in the output
+                description: Extra term values in entities and in linked resources should be accepted in the output
                 actions: The manifest should leave the extra values in the output
                 errors: none
     -
