@@ -176,7 +176,7 @@ tests:
                 errors: none
 
     -
-        section: §2.8.21 Default Reading Order
+        section: §2.8.2.1 Default Reading Order
         ref: https://www.w3.org/TR/pub-manifest/#default-reading-order
         tests:
             -
@@ -201,7 +201,7 @@ tests:
                 errors: Validation error on repeated URLs
 
     -
-        section: §2.8.22 Resource List
+        section: §2.8.2.2 Resource List
         ref: https://www.w3.org/TR/pub-manifest/#resource-list
         tests:
             -
@@ -219,10 +219,9 @@ tests:
                 description: duplicate URL-s removed from resources
                 actions: The third entry in resources is removed from the final list
                 errors: Validation error on invalid URL
-
     -
-        section: §2.8.23 Links
-        ref: https://www.w3.org/TR/pub-manifest/#resource-list
+        section: §2.8.2.3 Links
+        ref: https://www.w3.org/TR/pub-manifest/#links
         tests:
             -
                 id: 282301
@@ -263,6 +262,43 @@ tests:
                 description: Extra term values in entities and in linked resources should be accepted in the output
                 actions: The manifest should leave the extra values in the output
                 errors: none
+    -
+        section: §2.9.1.1 Cover
+        ref: https://www.w3.org/TR/pub-manifest/#cover
+        tests:
+            -
+                id: 291101
+                description: There should not be a repeated definition of cover
+                actions: The second occurrence of cover should be flagged
+                errors: Validation error on cover
+            -
+                id: 291102
+                description: A cover should have a name
+                actions: Validation error generation
+                errors: Validation error on missing name
+            -
+                id: 291103
+                description: A cover should have a description
+                actions: Validation error generation
+                errors: Validation error on missing description
+    -
+        section: §2.9.1.2 Page List
+        ref: https://www.w3.org/TR/pub-manifest/#page-list
+        tests:
+            -
+                id: 291201
+                description: There should not be a repeated definition of page list
+                actions: The second occurrence of page list should be flagged
+                errors: Validation error on page list
+    -
+        section: §2.9.1.3 Page List
+        ref: https://www.w3.org/TR/pub-manifest/#pub-table-of-contents
+        tests:
+            -
+                id: 291301
+                description: There should not be a repeated definition of TOC
+                actions: The second occurrence of TOC should be flagged
+                errors: Validation error on TOC
     -
         section: §3 Publication resources
         ref: https://www.w3.org/TR/pub-manifest/#publication-resources
