@@ -78,6 +78,12 @@ const default_profile = 'https://www.w3.org/TR/pub-manifest/';
  */
 const known_profiles = [default_profile, 'https://www.w3.org/TR/audiobooks/'];
 /**
+ * Structural resources' `rel` value. (These are treated specially by the algorithm)
+ *
+ * The algorithms' implementation uses this value only; i.e., new structural resource values can be added easily.
+ */
+const structural_resources = ["contents", "pagelist", "cover"];
+/**
  * "Global" object.
  *
  * These values are, conceptually, global variables shared among functions.
@@ -605,7 +611,7 @@ function data_validation(data) {
             }
             else {
                 if (link["rel"] && link["rel"].length !== 0) {
-                    const intersection = _.intersection(link["rel"], ["contents", "pagelist", "cover"]);
+                    const intersection = _.intersection(link["rel"], structural_resources);
                     if (intersection.length > 0) {
                         Global.logger.log_validation_error(`Linked Resource in "links" includes "${intersection}"`, link, true);
                         return false;
@@ -613,6 +619,37 @@ function data_validation(data) {
                 }
             }
             return true;
+        });
+    }
+    /* Step: test on structural resources */
+    {
+        const flags = _.object(structural_resources, Array.from({ length: structural_resources.length }, (v, i) => false));
+        const res1 = (data.readingOrder) ? data.readingOrder : [];
+        const res2 = (data.resources) ? data.resources : [];
+        [...res1, ...res2].forEach((resource) => {
+            if (resource.rel) {
+                structural_resources.forEach((str) => {
+                    if (resource.rel.includes(str)) {
+                        // we found a possible structural resource
+                        if (flags[str] === true) {
+                            // Duplicate, should not be used
+                            Global.logger.log_validation_error(`Multiple definition for the structural resource "${str}"`, resource, false);
+                        }
+                        else {
+                            flags[str] = true;
+                            // For the 'cover' case, there are some extra checks
+                            if (str === 'cover') {
+                                if (!resource.name) {
+                                    Global.logger.log_validation_error(`No name provided for a cover page`, resource, false);
+                                }
+                                if (!resource.description) {
+                                    Global.logger.log_validation_error(`No description is provided for a cover page`, resource, false);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
         });
     }
     /* Step: profile extension point (not implemented) */
@@ -732,13 +769,6 @@ function global_data_checks(context, term, value) {
                         Global.logger.log_validation_error(`Linked Resource length is is invalid in  "${term}"`, resource, true);
                         return false;
                     }
-                }
-                if (resource.alternate) {
-                    resource.alternate.forEach((alternate) => {
-                        if (!alternate.encodingFormat) {
-                            Global.logger.log_validation_error(`Alternate does not have an encoding format set`);
-                        }
-                    });
                 }
                 return true;
             });
