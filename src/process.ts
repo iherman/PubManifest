@@ -78,7 +78,7 @@ const isMap = (value: any): boolean => _.isObject(value) && !_.isArray(value) &&
  * @param obj
  * @param callback
  */
-const process_object_keys = (obj: object, callback: ((term:string)=>void)) => {
+const process_object_keys = (obj: object, callback: ((term: string) => void)) => {
     Object.getOwnPropertyNames(obj).forEach(callback);
 }
 
@@ -113,13 +113,13 @@ const structural_resources = ["contents", "pagelist","cover"];
  */
 class Global  {
     /** A [[Logger]] instance used to store the fatal and validation errors during processing. */
-    static logger:  Logger;
+    static logger : Logger;
     /** Global language tag declaration */
-    static lang:    string = '';
+    static lang   : string = '';
     /** Global base direction declaration */
-    static dir:     string = '';
+    static dir    : string = '';
     /** Global base URL */
-    static base:    URL = '';
+    static base   : URL = '';
     /** Final profile for the User Agent (stored only for testing purpose, not really used). */
     static profile: string = '';
 }
@@ -139,7 +139,7 @@ class Global  {
  *
  * @param resource - either a string or a (originally JSON) object
  */
-const create_Entity = (resource: any) : Person|Organization => {
+const create_Entity = (resource: any): Person|Organization => {
     if (resource === null) {
         // This should not happen, but better check, just to be on the safe side
         Global.logger.log_validation_error(`Invalid entity`, resource, true);
@@ -664,7 +664,8 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
 
     /* Step: test on structural resources */
     {
-        const flags: {[propName: string]: boolean} = _.object(structural_resources, Array.from({length:structural_resources.length},(v,i)=>false));
+        // create an object that has a boolean term for each structural resources initialized to false
+        const flags: {[propName: string]: boolean} = _.object(structural_resources, Array.from({length: structural_resources.length}, (v,i) => false));
         const res1 = (data.readingOrder) ? data.readingOrder : [];
         const res2 = (data.resources) ? data.resources : [];
         [...res1, ...res2].forEach((resource: LinkedResource): void => {
@@ -722,7 +723,7 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
  * @param value - property value
  * @return - the normalized value or `undefined`, in case of error
  */
-function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_Impl, term: string, value: any): any {
+function global_data_checks(context: PublicationManifest_Impl|RecognizedTypes_Impl, term: string, value: any): any {
     const terms = get_terms(context);
     if (terms) {
         /* Step: see if the term has a known value category and check that value. */
@@ -835,7 +836,7 @@ function global_data_checks(context:  PublicationManifest_Impl|RecognizedTypes_I
  * @param value - property value
  * @return - result of the category check
  */
-function verify_value_category(context:  PublicationManifest_Impl|RecognizedTypes_Impl|LocalizableString_Impl, term: string, value: any): boolean {
+function verify_value_category(context: PublicationManifest_Impl|RecognizedTypes_Impl|LocalizableString_Impl, term: string, value: any): boolean {
     /**
      * Check a key/value pair's validity using the categorization defined in keys.
      * @param keys - the [[Term]] instance controlling the value constraints
@@ -995,4 +996,3 @@ function remove_empty_arrays(value: any): boolean {
     }
     return true;
 }
-

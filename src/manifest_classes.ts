@@ -65,32 +65,32 @@ const creator_properties = [
  */
 export abstract class Terms {
     /** Terms referring to a single literal (e.g., `id`) */
-    single_literal:    string[];
+    single_literal   : string[];
     /** Terms referring to an array (list) of literals (e.g., the terms in [[a11y_properties]]) */
     array_of_literals: string[];
     /** Terms referring to an array of (localizable) strings (e.g., `name`) */
-    array_of_strings:  string[];
+    array_of_strings : string[];
     /** Terms referring to an array of entities (e.g., the terms in [[creator_properties]]) */
     array_of_entities: string[];
     /** Terms referring to an array of linked resources (e.g., `readingOrder`) */
-    array_of_links:    string[];
+    array_of_links   : string[];
     /** Terms referring to a single URL (not used at present, added as a placeholder) */
-    single_url:        string[];
+    single_url       : string[];
     /** Terms referring to an array of URLs (e.g., `url`) */
-    array_of_urls:     string[];
+    array_of_urls    : string[];
     /** Terms referring to a single boolean (e.g., `abridged`) */
-    single_boolean:    string[];
+    single_boolean   : string[];
     /** Terms referring to a single number (e.g., `length`) */
-    single_number:     string[];
+    single_number    : string[];
     /** Terms referring to a single value not listed above (not used at present, added as a placeholder) */
-    single_misc:       string[];
+    single_misc      : string[];
     /** Terms referring to an array of values not listed above (e.g., `accessModeSufficient`) */
-    array_of_miscs:    string[];
+    array_of_miscs   : string[];
 
     /**
      * Terms that expect arrays as values
      */
-    get array_terms() {
+    get array_terms(): string[] {
         return [
             ...this.array_of_literals,
             ...this.array_of_strings,
@@ -104,14 +104,14 @@ export abstract class Terms {
     /**
      * Terms referring to literals, either as individual values or arrays
      */
-    get array_or_single_literals() {
+    get array_or_single_literals(): string[] {
         return [...this.single_literal, ...this.array_of_literals];
     }
 
     /**
      * Terms referring to URLs, either as individual values or arrays
      */
-    get array_or_single_urls() {
+    get array_or_single_urls(): string[] {
         return [...this.single_url, ...this.array_of_urls];
     }
 
@@ -141,68 +141,68 @@ export abstract class Terms {
  * Terms defined for [[Entity]] implementations.
  */
 class EntityTerms extends Terms {
-    single_literal:    string[] = [];
+    single_literal   : string[] = [];
     array_of_literals: string[] = ['type', 'identifier'];
-    array_of_strings:  string[] = ['name'];
+    array_of_strings : string[] = ['name'];
     array_of_entities: string[] = [];
-    array_of_links:    string[] = [];
-    single_url:        string[] = ['id'];
-    array_of_urls:     string[] = [];
-    single_boolean:    string[] = [];
-    single_number:     string[] = [];
-    single_misc:       string[] = [];
-    array_of_miscs:    string[] = [];
+    array_of_links   : string[] = [];
+    single_url       : string[] = ['id'];
+    array_of_urls    : string[] = [];
+    single_boolean   : string[] = [];
+    single_number    : string[] = [];
+    single_misc      : string[] = [];
+    array_of_miscs   : string[] = [];
 }
 
 /**
  * Terms defined for [[LinkedResource]] implementations
  */
 class LinkedResourceTerms extends Terms {
-    single_literal:    string[] = ['encodingFormat', 'integrity'];
+    single_literal   : string[] = ['encodingFormat', 'integrity'];
     array_of_literals: string[] = ['rel'];
-    array_of_strings:  string[] = ['name', 'description'];
+    array_of_strings : string[] = ['name', 'description'];
     array_of_entities: string[] = [];
-    array_of_links:    string[] = ['alternate'];
-    single_url:        string[] = ['url'];
-    array_of_urls:     string[] = [];
-    single_boolean:    string[] = [];
-    single_number:     string[] = ['length'];
-    single_misc:       string[] = [];
-    array_of_miscs:    string[] = [];
+    array_of_links   : string[] = ['alternate'];
+    single_url       : string[] = ['url'];
+    array_of_urls    : string[] = [];
+    single_boolean   : string[] = [];
+    single_number    : string[] = ['length'];
+    single_misc      : string[] = [];
+    array_of_miscs   : string[] = [];
 }
 
 /**
  * Terms defined for [[LocalizableString]] implementations
  */
 class LocalizableStringTerms extends Terms {
-    single_literal:    string[] = ['value', 'language', 'direction'];
+    single_literal   : string[] = ['value', 'language', 'direction'];
     array_of_literals: string[] = [];
-    array_of_strings:  string[] = [];
+    array_of_strings : string[] = [];
     array_of_entities: string[] = [];
-    array_of_links:    string[] = [];
-    single_url:        string[] = [];
-    array_of_urls:     string[] = [];
-    single_boolean:    string[] = [];
-    single_number:     string[] = [];
-    single_misc:       string[] = [];
-    array_of_miscs:    string[] = [];
+    array_of_links   : string[] = [];
+    single_url       : string[] = [];
+    array_of_urls    : string[] = [];
+    single_boolean   : string[] = [];
+    single_number    : string[] = [];
+    single_misc      : string[] = [];
+    array_of_miscs   : string[] = [];
 }
 
 /**
  * Terms defined for the [[PublicationManifest]] implementations
  */
 class PublicationManifestTerms extends Terms {
-    single_literal:    string[] = ['dateModified', 'datePublished', 'readingProgression'];
+    single_literal   : string[] = ['dateModified', 'datePublished', 'readingProgression'];
     array_of_literals: string[] = [...a11y_properties, 'inLanguage', 'type', 'conformsTo'];
-    array_of_strings:  string[] = ['name', 'accessibilitySummary'];
+    array_of_strings : string[] = ['name', 'accessibilitySummary'];
     array_of_entities: string[] = [...creator_properties];
-    array_of_links:    string[] = ['readingOrder', 'resources', 'links'];
-    single_url:        string[] = ['id'];
-    array_of_urls:     string[] = ['url'];
-    single_boolean:    string[] = ['abridged'];
-    single_number:     string[] = [];
-    single_misc:       string[] = [];
-    array_of_miscs:    string[] = ['accessModeSufficient'];
+    array_of_links   : string[] = ['readingOrder', 'resources', 'links'];
+    single_url       : string[] = ['id'];
+    array_of_urls    : string[] = ['url'];
+    single_boolean   : string[] = ['abridged'];
+    single_number    : string[] = [];
+    single_misc      : string[] = [];
+    array_of_miscs   : string[] = ['accessModeSufficient'];
 }
 
 // -------------------------------- Type aliases for URL (which are strings, in fact) -------------
@@ -223,13 +223,13 @@ export class Entity_Impl implements Entity {
         return new EntityTerms();
     }
 
-    type       : string[];
-    name       : LocalizableString[];
-    id         : string;
-    url        : string;
-    identifier : string[];
+    type      : string[];
+    name      : LocalizableString[];
+    id        : string;
+    url       : string;
+    identifier: string[];
 
-    [propName  : string] : any;
+    [propName : string]: any;
 };
 
 /**
@@ -251,11 +251,11 @@ export class LocalizableString_Impl implements LocalizableString {
         return new LocalizableStringTerms();
     }
 
-    value     : string;
-    language  : string;
-    direction : string;
+    value    : string;
+    language : string;
+    direction: string;
 
-    [propName  : string] : any;
+    [propName: string]: any;
 };
 
 /**
@@ -267,16 +267,16 @@ export class LinkedResource_Impl implements LinkedResource {
         return new LinkedResourceTerms();
     }
 
-    url            : URL;
-    encodingFormat : string;
-    name           : LocalizableString[];
-    description    : LocalizableString;
-    rel            : string[];
-    integrity      : string;
-    length         : number;
-    alternate      : LinkedResource[];
+    url           : URL;
+    encodingFormat: string;
+    name          : LocalizableString[];
+    description   : LocalizableString;
+    rel           : string[];
+    integrity     : string;
+    length        : number;
+    alternate     : LinkedResource[];
 
-    [propName: string] : any;
+    [propName: string]: any;
 };
 
 /**
@@ -288,42 +288,42 @@ export class PublicationManifest_Impl implements PublicationManifest {
         return new PublicationManifestTerms();
     }
 
-    type                 : string[];
-    id                   : URL = '';
-    profile              : string = '';
-    conformsTo           : string[];
+    type                : string[];
+    id                  : URL = '';
+    profile             : string = '';
+    conformsTo          : string[];
 
-    accessMode           : string[];
-    accessModeSufficient : string[];
-    accessibilityFeature : string[];
-    accessibilityHazard  : string[];
-    accessibilitySummary : LocalizableString[];
-    artist               : Entity[];
-    author               : Entity[];
-    colorist             : Entity[];
-    contributor          : Entity[];
-    creator              : Entity[];
-    editor               : Entity[];
-    illustrator          : Entity[];
-    inker                : Entity[];
-    letterer             : Entity[];
-    penciler             : Entity[];
-    publisher            : Entity[];
-    readBy               : Entity[];
-    translator           : Entity[];
+    accessMode          : string[];
+    accessModeSufficient: string[];
+    accessibilityFeature: string[];
+    accessibilityHazard : string[];
+    accessibilitySummary: LocalizableString[];
+    artist              : Entity[];
+    author              : Entity[];
+    colorist            : Entity[];
+    contributor         : Entity[];
+    creator             : Entity[];
+    editor              : Entity[];
+    illustrator         : Entity[];
+    inker               : Entity[];
+    letterer            : Entity[];
+    penciler            : Entity[];
+    publisher           : Entity[];
+    readBy              : Entity[];
+    translator          : Entity[];
 
-    url                  : URL[];
-    duration             : string;
-    inLanguage           : string[];
-    dateModified         : string;
-    datePublished        : string;
-    abridged             : boolean;
-    readingProgression   : ProgressionDirection = ProgressionDirection.ltr;
-    name                 : LocalizableString[] = [];
-    readingOrder         : LinkedResource[] = [];
-    resources            : LinkedResource[];
-    links                : LinkedResource[];
-    uniqueResources      : URL[];
+    url                 : URL[];
+    duration            : string;
+    inLanguage          : string[];
+    dateModified        : string;
+    datePublished       : string;
+    abridged            : boolean;
+    readingProgression  : ProgressionDirection = ProgressionDirection.ltr;
+    name                : LocalizableString[] = [];
+    readingOrder        : LinkedResource[] = [];
+    resources           : LinkedResource[];
+    links               : LinkedResource[];
+    uniqueResources     : URL[];
 
-    [propName: string] : any;
+    [propName: string]: any;
 };

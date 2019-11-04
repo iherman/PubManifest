@@ -216,21 +216,21 @@ export class Logger {
     /**
      * Display all fatal errors as one string.
      */
-    fatal_errors_toString() : string {
+    fatal_errors_toString(): string {
         return this._display(this.fatal_errors, 'Fatal Errors:');
     }
 
     /**
      * Display all validation errors as one string.
      */
-    validation_errors_toString() : string {
+    validation_errors_toString(): string {
         return this._display(this.validation_errors, 'Validation Errors:');
     }
 
     /**
      * Display all the messages as one string.
      */
-    toString() : string {
+    toString(): string {
         return `${this.validation_errors_toString()}\n${this.fatal_errors_toString()}`;
     }
 

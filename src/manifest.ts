@@ -20,11 +20,11 @@ export type RecognizedTypes = Person | Organization | LinkedResource;
  * Superclass for a [[Person]] or an [[Organization]].
  */
 export interface Entity {
-    type?       : string[];
-    name        : LocalizableString[];
-    id?         : string;
-    url?        : string;
-    identifier? : string[];
+    type?      : string[];
+    name       : LocalizableString[];
+    id?        : string;
+    url?       : string;
+    identifier?: string[];
     [propName: string] : any;
 };
 
@@ -42,9 +42,9 @@ export interface Organization extends Entity {};
  * Localizable string; it mimics the JSON-LD structures for string values
  */
 export interface LocalizableString {
-    value      : string;
-    language?  : string;
-    direction? : string;
+    value     : string;
+    language? : string;
+    direction?: string;
 };
 
 export enum ProgressionDirection {
@@ -56,57 +56,56 @@ export enum ProgressionDirection {
  * A generic Linked Resource
  */
 export interface LinkedResource {
-    url                : URL;
-    encodingFormat?    : string;
-    name?              : LocalizableString[];
-    description?       : LocalizableString;
-    rel?               : string[];
-    integrity?         : string;
-    length?            : number;
-    alternate?         : LinkedResource[];
-    [propName: string] : any;
+    url               : URL;
+    encodingFormat?   : string;
+    name?             : LocalizableString[];
+    description?      : LocalizableString;
+    rel?              : string[];
+    integrity?        : string;
+    length?           : number;
+    alternate?        : LinkedResource[];
+    [propName: string]: any;
 };
 
 /**
  * The complete interface for a processed representation of the data model
  */
 export interface PublicationManifest {
-    type?                 : string[];
-    id?                   : URL;
-    profile               : string;
-    conformsTo            : string[];
+    type?                : string[];
+    id?                  : URL;
+    profile              : string;
+    conformsTo           : string[];
 
-    accessMode?           : string[];
-    accessModeSufficient? : string[];
-    accessibilityFeature? : string[];
-    accessibilityHazard?  : string[];
-    accessibilitySummary? : LocalizableString [];
-    artist?               : Entity[];
-    author?               : Entity[];
-    colorist?             : Entity[];
-    contributor?          : Entity[];
-    creator?              : Entity[];
-    editor?               : Entity[];
-    illustrator?          : Entity[];
-    inker?                : Entity[];
-    letterer?             : Entity[];
-    penciler?             : Entity[];
-    publisher?            : Entity[];
-    readBy?               : Entity[];
-    translator?           : Entity[];
+    accessMode?          : string[];
+    accessModeSufficient?: string[];
+    accessibilityFeature?: string[];
+    accessibilityHazard? : string[];
+    accessibilitySummary?: LocalizableString [];
+    artist?              : Entity[];
+    author?              : Entity[];
+    colorist?            : Entity[];
+    contributor?         : Entity[];
+    creator?             : Entity[];
+    editor?              : Entity[];
+    illustrator?         : Entity[];
+    inker?               : Entity[];
+    letterer?            : Entity[];
+    penciler?            : Entity[];
+    publisher?           : Entity[];
+    readBy?              : Entity[];
+    translator?          : Entity[];
 
-    url?                  : URL[];
-    duration?             : string;
-    inLanguage?           : string[];
-    dateModified?         : string;
-    datePublished?        : string;
-    abridged?             : boolean;
-    readingProgression?   : ProgressionDirection;
-    name                  : LocalizableString[];
-    readingOrder          : LinkedResource[];
-    resources?            : LinkedResource[];
-    links?                : LinkedResource[];
-    uniqueResources       : URL[];
+    url?               : URL[];
+    duration?          : string;
+    inLanguage?        : string[];
+    dateModified?      : string;
+    datePublished?     : string;
+    abridged?          : boolean;
+    readingProgression?: ProgressionDirection;
+    name               : LocalizableString[];
+    readingOrder       : LinkedResource[];
+    resources?         : LinkedResource[];
+    links?             : LinkedResource[];
+    uniqueResources    : URL[];
     [propName: string] : any;
 };
-
