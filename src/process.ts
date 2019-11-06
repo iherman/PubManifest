@@ -680,13 +680,8 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
                             flags[str] = true;
 
                             // For the 'cover' case, there are some extra checks
-                            if (str === 'cover') {
-                                if (!resource.name) {
-                                    Global.logger.log_validation_error(`No name provided for a cover page`, resource, false);
-                                }
-                                if (!resource.description) {
-                                    Global.logger.log_validation_error(`No description is provided for a cover page`, resource, false);
-                                }
+                            if (str === 'cover' && !resource.name) {
+                                Global.logger.log_validation_error(`No name provided for a cover page`, resource, false);
                             }
                         }
                     }
