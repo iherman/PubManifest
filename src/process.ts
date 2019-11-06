@@ -64,7 +64,11 @@ import moment from 'moment';
 
 
 /**
- * Check whether an object is a “map” object (i.e., not an array or a function in Javascript sense).
+ * Check whether an object is a “map” object (i.e., _not_ an array or a function in Javascript sense).
+ *
+ * Care should be taken of the fact that this is a misnomer: we are not referring to Typescript/Javascript `Map` types but, rather,
+ * referring to the term used in the infra spec, used by the Pub Manifest specification. (The data structures start with JSON, and the `JSON.parse`
+ * method returns an `Object` and not a `Map`. I.e., no `Map` is used in this code.)
  *
  * (This should really be an underscore function...)
  *
@@ -177,6 +181,7 @@ const create_Entity = (resource: any): Person|Organization => {
     }
 }
 
+
 /**
  * Create a new [[LocalizableString_Impl]].
  * The input argument may be a string or an existing object; the specs describes how a full
@@ -262,6 +267,7 @@ const create_LinkedResource = (resource: any): LinkedResource => {
         // but it is cleaner to make this explicit
     }
 }
+
 
 /* ====================================================================================================
  The main processing steps, following the spec
