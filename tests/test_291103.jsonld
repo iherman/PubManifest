@@ -10,8 +10,9 @@
     ],
     "resources": [
         {
-            "name": "cover page",
-            "url": "cover.png",
+            "description": "This is a cover page",
+            "url": "cover.json",
+            "encodingFormat": "application/json",
             "rel": ["cover"]
         }
     ]

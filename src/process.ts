@@ -685,9 +685,9 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
                         } else {
                             flags[str] = true;
 
-                            // For the 'cover' case, there are some extra checks
-                            if (str === 'cover' && !resource.name) {
-                                Global.logger.log_validation_error(`No name provided for a cover page`, resource, false);
+                            // For the 'cover' case, there is an extra check for an image
+                            if (str === 'cover' && resource.encodingFormat && resource.encodingFormat.startsWith('image/') && !resource.name) {
+                                Global.logger.log_validation_error(`No name provided for a cover page image`, resource, false);
                             }
                         }
                     }

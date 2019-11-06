@@ -273,14 +273,14 @@ tests:
                 errors: Validation error on cover
             -
                 id: 291102
-                description: A cover should have a name
+                description: A cover referring to an image should have a name
                 actions: Validation error generation
                 errors: Validation error on missing name
             -
                 id: 291103
-                description: A cover should have a description
-                actions: Validation error generation
-                errors: Validation error on missing description
+                description: A cover referring to a non-image without a name is fine
+                actions: No change on the output
+                errors: None
     -
         section: §2.9.1.2 Page List
         ref: https://www.w3.org/TR/pub-manifest/#page-list

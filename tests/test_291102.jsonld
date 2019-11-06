@@ -12,6 +12,7 @@
         {
             "description": "This is a cover page",
             "url": "cover.png",
+            "encodingFormat": "image/png",
             "rel": ["cover"]
         }
     ]
