@@ -39,7 +39,6 @@ import {
     Terms
 } from './manifest_classes';
 
-
 /**
  * Various utilities
  */
