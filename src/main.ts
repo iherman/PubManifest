@@ -63,7 +63,7 @@ const base = 'http://localhost:8001/LocalData/github/Publishing/PubManifest/test
 /**
  * For local testing: default if no argument is given on the command line.
  */
-const default_test = 'lo';
+const default_test = 'correct';
 
 /**
  * Start the general processing algorithm and, if successful, print the JSON representation of that returned class, as well as
@@ -85,5 +85,11 @@ async function test(url: string) {
 
 // Look at the process.argv for arguments
 // print process.argv
-const test_url = (process.argv[2] !== undefined) ? `${base}test_${process.argv[2]}.jsonld` : `${base}test_${default_test}.jsonld`;
+
+let test_url;
+if (process.argv[2] !== undefined) {
+    test_url = process.argv[2].endsWith('.html') ? `${base}${process.argv[2]}` : `${base}test_${process.argv[2]}.jsonld`
+} else {
+    test_url = `${base}test_${default_test}.jsonld`;
+}
 test(test_url);
