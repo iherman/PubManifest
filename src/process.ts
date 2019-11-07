@@ -2,7 +2,7 @@
  * Implementation of the Processing Steps.
  *
  * (As defined in
- * [§4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing)).
+ * [§5 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing)).
  *
  * The functions, including their names, follow, as far as possible, the names used in the specification.
  *
@@ -51,10 +51,13 @@ import {
     copy_object,
     recognized_type,
     get_terms,
-    remove_url_fragment,
-    get_resources,
-    fetch_json
+    remove_url_fragment
 } from './utilities';
+
+/**
+ * Manifest discovery function
+ */
+import { discover_manifest, GenerationArguments } from './manifest_discovery';
 
 import * as urlHandler from 'url';
 import * as validUrl from 'valid-url';
@@ -271,31 +274,25 @@ const create_LinkedResource = (resource: any): LinkedResource => {
 /* ====================================================================================================
  The main processing steps, following the spec
 
- Note that two aspects have not (yet) been implemented
+ Note that one aspect has not (yet) been implemented
 
- - extracting default values from HTML
- - extension points
+ - extension points' handling
 
  The details of these are not really important in testing the spec...
 ====================================================================================================== */
 
 /**
  * Process the manifest. This corresponds to the main body of
- * [§5.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#processing-algorithm).
+ * [§5.4  Publication Manifest](https://www.w3.org/TR/pub-manifest#processing-algorithm), i.e., the starting
+ * point of the algorithm.
  *
- * _This is the main (and only) entry point to the module._
- *
- * Note that this function does a little bit more than what is in the specification. Whereas the official processing steps
- * start with the json _text_ as an argument, and delegates the access to original JSON to a specific profile, this function shortcuts this
- * and starts with the URL of the JSON file, which is used to fetch the JSON object (hence also the async nature of the function).
- *
- * @async
- * @param url - address of the JSON file
+ * @param args - the arguments to the generation: the (JSON) text of the manifest, the base URL, and the (DOM) document object
  * @param base - base URL; if undefined or empty, fall back on the value of url
  * @param logger - an extra parameter to collect the error messages in one place, to be then processed by the caller
  * @return - the processed manifest
  */
-export async function generate_internal_representation(url: URL, base: URL, logger: Logger): Promise<PublicationManifest> {
+//export async function generate_internal_representation(url: URL, base: URL, logger: Logger): Promise<PublicationManifest> {
+export function generate_internal_representation(args: GenerationArguments, logger: Logger): PublicationManifest {
     // This is necessary to make the language and direction global extraction in a TS happy way...
     interface lang_dir {
         language?: string;
@@ -304,22 +301,19 @@ export async function generate_internal_representation(url: URL, base: URL, logg
     }
 
     Global.logger = logger;
-    // In the real world the value of base must be checked against invalid or malicious URL-s!
-    // The reuse of the url as a base is not specified in the standard, and is here simply to
-    // make testing easier. If the code is reused in real, this may have to be modified
-    Global.base = (base === undefined || base === '') ? url : base;
+    Global.base   = args.base;
 
     /* ============ The individual processing steps, following the spec ============== */
     /* Step: create the, initially empty, processed manifest */
     let processed = new PublicationManifest_Impl();
 
-    /* Step: get the manifest. This step does more than just parsing; it retrieves the content via the URL */
+    /* Step: get the manifest. */
     let manifest: PublicationManifest_Impl;
-    // retrieve the manifest and convert it into
     try {
-        manifest = await fetch_json(url);
-    } catch (err) {
-        logger.log_fatal_error(`JSON fetching or parsing error: ${err.message}`, null, true);
+        manifest = JSON.parse(args.text);
+    } catch(err) {
+        // we ran into a JSON parsing issue...
+        logger.log_fatal_error(`JSON parsing error: ${err.message}`, null, true);
         return {} as PublicationManifest
     }
 
@@ -403,6 +397,9 @@ export async function generate_internal_representation(url: URL, base: URL, logg
 
     /* Step: Data validation */
     processed = data_validation(processed)
+
+    /* Step: add the HTML defaults */
+    // TODO
 
     /* Step: return processed */
     return processed
@@ -638,7 +635,6 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
     } else {
         data.readingProgression = ProgressionDirection.ltr;
     }
-
 
     /* Step: check duplication in resources and in the readingOrder, and also set the unique resources' entry */
     {

@@ -1,9 +1,15 @@
 
 # Publication Manifest Processing
 
-Implementation (with minor omissions, see below) of the Processing steps as defined in [§4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing).
+Implementation (with minor omissions, see below) of the Processing steps as defined in [§5 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing).
 
-It is _not_ a meaningful implementation insofar as it could be embedded in a full-blown User Agent implementation based on Publication Manifests right away. _Its main purpose is to check the correctness of the specification itself_. This means that, for example, necessary checks on, e.g., the security and validity on manifest URL-s are omitted. There is also (currently) no implementation of the extraction from an HTML file or handling profile extensions. Accordingly, the "Add HTML Defaults" step ([§4.4.3](https://www.w3.org/TR/pub-manifest/#dfn-add-html-defaults)) is not implemented either. Finally, it does not have a proper user interface and only a rudimentary command line interface is available (see the [[main]] function).
+It is _not_ a meaningful implementation insofar as it could be embedded in a full-blown User Agent implementation based on Publication Manifests right away. _Its main purpose is to check the correctness of the specification itself_. This means that, for example, necessary checks on, e.g., the security and validity on the URL-s in the manifest are omitted.  It does not have a proper user interface and only a rudimentary command line interface is used.
+
+The following public functions are available:
+
+- The [[discover_manifest]] function, implementing the manifest discovery, returning a manifest (text);
+- The [[generate_internal_representation]] function, implementing the processing algorithm itself and resulting in a class implementing the [[PublicationManifest]] interface;
+- The [[process_manifest]] function, a wrapper of around the combination of the two previous functions to provide a single entry point.
 
 ## Implementation specificities
 
@@ -16,7 +22,7 @@ Also, the implementation is a bit more complicated than it would be in Javascrip
 For example, the original object, parsed from JSON, cannot be directly modified and returned as `processed`; instead, Typescript classes, duly defined as
 implementing the Typescript interfaces, must be created with the key/values set.
 
-The project can be downloaded via cloning and and can be run via the standard npm processing.
+The project can be downloaded via cloning and and can be run via the standard `npm` processing.
 
 ---
 

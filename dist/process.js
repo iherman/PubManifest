@@ -10,15 +10,6 @@
  * The main entry of the module is [[generate_representation]].
  *
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -48,7 +39,11 @@ const validUrl = __importStar(require("valid-url"));
 const _ = __importStar(require("underscore"));
 const moment_1 = __importDefault(require("moment"));
 /**
- * Check whether an object is a “map” object (i.e., not an array or a function in Javascript sense).
+ * Check whether an object is a “map” object (i.e., _not_ an array or a function in Javascript sense).
+ *
+ * Care should be taken of the fact that this is a misnomer: we are not referring to Typescript/Javascript `Map` types but, rather,
+ * referring to the term used in the infra spec, used by the Pub Manifest specification. (The data structures start with JSON, and the `JSON.parse`
+ * method returns an `Object` and not a `Map`. I.e., no `Map` is used in this code.)
  *
  * (This should really be an underscore function...)
  *
@@ -253,134 +248,125 @@ const create_LinkedResource = (resource) => {
 /* ====================================================================================================
  The main processing steps, following the spec
 
- Note that two aspects have not (yet) been implemented
+ Note that one aspect has not (yet) been implemented
 
- - extracting default values from HTML
- - extension points
+ - extension points' handling
 
  The details of these are not really important in testing the spec...
 ====================================================================================================== */
 /**
  * Process the manifest. This corresponds to the main body of
- * [§5.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#processing-algorithm).
+ * [§5.4  Publication Manifest](https://www.w3.org/TR/pub-manifest#processing-algorithm), i.e., the starting
+ * point of the algorithm.
  *
- * _This is the main (and only) entry point to the module._
- *
- * Note that this function does a little bit more than what is in the specification. Whereas the official processing steps
- * start with the json _text_ as an argument, and delegates the access to original JSON to a specific profile, this function shortcuts this
- * and starts with the URL of the JSON file, which is used to fetch the JSON object (hence also the async nature of the function).
- *
- * @async
- * @param url - address of the JSON file
+ * @param args - the arguments to the generation: the (JSON) text of the manifest, the base URL, and the (DOM) document object
  * @param base - base URL; if undefined or empty, fall back on the value of url
  * @param logger - an extra parameter to collect the error messages in one place, to be then processed by the caller
  * @return - the processed manifest
  */
-function generate_internal_representation(url, base, logger) {
-    return __awaiter(this, void 0, void 0, function* () {
-        Global.logger = logger;
-        // In the real world the value of base must be checked against invalid or malicious URL-s!
-        // The reuse of the url as a base is not specified in the standard, and is here simply to
-        // make testing easier. If the code is reused in real, this may have to be modified
-        Global.base = (base === undefined || base === '') ? url : base;
-        /* ============ The individual processing steps, following the spec ============== */
-        /* Step: create the, initially empty, processed manifest */
-        let processed = new manifest_classes_1.PublicationManifest_Impl();
-        /* Step: get the manifest. This step does more than just parsing; it retrieves the content via the URL */
-        let manifest;
-        // retrieve the manifest and convert it into
-        try {
-            manifest = yield utilities_1.fetch_json(url);
-        }
-        catch (err) {
-            logger.log_fatal_error(`JSON fetching or parsing error: ${err.message}`, null, true);
+//export async function generate_internal_representation(url: URL, base: URL, logger: Logger): Promise<PublicationManifest> {
+function generate_internal_representation(args, logger) {
+    Global.logger = logger;
+    Global.base = args.base;
+    /* ============ The individual processing steps, following the spec ============== */
+    /* Step: create the, initially empty, processed manifest */
+    let processed = new manifest_classes_1.PublicationManifest_Impl();
+    /* Step: get the manifest. */
+    let manifest;
+    try {
+        manifest = JSON.parse(args.text);
+    }
+    catch (err) {
+        // we ran into a JSON parsing issue...
+        logger.log_fatal_error(`JSON parsing error: ${err.message}`, null, true);
+        return {};
+    }
+    /* Step: extract and check the context */
+    let contexts = [];
+    if (manifest['@context']) {
+        // To simplify, turn this into an array in any case
+        contexts = utilities_1.toArray(manifest["@context"]);
+        if (!(contexts.length >= 2 && contexts[0] === "https://schema.org" && contexts[1] === "https://www.w3.org/ns/pub-context")) {
+            logger.log_fatal_error(`The required contexts are not provided`);
             return {};
         }
-        /* Step: extract and check the context */
-        let contexts = [];
-        if (manifest['@context']) {
-            // To simplify, turn this into an array in any case
-            contexts = utilities_1.toArray(manifest["@context"]);
-            if (!(contexts.length >= 2 && contexts[0] === "https://schema.org" && contexts[1] === "https://www.w3.org/ns/pub-context")) {
-                logger.log_fatal_error(`The required contexts are not provided`);
-                return {};
+    }
+    else {
+        logger.log_fatal_error(`No context provided`);
+        return {};
+    }
+    /* Step: profile conformance */
+    if (!(manifest.conformsTo)) {
+        // No conformance has been provided. That is, in this case, a validation error
+        logger.log_validation_error(`No conformance was set (falling back to default)`);
+        Global.profile = default_profile;
+    }
+    else {
+        const conforms = utilities_1.toArray(manifest.conformsTo);
+        const acceptable_values = conforms.filter((value) => known_profiles.includes(value));
+        if (acceptable_values.length === 0) {
+            // No acceptable values were detected for the profile
+            // At this point, the UA should inspect the media types and make a best guess.
+            // This is not implemented, and the result of this test is supposed to be true...
+            logger.log_validation_error(`No known conformance was set (falling back to default)`);
+            Global.profile = default_profile;
+            // If the non implemented test resulted in false, a Fatal Error should be added here:
+            // logger.log_fatal_error(`Couldn't establish any acceptable profile`);
+            // return {} as PublicationManifest
+        }
+        else {
+            Global.profile = conforms[0];
+        }
+    }
+    processed.profile = Global.profile;
+    /* Step: global declarations, ie, extract the global language and direction settings if any */
+    {
+        let lang = '';
+        let dir = '';
+        for (let i = contexts.length - 1; i >= 0; i--) {
+            if (typeof contexts[i] === 'object') {
+                let c = contexts[i];
+                if (lang === '' && c.language) {
+                    lang = c.language;
+                }
+                if (dir === '' && c.direction) {
+                    dir = c.direction;
+                }
+                if (lang !== '' && dir !== '')
+                    break;
             }
         }
-        else {
-            logger.log_fatal_error(`No context provided`);
-            return {};
-        }
-        /* Step: profile conformance */
-        if (!(manifest.conformsTo)) {
-            // No conformance has been provided. That is, in this case, a validation error
-            logger.log_validation_error(`No conformance was set (falling back to default)`);
-            Global.profile = default_profile;
-        }
-        else {
-            const conforms = utilities_1.toArray(manifest.conformsTo);
-            const acceptable_values = conforms.filter((value) => known_profiles.includes(value));
-            if (acceptable_values.length === 0) {
-                // No acceptable values were detected for the profile
-                // At this point, the UA should inspect the media types and make a best guess.
-                // This is not implemented, and the result of this test is supposed to be true...
-                logger.log_validation_error(`No known conformance was set (falling back to default)`);
-                Global.profile = default_profile;
-                // If the non implemented test resulted in false, a Fatal Error should be added here:
-                // logger.log_fatal_error(`Couldn't establish any acceptable profile`);
-                // return {} as PublicationManifest
+        if (lang !== '') {
+            if (utilities_1.check_language_tag(lang, logger)) {
+                Global.lang = lang;
             }
             else {
-                Global.profile = conforms[0];
+                // error message is generated in the check_language_tag function;
             }
         }
-        processed.profile = Global.profile;
-        /* Step: global declarations, ie, extract the global language and direction settings if any */
-        {
-            let lang = '';
-            let dir = '';
-            for (let i = contexts.length - 1; i >= 0; i--) {
-                if (typeof contexts[i] === 'object') {
-                    let c = contexts[i];
-                    if (lang === '' && c.language) {
-                        lang = c.language;
-                    }
-                    if (dir === '' && c.direction) {
-                        dir = c.direction;
-                    }
-                    if (lang !== '' && dir !== '')
-                        break;
-                }
+        if (dir !== '') {
+            if (utilities_1.check_direction_tag(dir, logger)) {
+                Global.dir = dir;
             }
-            if (lang !== '') {
-                if (utilities_1.check_language_tag(lang, logger)) {
-                    Global.lang = lang;
-                }
-                else {
-                    // error message is generated in the check_language_tag function;
-                }
-            }
-            if (dir !== '') {
-                if (utilities_1.check_direction_tag(dir, logger)) {
-                    Global.dir = dir;
-                }
-                else {
-                    // error message is generated in the check_direction_tag function;
-                }
+            else {
+                // error message is generated in the check_direction_tag function;
             }
         }
-        /* Step: go (recursively!) through all the term in manifest, normalize the value, an set it in processed */
-        process_object_keys(manifest, (term) => {
-            const value = manifest[term];
-            const normalized = normalize_data(processed, term, value);
-            if (normalized !== undefined) {
-                processed[term] = normalized;
-            }
-        });
-        /* Step: Data validation */
-        processed = data_validation(processed);
-        /* Step: return processed */
-        return processed;
+    }
+    /* Step: go (recursively!) through all the term in manifest, normalize the value, an set it in processed */
+    process_object_keys(manifest, (term) => {
+        const value = manifest[term];
+        const normalized = normalize_data(processed, term, value);
+        if (normalized !== undefined) {
+            processed[term] = normalized;
+        }
     });
+    /* Step: Data validation */
+    processed = data_validation(processed);
+    /* Step: add the HTML defaults */
+    // TODO
+    /* Step: return processed */
+    return processed;
 }
 exports.generate_internal_representation = generate_internal_representation;
 /**
@@ -623,6 +609,7 @@ function data_validation(data) {
     }
     /* Step: test on structural resources */
     {
+        // create an object that has a boolean term for each structural resources initialized to false
         const flags = _.object(structural_resources, Array.from({ length: structural_resources.length }, (v, i) => false));
         const res1 = (data.readingOrder) ? data.readingOrder : [];
         const res2 = (data.resources) ? data.resources : [];
@@ -637,14 +624,9 @@ function data_validation(data) {
                         }
                         else {
                             flags[str] = true;
-                            // For the 'cover' case, there are some extra checks
-                            if (str === 'cover') {
-                                if (!resource.name) {
-                                    Global.logger.log_validation_error(`No name provided for a cover page`, resource, false);
-                                }
-                                if (!resource.description) {
-                                    Global.logger.log_validation_error(`No description is provided for a cover page`, resource, false);
-                                }
+                            // For the 'cover' case, there is an extra check for an image
+                            if (str === 'cover' && resource.encodingFormat && resource.encodingFormat.startsWith('image/') && !resource.name) {
+                                Global.logger.log_validation_error(`No name provided for a cover page image`, resource, false);
                             }
                         }
                     }
