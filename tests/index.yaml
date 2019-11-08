@@ -226,7 +226,7 @@ tests:
             -
                 id: 282301
                 description: A single resource is turned into an array of Linked Resources
-                actions: links is an array of a single object, with the URL turned into absolute
+                actions: Links is an array of a single object, with the URL turned into absolute
                 errors: none
             -
                 id: 282302
@@ -248,6 +248,11 @@ tests:
                 description: Cover page, toc reference, or pagelist reference should not appear in links
                 actions: The links2.html, links4.html, and links6.html entries should be removed from the final links; others should be listed.
                 errors: Validation error on all three faulty links.
+            -
+                id: 282306
+                description: No rel value set in a resource in links
+                actions: Output should be unchanged
+                errors: Validation error on missing link.
     -
         section: §2.8.3.2 Additional Manifest Properties
         ref: https://www.w3.org/TR/pub-manifest/#extensibility-manifest-properties
