@@ -78,12 +78,6 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Interfaces</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_main_.processresult.html" class="tsd-kind-icon">Process<wbr>Result</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_main_.html#base" class="tsd-kind-icon">base</a></li>
@@ -91,10 +85,9 @@
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_main_.html#test_url" class="tsd-kind-icon">test_<wbr>url</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_main_.html#process_manifest" class="tsd-kind-icon">process_<wbr>manifest</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_main_.html#test" class="tsd-kind-icon">test</a></li>
 							</ul>
 						</section>
@@ -109,7 +102,7 @@
 					<div class="tsd-signature tsd-kind-icon">base<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"http://localhost:8001/LocalData/github/Publishing/PubManifest/tests/"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;http://localhost:8001/LocalData/github/Publishing/PubManifest/tests/&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/f9a1097/src/main.ts#L61">main.ts:61</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/c8cb5fd/src/main.ts#L20">main.ts:20</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -121,10 +114,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="default_test" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> default_<wbr>test</h3>
-					<div class="tsd-signature tsd-kind-icon">default_<wbr>test<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"lo"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;lo&quot;</span></div>
+					<div class="tsd-signature tsd-kind-icon">default_<wbr>test<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"correct"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;correct&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/f9a1097/src/main.ts#L66">main.ts:66</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/c8cb5fd/src/main.ts#L25">main.ts:25</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -135,70 +128,28 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="test_url" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> test_<wbr>url</h3>
-					<div class="tsd-signature tsd-kind-icon">test_<wbr>url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;(process.argv[2] !&#x3D;&#x3D; undefined) ? &#x60;${base}test_${process.argv[2]}.jsonld&#x60; : &#x60;${base}test_${default_test}.jsonld&#x60;</span></div>
+					<h3><span class="tsd-flag ts-flagLet">Let</span> test_<wbr>url</h3>
+					<div class="tsd-signature tsd-kind-icon">test_<wbr>url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/f9a1097/src/main.ts#L88">main.ts:88</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/c8cb5fd/src/main.ts#L48">main.ts:48</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Functions</h2>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="process_manifest" class="tsd-anchor"></a>
-					<h3>process_<wbr>manifest</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">process_<wbr>manifest<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><a href="_manifest_.html#url" class="tsd-signature-type">URL</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_main_.processresult.html" class="tsd-signature-type">ProcessResult</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/f9a1097/src/main.ts#L33">main.ts:33</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Process a manifest:</p>
-								</div>
-								<ol>
-									<li>discover the manifest, per <a href="https://www.w3.org/TR/pub-manifest/#manifest-discovery">§4 Manifest Discovery</a></li>
-									<li>generate a publication manifest object, per <a href="https://www.w3.org/TR/pub-manifest/#manifest-processing">§5 Processing a Manifest</a></li>
-								</ol>
-								<dl class="tsd-comment-tags">
-									<dt>async</dt>
-									<dd></dd>
-								</dl>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>url: <a href="_manifest_.html#url" class="tsd-signature-type">URL</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>The address of either the JSON file or the Primary entry point in HTML</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_main_.processresult.html" class="tsd-signature-type">ProcessResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
-							<ul>
-								<li>the generated manifest object and a logger</li>
-							</ul>
-						</li>
-					</ul>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="test" class="tsd-anchor"></a>
 					<h3>test</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">test<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">test<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><a href="_manifest_.html#url" class="tsd-signature-type">URL</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/f9a1097/src/main.ts#L75">main.ts:75</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/c8cb5fd/src/main.ts#L34">main.ts:34</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -214,7 +165,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>url: <span class="tsd-signature-type">string</span></h5>
+									<h5>url: <a href="_manifest_.html#url" class="tsd-signature-type">URL</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>URL to a json file</p>
 									</div>
@@ -254,9 +205,6 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../interfaces/_main_.processresult.html" class="tsd-kind-icon">Process<wbr>Result</a>
-					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_main_.html#base" class="tsd-kind-icon">base</a>
 					</li>
@@ -265,9 +213,6 @@
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_main_.html#test_url" class="tsd-kind-icon">test_<wbr>url</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_main_.html#process_manifest" class="tsd-kind-icon">process_<wbr>manifest</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_main_.html#test" class="tsd-kind-icon">test</a>

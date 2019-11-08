@@ -6,7 +6,10 @@
  *
  * The functions, including their names, follow, as far as possible, the names used in the specification.
  *
- * The main entry of the module is [[generate_representation]].
+ * The main entries of the module are
+ *
+ * - [[process_manifest]]
+ * - [[generate_internal_representation]]
  *
  */
 
@@ -149,7 +152,7 @@ export interface ProcessResult {
  * 2. generate a publication manifest object, per [§5 Processing a Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing) (relying on the [[generate_internal_representation]] function).
  *
  * @async
- * @param url - The address of either the JSON file or the Primary entry point in HTML
+ * @param url - The address of either the JSON file or the entry point in HTML
  * @return - the generated manifest object and a logger
  */
 export async function process_manifest(url: URL): Promise<ProcessResult> {
@@ -173,11 +176,10 @@ export async function process_manifest(url: URL): Promise<ProcessResult> {
 }
 
 
-
 /* ====================================================================================================
- Direct utility functions in the processing steps
+ Direct utility functions within the processing steps
 
- (Factored out for a better readability)
+ (Factored out as separate functions for a better readability)
 ====================================================================================================== */
 
 /**
@@ -318,16 +320,14 @@ const create_LinkedResource = (resource: any): LinkedResource => {
 /* ====================================================================================================
  The main processing steps, following the spec
 
- Note that one aspect has not (yet) been implemented
-
- - extension points' handling
+ Note that the extension points' handling has not (yet) been implemented:
 
  The details of these are not really important in testing the spec...
 ====================================================================================================== */
 
 /**
  * Process the manifest. This corresponds to the main body of
- * [§5.4  Publication Manifest](https://www.w3.org/TR/pub-manifest#processing-algorithm), i.e., the starting
+ * [§5.4  Publication Manifest](https://www.w3.org/TR/pub-manifest/#processing-algorithm), i.e., the starting
  * point of the algorithm.
  *
  * @param args - the arguments to the generation: the (JSON) text of the manifest, the base URL, and the (DOM) document object
@@ -368,11 +368,11 @@ export function generate_internal_representation(args: GenerationArguments, logg
         contexts = toArray(manifest["@context"]);
         if ( !(contexts.length >= 2 && contexts[0] === "https://schema.org" && contexts[1] === "https://www.w3.org/ns/pub-context") ) {
             logger.log_fatal_error(`The required contexts are not provided`);
-            return {} as PublicationManifest
+            return {} as PublicationManifest;
         }
     } else {
         logger.log_fatal_error(`No context provided`);
-        return {} as PublicationManifest
+        return {} as PublicationManifest;
     }
 
     /* Step: profile conformance */
@@ -443,7 +443,13 @@ export function generate_internal_representation(args: GenerationArguments, logg
     processed = data_validation(processed)
 
     /* Step: add the HTML defaults */
-    // TODO
+    {
+        const final = add_HTML_defaults(processed, args.document);
+        if (final === null) {
+            // A fatal error has been raised!
+            return {} as PublicationManifest;
+        }
+    }
 
     /* Step: return processed */
     return processed
@@ -453,7 +459,7 @@ export function generate_internal_representation(args: GenerationArguments, logg
 /**
  *
  * Normalize Data. This corresponds to the main body of
- * [§5.4.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#normalize-data).
+ * [§5.4.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#normalize-data).
  *
  * @param context - 'context', i.e., the object on which the function has been invoked
  * @param term - property term
@@ -561,7 +567,7 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
  * Convert to absolute URL
  *
  * This is used for the implementation of step §4.3.1/5, i.e.,
-* [§5.4.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#convert-absolute-url).
+* [§5.4.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#convert-absolute-url).
  *
  * @param resource - the (absolute or relative) URL
  * @returns - the absolute URL using the `base` value of [[Global]], or `undefined` in case of error (e.g., invalid URL)
@@ -590,7 +596,7 @@ const convert_to_absolute_URL = (resource: URL): URL => {
 /**
  *
  * Data Validation. This corresponds to the main body of
- * [§5.4.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#validate-data).
+ * [§5.4.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#validate-data).
  *
  * @param data - the data to be checked
  * @return - checked data (becomes the final value of `processed` in [[generate_representation]] before returned to the caller)
@@ -754,7 +760,7 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
 /**
  *
  * Global Data Check. This corresponds to the main body of
- * [§5.4.2.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#global-data-checks).
+ * [§5.4.2.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#global-data-checks).
  *
  * This is a recursive function.
  *
@@ -869,7 +875,7 @@ function global_data_checks(context: PublicationManifest_Impl|RecognizedTypes_Im
 /**
  *
  * Verify the value category. This corresponds to the main body of
- * [§5.4.2.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#verify-value-category).
+ * [§5.4.2.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#verify-value-category).
  *
  * @param context - 'context', in this case the object that has invoked the function
  * @param term - property term
@@ -946,28 +952,31 @@ function verify_value_category(context: PublicationManifest_Impl|RecognizedTypes
     };
 
     const terms = get_terms(context);
-
     if (terms.array_terms.includes(term)) {
         if (!(_.isArray(value))) {
             Global.logger.log_validation_error(`Value should be an array for "${term}"`, value );
             return false;
         } else {
-            value = value.map((item: any): any => {
-                if (check_expected_type_and_report(terms, term, item)) {
-                    if (isMap(item)) {
-                        return verify_map(item) ? item : undefined;
+            if (value.length !== 0) {
+                value = value.map((item: any): any => {
+                    if (check_expected_type_and_report(terms, term, item)) {
+                        if (isMap(item)) {
+                            return verify_map(item) ? item : undefined;
+                        } else {
+                            return item;
+                        }
                     } else {
-                        return item;
+                        // wrong type
+                        return undefined;
                     }
-                } else {
-                    // wrong type
-                    return undefined;
-                }
-            }).filter((item:any): boolean => item !== undefined);
+                }).filter((item:any): boolean => item !== undefined);
 
-            if (value.length === 0) {
-                Global.logger.log_validation_error(`Empty array after value type check for "${term}"`, null, true );
-                return false;
+                if (value.length === 0) {
+                    Global.logger.log_validation_error(`Empty array after value type check for "${term}"`, null, true );
+                    return false;
+                } else {
+                    return true;
+                }
             } else {
                 return true;
             }
@@ -988,7 +997,7 @@ function verify_value_category(context: PublicationManifest_Impl|RecognizedTypes
 /**
  *
  *  Obtain a list of unique resources. This corresponds to the main body of
- * [§5.4.2.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#get-unique-urls).
+ * [§5.4.2.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#get-unique-urls).
  *
  * @param resources
  * @returns - the full list of unique resources
@@ -1015,7 +1024,7 @@ function get_unique_URLs(resources: LinkedResource[]): URL[] {
 /**
  *
  * Remove empty arrays. This corresponds to the main body of
- * [§5.4.2.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#remove-empty-arrays).
+ * [§5.4.2.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#remove-empty-arrays).
  *
  * The function is a slight misnomer: it checks whether the incoming value is an array and, if yes, checks whether it is empty or not; however
  * if the value is an objects, it looks for the constituent arrays and removes the empty ones from the object.
@@ -1037,4 +1046,67 @@ function remove_empty_arrays(value: any): boolean {
     return true;
 }
 
+
+/**
+ * Add HTML Defaults. This corresponds to
+ * [§5.4.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#add-html-defaults).
+ *
+ * @param data - the (almost) final processed manifest
+ * @param document - the Document DOM node for the entry point, `undefined` if the process happens without such an entry point
+ * @returns - `null` if a fatal error has been raised, the original (albeit possibly modified) data otherwise.
+ */
+function add_HTML_defaults(data: PublicationManifest_Impl, document: HTMLDocument): PublicationManifest_Impl {
+    /*
+    * Minor helper function on DOM manipulation: get the value of an attribute by also
+    * going up the DOM tree to get a possible inherited value. Used to locate the language or the
+    * direction of the title element.
+    */
+    const get_attr = (start: Element, term: string): string => {
+        let element = start;
+        do {
+            const attr = element.getAttribute(term);
+            if (attr !== null) {
+                return attr;
+            } else {
+                element = element.parentElement;
+            }
+        } while (element !== null);
+        return '';
+    };
+
+    if (document !== undefined) {
+        if (!data.name) {
+            const title = document.querySelector('title');
+            let ls: LocalizableString;
+            if (title) {
+                ls = create_LocalizableString(title.text);
+                const lang = get_attr(title, "lang");
+                if (lang !== '') {
+                    ls.language = lang;
+                }
+                const dir = get_attr(title, "dir");
+                if (dir !== '') {
+                    ls.direction = dir;
+                }
+                data.name = [ls];
+            } else {
+                ls = create_LocalizableString('No Title');
+                Global.logger.log_validation_error('No title to set a default "name"', null, false);
+            }
+            data.name = [ls];
+        }
+        if (!data.readingOrder || data.readingOrder.length === 0) {
+            if (!document.location.href) {
+                Global.logger.log_fatal_error("No URL assigned to the HTML entry point", null, true);
+                return null;
+            } else {
+                data.readingOrder = [create_LinkedResource(document.location.href)];
+                if (!data.uniqueResources.includes(document.location.href)) {
+                    data.uniqueResources.push(document.location.href);
+                }
+            }
+        }
+    }
+    return data;
+}
 

@@ -274,33 +274,3 @@ export async function discover_manifest(address: URL): Promise<GenerationArgumen
     }
 
 }
-
-
-
-// /* ------ */
-
-
-// async function test() {
-//     const test_cases = [
-//         'http://localhost:8001/LocalData/github/Attic/WPManifest/tests/externalToc.html',
-//         'http://localhost:8001/LocalData/github/Attic/WPManifest/tests/entry_with_script.html',
-//         'http://localhost:8001/LocalData/github/Attic/WPManifest/tests/manifest.json',
-//         'http://localhost:8001/LocalData/github/Publishing/PubManifest/tests/test_2401.jsonld'
-//     ]
-
-//     const args = await discover_manifest(test_cases[0]);
-
-//     console.log(`
-// Manifest:
-// ${args.text}
-// Base: ${args.base}
-// Document: ${args.document}
-// `)
-// }
-
-// test();
-
-
-
-
-

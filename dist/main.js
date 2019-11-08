@@ -17,40 +17,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * a bona fide publication manifest
  */
 const process_1 = require("./process");
-const utilities_1 = require("./utilities");
-const manifest_discovery_1 = require("./manifest_discovery");
-/**
- * Process a manifest:
- *
- * 1. discover the manifest, per [§4 Manifest Discovery](https://www.w3.org/TR/pub-manifest/#manifest-discovery)
- * 2. generate a publication manifest object, per [§5 Processing a Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing)
- *
- * @async
- * @param url - The address of either the JSON file or the Primary entry point in HTML
- * @return - the generated manifest object and a logger
- */
-function process_manifest(url) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const logger = new utilities_1.Logger();
-        let manifest_object = {};
-        let args;
-        try {
-            args = yield manifest_discovery_1.discover_manifest(url);
-        }
-        catch (err) {
-            logger.log_fatal_error(`The manifest could not be discovered (${err.message})`);
-            return { manifest_object, logger };
-        }
-        try {
-            manifest_object = yield process_1.generate_internal_representation(args, logger);
-        }
-        catch (err) {
-            logger.log_fatal_error(`Some extra error occurred during generation (${err.message})`);
-        }
-        return { manifest_object, logger };
-    });
-}
-exports.process_manifest = process_manifest;
 /* ====================================================================================================
  A rudimentary CLI for testing
 ====================================================================================================== */
@@ -61,7 +27,7 @@ const base = 'http://localhost:8001/LocalData/github/Publishing/PubManifest/test
 /**
  * For local testing: default if no argument is given on the command line.
  */
-const default_test = 'lo';
+const default_test = 'correct';
 /**
  * Start the general processing algorithm and, if successful, print the JSON representation of that returned class, as well as
  * the list of fatal and validation errors.
@@ -72,7 +38,7 @@ const default_test = 'lo';
 function test(url) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const results = yield process_manifest(url);
+            const results = yield process_1.process_manifest(url);
             console.log(JSON.stringify(results.manifest_object, null, 4));
             console.log(results.logger.toString());
         }
@@ -84,6 +50,12 @@ function test(url) {
 }
 // Look at the process.argv for arguments
 // print process.argv
-const test_url = (process.argv[2] !== undefined) ? `${base}test_${process.argv[2]}.jsonld` : `${base}test_${default_test}.jsonld`;
+let test_url;
+if (process.argv[2] !== undefined) {
+    test_url = process.argv[2].endsWith('.html') ? `${base}${process.argv[2]}` : `${base}test_${process.argv[2]}.jsonld`;
+}
+else {
+    test_url = `${base}test_${default_test}.jsonld`;
+}
 test(test_url);
 //# sourceMappingURL=main.js.map
