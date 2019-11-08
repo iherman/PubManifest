@@ -352,3 +352,9 @@ tests:
                 description: Reuse the document URL to set the reading order
                 actions: The embedded manifest should be processed and generated with the reading order set to the HTML's URL. The value should also be present in the uniqueResources array.
                 errors: none
+            -
+                id: 406
+                format: html
+                description: No name and no title to reuse
+                actions: A "no title" name should be added
+                errors: Validation error on a missing default title

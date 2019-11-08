@@ -444,7 +444,7 @@ export function generate_internal_representation(args: GenerationArguments, logg
 
     /* Step: add the HTML defaults */
     {
-        const final = add_HTML_defaults(processed, args.document);
+        const final = add_default_values(processed, args.document);
         if (final === null) {
             // A fatal error has been raised!
             return {} as PublicationManifest;
@@ -1050,14 +1050,14 @@ function remove_empty_arrays(value: any): boolean {
 
 
 /**
- * Add HTML Defaults. This corresponds to
+ * Add default values. This corresponds to
  * [§5.4.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#add-html-defaults).
  *
  * @param data - the (almost) final processed manifest
  * @param document - the Document DOM node for the entry point, `undefined` if the process happens without such an entry point
  * @returns - `null` if a fatal error has been raised, the original (albeit possibly modified) data otherwise.
  */
-function add_HTML_defaults(data: PublicationManifest_Impl, document: HTMLDocument): PublicationManifest_Impl {
+function add_default_values(data: PublicationManifest_Impl, document: HTMLDocument = undefined): PublicationManifest_Impl {
     /*
     * Minor helper function on DOM manipulation: get the value of an attribute by also
     * going up the DOM tree to get a possible inherited value. Used to locate the language or the
@@ -1076,10 +1076,10 @@ function add_HTML_defaults(data: PublicationManifest_Impl, document: HTMLDocumen
         return '';
     };
 
-    if (document !== undefined) {
-        if (!data.name) {
+    if (!data.name) {
+        let ls: LocalizableString;
+        if (document !== undefined) {
             const title = document.querySelector('title');
-            let ls: LocalizableString;
             if (title) {
                 ls = create_LocalizableString(title.text);
                 const lang = get_attr(title, "lang");
@@ -1092,14 +1092,20 @@ function add_HTML_defaults(data: PublicationManifest_Impl, document: HTMLDocumen
                 }
                 data.name = [ls];
             } else {
-                ls = create_LocalizableString('No Title');
-                Global.logger.log_validation_error('No title to set a default "name"', null, false);
+                ls = create_LocalizableString('*No Title*');
+                Global.logger.log_validation_error('No title element to set as a default "name"', null, false);
             }
-            data.name = [ls];
+        } else {
+            ls = create_LocalizableString('*No Title*');
+            Global.logger.log_validation_error('No "name" set and no default value', null, false);
         }
-        if (!data.readingOrder || data.readingOrder.length === 0) {
+        data.name = [ls];
+    }
+
+    if (!data.readingOrder || data.readingOrder.length === 0) {
+        if (document !== undefined) {
             if (!document.location.href) {
-                Global.logger.log_fatal_error("No URL assigned to the HTML entry point", null, true);
+                Global.logger.log_fatal_error("Empty reading order, and no URL assigned to the HTML entry point to serve as default", null, false);
                 return null;
             } else {
                 data.readingOrder = [create_LinkedResource(document.location.href)];
@@ -1107,8 +1113,12 @@ function add_HTML_defaults(data: PublicationManifest_Impl, document: HTMLDocumen
                     data.uniqueResources.push(document.location.href);
                 }
             }
+        } else {
+            Global.logger.log_fatal_error("Empty reading order", null, false);
+            return null;
         }
     }
+    /* Profile specific fallback */
     return data;
 }
 
