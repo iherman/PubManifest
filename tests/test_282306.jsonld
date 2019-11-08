@@ -11,19 +11,10 @@
     "links": [
         {
             "url": "link2.html",
-            "rel": "cover"
-        },
-        {
-            "url": "link4.html",
-            "rel": "contents"
-        },
-        {
-            "url": "link6.html",
-            "rel": ["pagelist", "something"]
-        },
-        {
-            "url": "link7.html",
             "rel": "something"
+        },
+        {
+            "url": "link3.html"
         }
     ]
 }
