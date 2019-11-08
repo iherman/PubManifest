@@ -701,14 +701,14 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
                 Global.logger.log_validation_error(`${link.url} appears in "links" but is within the bounds of the publication`, null, true);
                 return false;
             } else {
-                if (link["rel"] && link["rel"].length !== 0) {
+                if (!link["rel"] || link["rel"].length === 0) {
+                    Global.logger.log_validation_error(`Rel value in "links" not set`, link, false);
+                } else {
                     const intersection = _.intersection(link["rel"],structural_resources);
                     if (intersection.length > 0) {
                         Global.logger.log_validation_error(`Linked Resource in "links" includes "${intersection}"`, link, true);
                         return false;
                     }
-                } else {
-                    Global.logger.log_validation_error(`Rel value in "links" not set`, link, false);
                 }
             }
             return true;
