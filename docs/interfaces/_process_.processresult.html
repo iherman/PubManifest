@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ProgressionDirection | PubManifest</title>
+	<title>ProcessResult | PubManifest</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,52 +56,67 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_manifest_.html">&quot;manifest&quot;</a>
+					<a href="../modules/_process_.html">&quot;process&quot;</a>
 				</li>
 				<li>
-					<a href="_manifest_.progressiondirection.html">ProgressionDirection</a>
+					<a href="_process_.processresult.html">ProcessResult</a>
 				</li>
 			</ul>
-			<h1>Enumeration ProgressionDirection</h1>
+			<h1>Interface ProcessResult</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The result of processing a manifest: the generated object as a <a href="_manifest_.publicationmanifest.html">PublicationManifest</a> implementation as well as a <a href="../classes/_utilities_.logger.html">Logger</a> instance with the (possible) error messages.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">ProcessResult</span>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Enumeration members</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_manifest_.progressiondirection.html#ltr" class="tsd-kind-icon">ltr</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_manifest_.progressiondirection.html#rtl" class="tsd-kind-icon">rtl</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_process_.processresult.html#logger" class="tsd-kind-icon">logger</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_process_.processresult.html#manifest_object" class="tsd-kind-icon">manifest_<wbr>object</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Enumeration members</h2>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="ltr" class="tsd-anchor"></a>
-					<h3>ltr</h3>
-					<div class="tsd-signature tsd-kind-icon">ltr<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;ltr&quot;</span></div>
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="logger" class="tsd-anchor"></a>
+					<h3>logger</h3>
+					<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <a href="../classes/_utilities_.logger.html" class="tsd-signature-type">Logger</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/c8cb5fd/src/manifest.ts#L51">manifest.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/c8cb5fd/src/process.ts#L145">process.ts:145</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="rtl" class="tsd-anchor"></a>
-					<h3>rtl</h3>
-					<div class="tsd-signature tsd-kind-icon">rtl<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;rtl&quot;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="manifest_object" class="tsd-anchor"></a>
+					<h3>manifest_<wbr>object</h3>
+					<div class="tsd-signature tsd-kind-icon">manifest_<wbr>object<span class="tsd-signature-symbol">:</span> <a href="_manifest_.publicationmanifest.html" class="tsd-signature-type">PublicationManifest</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/c8cb5fd/src/manifest.ts#L52">manifest.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/c8cb5fd/src/process.ts#L144">process.ts:144</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -116,7 +131,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_main_.html">"main"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_manifest_.html">"manifest"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -125,7 +140,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_manifest_discovery_.html">"manifest_<wbr>discovery"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_process_.html">"process"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -135,44 +150,77 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../classes/_process_.global.html" class="tsd-kind-icon">Global</a>
+					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-enum tsd-parent-kind-external-module">
-						<a href="_manifest_.progressiondirection.html" class="tsd-kind-icon">Progression<wbr>Direction</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_process_.processresult.html" class="tsd-kind-icon">Process<wbr>Result</a>
 						<ul>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_manifest_.progressiondirection.html#ltr" class="tsd-kind-icon">ltr</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_process_.processresult.html#logger" class="tsd-kind-icon">logger</a>
 							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_manifest_.progressiondirection.html#rtl" class="tsd-kind-icon">rtl</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_process_.processresult.html#manifest_object" class="tsd-kind-icon">manifest_<wbr>object</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_manifest_.entity.html" class="tsd-kind-icon">Entity</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#default_profile" class="tsd-kind-icon">default_<wbr>profile</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_manifest_.linkedresource.html" class="tsd-kind-icon">Linked<wbr>Resource</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#known_profiles" class="tsd-kind-icon">known_<wbr>profiles</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_manifest_.localizablestring.html" class="tsd-kind-icon">Localizable<wbr>String</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#structural_resources" class="tsd-kind-icon">structural_<wbr>resources</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_manifest_.organization.html" class="tsd-kind-icon">Organization</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#add_html_defaults" class="tsd-kind-icon">add_<wbr>HTML_<wbr>defaults</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_manifest_.person.html" class="tsd-kind-icon">Person</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#convert_to_absolute_url" class="tsd-kind-icon">convert_<wbr>to_<wbr>absolute_<wbr>URL</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_manifest_.publicationmanifest.html" class="tsd-kind-icon">Publication<wbr>Manifest</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#create_entity" class="tsd-kind-icon">create_<wbr><wbr>Entity</a>
 					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/_manifest_.html#recognizedtypes" class="tsd-kind-icon">Recognized<wbr>Types</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#create_linkedresource" class="tsd-kind-icon">create_<wbr><wbr>Linked<wbr>Resource</a>
 					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/_manifest_.html#url" class="tsd-kind-icon">URL</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#create_localizablestring" class="tsd-kind-icon">create_<wbr><wbr>Localizable<wbr>String</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#data_validation" class="tsd-kind-icon">data_<wbr>validation</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_process_.html#generate_internal_representation" class="tsd-kind-icon">generate_<wbr>internal_<wbr>representation</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#get_unique_urls" class="tsd-kind-icon">get_<wbr>unique_<wbr>URLs</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#global_data_checks" class="tsd-kind-icon">global_<wbr>data_<wbr>checks</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#ismap" class="tsd-kind-icon">is<wbr>Map</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#normalize_data" class="tsd-kind-icon">normalize_<wbr>data</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_process_.html#process_manifest" class="tsd-kind-icon">process_<wbr>manifest</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#process_object_keys" class="tsd-kind-icon">process_<wbr>object_<wbr>keys</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#remove_empty_arrays" class="tsd-kind-icon">remove_<wbr>empty_<wbr>arrays</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_process_.html#verify_value_category" class="tsd-kind-icon">verify_<wbr>value_<wbr>category</a>
 					</li>
 				</ul>
 			</nav>

@@ -2,15 +2,6 @@
 /**
  * Various utilities
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -20,33 +11,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const manifest_classes_1 = require("./manifest_classes");
-const fetch = __importStar(require("node-fetch"));
 const _ = __importStar(require("underscore"));
 const urlHandler = __importStar(require("url"));
-/* **************************** Get hold of a JSON file via its URL ********** */
-// This is for testing purposes, so all kinds of checks are not done...
-/**
- * Wrapper around the fetch function retrieving a JSON file.
- *
- * In real life this should be more sophisticated, checking the media type of the resources, security issues, etc. For testing purposes the simple wrapper is enough.
- *
- * @param request - essentially, the URL of the manifest file to test with
- * @returns - the result of JSON processing, i.e., an object (wrapped into a Promise)
- * @async
- */
-function fetch_json(request) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise(resolve => {
-            fetch.default(request)
-                .then((response) => response.json())
-                .then((body) => {
-                resolve(body);
-            });
-        });
-    });
-}
-exports.fetch_json = fetch_json;
-;
 /* **************************** General utilities **************************** */
 /**
  * Name tells it all: if the argument is  single value, it is encapsulated into

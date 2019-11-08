@@ -27,31 +27,8 @@ import {
     Terms
 } from './manifest_classes';
 
-import * as fetch from 'node-fetch';
 import * as _ from 'underscore';
 import * as urlHandler from 'url';
-
-/* **************************** Get hold of a JSON file via its URL ********** */
-// This is for testing purposes, so all kinds of checks are not done...
-
-/**
- * Wrapper around the fetch function retrieving a JSON file.
- *
- * In real life this should be more sophisticated, checking the media type of the resources, security issues, etc. For testing purposes the simple wrapper is enough.
- *
- * @param request - essentially, the URL of the manifest file to test with
- * @returns - the result of JSON processing, i.e., an object (wrapped into a Promise)
- * @async
- */
-export  async function fetch_json(request: fetch.RequestInfo): Promise<any> {
-    return new Promise(resolve => {
-      fetch.default(request)
-        .then((response: fetch.Response) => response.json())
-        .then((body: fetch.Body) => {
-          resolve(body);
-        });
-    });
-};
 
 /* **************************** General utilities **************************** */
 

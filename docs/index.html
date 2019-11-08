@@ -67,8 +67,14 @@
 				<a href="#publication-manifest-processing" id="publication-manifest-processing" style="color: inherit; text-decoration: none;">
 					<h1>Publication Manifest Processing</h1>
 				</a>
-				<p>Implementation (with minor omissions, see below) of the Processing steps as defined in <a href="https://www.w3.org/TR/pub-manifest/#manifest-processing">§4 of the Publication Manifest</a>.</p>
-				<p>It is <em>not</em> a meaningful implementation insofar as it could be embedded in a full-blown User Agent implementation based on Publication Manifests right away. <em>Its main purpose is to check the correctness of the specification itself</em>. This means that, for example, necessary checks on, e.g., the security and validity on manifest URL-s are omitted. There is also (currently) no implementation of the extraction from an HTML file or handling profile extensions. Accordingly, the &quot;Add HTML Defaults&quot; step (<a href="https://www.w3.org/TR/pub-manifest/#dfn-add-html-defaults">§4.4.3</a>) is not implemented either. Finally, it does not have a proper user interface and only a rudimentary command line interface is available (see the <a href="modules/_main_.html#main">main</a> function).</p>
+				<p>Implementation (with minor omissions, see below) of the Processing steps as defined in <a href="https://www.w3.org/TR/pub-manifest/#manifest-processing">§5 of the Publication Manifest</a>.</p>
+				<p>It is <em>not</em> a meaningful implementation insofar as it could be embedded in a full-blown User Agent implementation based on Publication Manifests right away. <em>Its main purpose is to check the correctness of the specification itself</em>. This means that, for example, necessary checks on, e.g., the security and validity on the URL-s in the manifest are omitted.  It does not have a proper user interface and only a rudimentary command line interface is used.</p>
+				<p>The following public functions are available:</p>
+				<ul>
+					<li>The <a href="modules/_manifest_discovery_.html#discover_manifest">discover_manifest</a> function, implementing the manifest discovery, returning a manifest (text);</li>
+					<li>The <a href="modules/_process_.html#generate_internal_representation">generate_internal_representation</a> function, implementing the processing algorithm itself and resulting in a class implementing the <a href="interfaces/_manifest_.publicationmanifest.html">PublicationManifest</a> interface;</li>
+					<li>The <a href="modules/_process_.html#process_manifest">process_manifest</a> function, a wrapper of around the combination of the two previous functions to provide a single entry point.</li>
+				</ul>
 				<a href="#implementation-specificities" id="implementation-specificities" style="color: inherit; text-decoration: none;">
 					<h2>Implementation specificities</h2>
 				</a>
@@ -80,7 +86,7 @@
 				<p>Also, the implementation is a bit more complicated than it would be in Javascript, mainly due to the requirements of Typescript.
 					For example, the original object, parsed from JSON, cannot be directly modified and returned as <code>processed</code>; instead, Typescript classes, duly defined as
 				implementing the Typescript interfaces, must be created with the key/values set.</p>
-				<p>The project can be downloaded via cloning and and can be run via the standard npm processing.</p>
+				<p>The project can be downloaded via cloning and and can be run via the standard <code>npm</code> processing.</p>
 				<hr>
 				<p>The documentation is also available <a href="https://iherman.github.io/PubManifest/">on-line</a>.</p>
 				<p>Ivan Herman (<a href="mailto:ivan@w3.org">ivan@w3.org</a>)</p>
@@ -100,6 +106,9 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_manifest_classes_.html">"manifest_<wbr>classes"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manifest_discovery_.html">"manifest_<wbr>discovery"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_process_.html">"process"</a>

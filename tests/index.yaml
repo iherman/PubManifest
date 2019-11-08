@@ -313,3 +313,37 @@ tests:
                 description: Calculation of bounds removes duplicate entries
                 actions: The uniqueResources array contains unique URL-s only
                 errors: none
+    -
+        section: §4 Manifest Discovery
+        ref: https://www.w3.org/TR/pub-manifest/#manifest-discovery
+        tests:
+            -
+                id: 401
+                format: html
+                description: Retrieve a manifest linked from the primary entry point
+                actions: The separate manifest file (link_401.jsonld) should be processed and generated
+                errors: none
+            -
+                id: 402
+                format: html
+                description: Retrieve the manifest from the primary entry point's script element
+                actions: The embedded manifest should be processed and generated
+                errors: none
+            -
+                id: 403
+                format: html
+                description: Reuse the title for the (missing) name entry
+                actions: The embedded manifest should be processed and generated with an additional name
+                errors: none
+            -
+                id: 404
+                format: html
+                description: Reuse the title for the (missing) name entry, with language and direction set
+                actions: The embedded manifest should be processed and generated with an additional name
+                errors: none
+            -
+                id: 405
+                format: html
+                description: Reuse the document URL to set the reading order
+                actions: The embedded manifest should be processed and generated with the reading order set to the HTML's URL. The value should also be present in the uniqueResources array.
+                errors: none

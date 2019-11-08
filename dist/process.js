@@ -3,7 +3,7 @@
  * Implementation of the Processing Steps.
  *
  * (As defined in
- * [§4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing)).
+ * [§5 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing)).
  *
  * The functions, including their names, follow, as far as possible, the names used in the specification.
  *
@@ -43,12 +43,20 @@ const manifest_classes_1 = require("./manifest_classes");
  * Various utilities
  */
 const utilities_1 = require("./utilities");
+/**
+ * Manifest discovery function
+ */
+const manifest_discovery_1 = require("./manifest_discovery");
 const urlHandler = __importStar(require("url"));
 const validUrl = __importStar(require("valid-url"));
 const _ = __importStar(require("underscore"));
 const moment_1 = __importDefault(require("moment"));
 /**
- * Check whether an object is a “map” object (i.e., not an array or a function in Javascript sense).
+ * Check whether an object is a “map” object (i.e., _not_ an array or a function in Javascript sense).
+ *
+ * Care should be taken of the fact that this is a misnomer: we are not referring to Typescript/Javascript `Map` types but, rather,
+ * referring to the term used in the infra spec, used by the Pub Manifest specification. (The data structures start with JSON, and the `JSON.parse`
+ * method returns an `Object` and not a `Map`. I.e., no `Map` is used in this code.)
  *
  * (This should really be an underscore function...)
  *
@@ -99,6 +107,38 @@ Global.dir = '';
 Global.base = '';
 /** Final profile for the User Agent (stored only for testing purpose, not really used). */
 Global.profile = '';
+/**
+ * Process a manifest in two steps:
+ *
+ * 1. discover the manifest, per [§4 Manifest Discovery](https://www.w3.org/TR/pub-manifest/#manifest-discovery) (relying on the [[discover_manifest]] function);
+ * 2. generate a publication manifest object, per [§5 Processing a Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing) (relying on the [[generate_internal_representation]] function).
+ *
+ * @async
+ * @param url - The address of either the JSON file or the Primary entry point in HTML
+ * @return - the generated manifest object and a logger
+ */
+function process_manifest(url) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const logger = new utilities_1.Logger();
+        let manifest_object = {};
+        let args;
+        try {
+            args = yield manifest_discovery_1.discover_manifest(url);
+        }
+        catch (err) {
+            logger.log_fatal_error(`The manifest could not be discovered (${err.message})`);
+            return { manifest_object, logger };
+        }
+        try {
+            manifest_object = yield generate_internal_representation(args, logger);
+        }
+        catch (err) {
+            logger.log_fatal_error(`Some extra error occurred during generation (${err.message})`);
+        }
+        return { manifest_object, logger };
+    });
+}
+exports.process_manifest = process_manifest;
 /* ====================================================================================================
  Direct utility functions in the processing steps
 
@@ -253,140 +293,137 @@ const create_LinkedResource = (resource) => {
 /* ====================================================================================================
  The main processing steps, following the spec
 
- Note that two aspects have not (yet) been implemented
+ Note that one aspect has not (yet) been implemented
 
- - extracting default values from HTML
- - extension points
+ - extension points' handling
 
  The details of these are not really important in testing the spec...
 ====================================================================================================== */
 /**
  * Process the manifest. This corresponds to the main body of
- * [§5.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#processing-algorithm).
+ * [§5.4  Publication Manifest](https://www.w3.org/TR/pub-manifest/#processing-algorithm), i.e., the starting
+ * point of the algorithm.
  *
- * _This is the main (and only) entry point to the module._
- *
- * Note that this function does a little bit more than what is in the specification. Whereas the official processing steps
- * start with the json _text_ as an argument, and delegates the access to original JSON to a specific profile, this function shortcuts this
- * and starts with the URL of the JSON file, which is used to fetch the JSON object (hence also the async nature of the function).
- *
- * @async
- * @param url - address of the JSON file
+ * @param args - the arguments to the generation: the (JSON) text of the manifest, the base URL, and the (DOM) document object
  * @param base - base URL; if undefined or empty, fall back on the value of url
  * @param logger - an extra parameter to collect the error messages in one place, to be then processed by the caller
  * @return - the processed manifest
  */
-function generate_internal_representation(url, base, logger) {
-    return __awaiter(this, void 0, void 0, function* () {
-        Global.logger = logger;
-        // In the real world the value of base must be checked against invalid or malicious URL-s!
-        // The reuse of the url as a base is not specified in the standard, and is here simply to
-        // make testing easier. If the code is reused in real, this may have to be modified
-        Global.base = (base === undefined || base === '') ? url : base;
-        /* ============ The individual processing steps, following the spec ============== */
-        /* Step: create the, initially empty, processed manifest */
-        let processed = new manifest_classes_1.PublicationManifest_Impl();
-        /* Step: get the manifest. This step does more than just parsing; it retrieves the content via the URL */
-        let manifest;
-        // retrieve the manifest and convert it into
-        try {
-            manifest = yield utilities_1.fetch_json(url);
-        }
-        catch (err) {
-            logger.log_fatal_error(`JSON fetching or parsing error: ${err.message}`, null, true);
+//export async function generate_internal_representation(url: URL, base: URL, logger: Logger): Promise<PublicationManifest> {
+function generate_internal_representation(args, logger) {
+    Global.logger = logger;
+    Global.base = args.base;
+    /* ============ The individual processing steps, following the spec ============== */
+    /* Step: create the, initially empty, processed manifest */
+    let processed = new manifest_classes_1.PublicationManifest_Impl();
+    /* Step: get the manifest. */
+    let manifest;
+    try {
+        manifest = JSON.parse(args.text);
+    }
+    catch (err) {
+        // we ran into a JSON parsing issue...
+        logger.log_fatal_error(`JSON parsing error: ${err.message}`, null, true);
+        return {};
+    }
+    /* Step: extract and check the context */
+    let contexts = [];
+    if (manifest['@context']) {
+        // To simplify, turn this into an array in any case
+        contexts = utilities_1.toArray(manifest["@context"]);
+        if (!(contexts.length >= 2 && contexts[0] === "https://schema.org" && contexts[1] === "https://www.w3.org/ns/pub-context")) {
+            logger.log_fatal_error(`The required contexts are not provided`);
             return {};
         }
-        /* Step: extract and check the context */
-        let contexts = [];
-        if (manifest['@context']) {
-            // To simplify, turn this into an array in any case
-            contexts = utilities_1.toArray(manifest["@context"]);
-            if (!(contexts.length >= 2 && contexts[0] === "https://schema.org" && contexts[1] === "https://www.w3.org/ns/pub-context")) {
-                logger.log_fatal_error(`The required contexts are not provided`);
-                return {};
+    }
+    else {
+        logger.log_fatal_error(`No context provided`);
+        return {};
+    }
+    /* Step: profile conformance */
+    if (!(manifest.conformsTo)) {
+        // No conformance has been provided. That is, in this case, a validation error
+        logger.log_validation_error(`No conformance was set (falling back to default)`);
+        Global.profile = default_profile;
+    }
+    else {
+        const conforms = utilities_1.toArray(manifest.conformsTo);
+        const acceptable_values = conforms.filter((value) => known_profiles.includes(value));
+        if (acceptable_values.length === 0) {
+            // No acceptable values were detected for the profile
+            // At this point, the UA should inspect the media types and make a best guess.
+            // This is not implemented, and the result of this test is supposed to be true...
+            logger.log_validation_error(`No known conformance was set (falling back to default)`);
+            Global.profile = default_profile;
+            // If the non implemented test resulted in false, a Fatal Error should be added here:
+            // logger.log_fatal_error(`Couldn't establish any acceptable profile`);
+            // return {} as PublicationManifest
+        }
+        else {
+            Global.profile = conforms[0];
+        }
+    }
+    processed.profile = Global.profile;
+    /* Step: global declarations, ie, extract the global language and direction settings if any */
+    {
+        let lang = '';
+        let dir = '';
+        for (let i = contexts.length - 1; i >= 0; i--) {
+            if (typeof contexts[i] === 'object') {
+                let c = contexts[i];
+                if (lang === '' && c.language) {
+                    lang = c.language;
+                }
+                if (dir === '' && c.direction) {
+                    dir = c.direction;
+                }
+                if (lang !== '' && dir !== '')
+                    break;
             }
         }
-        else {
-            logger.log_fatal_error(`No context provided`);
-            return {};
-        }
-        /* Step: profile conformance */
-        if (!(manifest.conformsTo)) {
-            // No conformance has been provided. That is, in this case, a validation error
-            logger.log_validation_error(`No conformance was set (falling back to default)`);
-            Global.profile = default_profile;
-        }
-        else {
-            const conforms = utilities_1.toArray(manifest.conformsTo);
-            const acceptable_values = conforms.filter((value) => known_profiles.includes(value));
-            if (acceptable_values.length === 0) {
-                // No acceptable values were detected for the profile
-                // At this point, the UA should inspect the media types and make a best guess.
-                // This is not implemented, and the result of this test is supposed to be true...
-                logger.log_validation_error(`No known conformance was set (falling back to default)`);
-                Global.profile = default_profile;
-                // If the non implemented test resulted in false, a Fatal Error should be added here:
-                // logger.log_fatal_error(`Couldn't establish any acceptable profile`);
-                // return {} as PublicationManifest
+        if (lang !== '') {
+            if (utilities_1.check_language_tag(lang, logger)) {
+                Global.lang = lang;
             }
             else {
-                Global.profile = conforms[0];
+                // error message is generated in the check_language_tag function;
             }
         }
-        processed.profile = Global.profile;
-        /* Step: global declarations, ie, extract the global language and direction settings if any */
-        {
-            let lang = '';
-            let dir = '';
-            for (let i = contexts.length - 1; i >= 0; i--) {
-                if (typeof contexts[i] === 'object') {
-                    let c = contexts[i];
-                    if (lang === '' && c.language) {
-                        lang = c.language;
-                    }
-                    if (dir === '' && c.direction) {
-                        dir = c.direction;
-                    }
-                    if (lang !== '' && dir !== '')
-                        break;
-                }
+        if (dir !== '') {
+            if (utilities_1.check_direction_tag(dir, logger)) {
+                Global.dir = dir;
             }
-            if (lang !== '') {
-                if (utilities_1.check_language_tag(lang, logger)) {
-                    Global.lang = lang;
-                }
-                else {
-                    // error message is generated in the check_language_tag function;
-                }
-            }
-            if (dir !== '') {
-                if (utilities_1.check_direction_tag(dir, logger)) {
-                    Global.dir = dir;
-                }
-                else {
-                    // error message is generated in the check_direction_tag function;
-                }
+            else {
+                // error message is generated in the check_direction_tag function;
             }
         }
-        /* Step: go (recursively!) through all the term in manifest, normalize the value, an set it in processed */
-        process_object_keys(manifest, (term) => {
-            const value = manifest[term];
-            const normalized = normalize_data(processed, term, value);
-            if (normalized !== undefined) {
-                processed[term] = normalized;
-            }
-        });
-        /* Step: Data validation */
-        processed = data_validation(processed);
-        /* Step: return processed */
-        return processed;
+    }
+    /* Step: go (recursively!) through all the term in manifest, normalize the value, an set it in processed */
+    process_object_keys(manifest, (term) => {
+        const value = manifest[term];
+        const normalized = normalize_data(processed, term, value);
+        if (normalized !== undefined) {
+            processed[term] = normalized;
+        }
     });
+    /* Step: Data validation */
+    processed = data_validation(processed);
+    /* Step: add the HTML defaults */
+    {
+        const final = add_HTML_defaults(processed, args.document);
+        if (final === null) {
+            // A fatal error has been raised!
+            return {};
+        }
+    }
+    /* Step: return processed */
+    return processed;
 }
 exports.generate_internal_representation = generate_internal_representation;
 /**
  *
  * Normalize Data. This corresponds to the main body of
- * [§5.4.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#normalize-data).
+ * [§5.4.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#normalize-data).
  *
  * @param context - 'context', i.e., the object on which the function has been invoked
  * @param term - property term
@@ -484,7 +521,7 @@ function normalize_data(context, term, value) {
  * Convert to absolute URL
  *
  * This is used for the implementation of step §4.3.1/5, i.e.,
-* [§5.4.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#convert-absolute-url).
+* [§5.4.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#convert-absolute-url).
  *
  * @param resource - the (absolute or relative) URL
  * @returns - the absolute URL using the `base` value of [[Global]], or `undefined` in case of error (e.g., invalid URL)
@@ -513,7 +550,7 @@ const convert_to_absolute_URL = (resource) => {
 /**
  *
  * Data Validation. This corresponds to the main body of
- * [§5.4.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#validate-data).
+ * [§5.4.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#validate-data).
  *
  * @param data - the data to be checked
  * @return - checked data (becomes the final value of `processed` in [[generate_representation]] before returned to the caller)
@@ -623,6 +660,7 @@ function data_validation(data) {
     }
     /* Step: test on structural resources */
     {
+        // create an object that has a boolean term for each structural resources initialized to false
         const flags = _.object(structural_resources, Array.from({ length: structural_resources.length }, (v, i) => false));
         const res1 = (data.readingOrder) ? data.readingOrder : [];
         const res2 = (data.resources) ? data.resources : [];
@@ -637,14 +675,9 @@ function data_validation(data) {
                         }
                         else {
                             flags[str] = true;
-                            // For the 'cover' case, there are some extra checks
-                            if (str === 'cover') {
-                                if (!resource.name) {
-                                    Global.logger.log_validation_error(`No name provided for a cover page`, resource, false);
-                                }
-                                if (!resource.description) {
-                                    Global.logger.log_validation_error(`No description is provided for a cover page`, resource, false);
-                                }
+                            // For the 'cover' case, there is an extra check for an image
+                            if (str === 'cover' && resource.encodingFormat && resource.encodingFormat.startsWith('image/') && !resource.name) {
+                                Global.logger.log_validation_error(`No name provided for a cover page image`, resource, false);
                             }
                         }
                     }
@@ -667,7 +700,7 @@ function data_validation(data) {
 /**
  *
  * Global Data Check. This corresponds to the main body of
- * [§5.4.2.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#global-data-checks).
+ * [§5.4.2.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#global-data-checks).
  *
  * This is a recursive function.
  *
@@ -779,7 +812,7 @@ function global_data_checks(context, term, value) {
 /**
  *
  * Verify the value category. This corresponds to the main body of
- * [§5.4.2.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#verify-value-category).
+ * [§5.4.2.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#verify-value-category).
  *
  * @param context - 'context', in this case the object that has invoked the function
  * @param term - property term
@@ -866,23 +899,28 @@ function verify_value_category(context, term, value) {
             return false;
         }
         else {
-            value = value.map((item) => {
-                if (check_expected_type_and_report(terms, term, item)) {
-                    if (isMap(item)) {
-                        return verify_map(item) ? item : undefined;
+            if (value.length !== 0) {
+                value = value.map((item) => {
+                    if (check_expected_type_and_report(terms, term, item)) {
+                        if (isMap(item)) {
+                            return verify_map(item) ? item : undefined;
+                        }
+                        else {
+                            return item;
+                        }
                     }
                     else {
-                        return item;
+                        // wrong type
+                        return undefined;
                     }
+                }).filter((item) => item !== undefined);
+                if (value.length === 0) {
+                    Global.logger.log_validation_error(`Empty array after value type check for "${term}"`, null, true);
+                    return false;
                 }
                 else {
-                    // wrong type
-                    return undefined;
+                    return true;
                 }
-            }).filter((item) => item !== undefined);
-            if (value.length === 0) {
-                Global.logger.log_validation_error(`Empty array after value type check for "${term}"`, null, true);
-                return false;
             }
             else {
                 return true;
@@ -905,7 +943,7 @@ function verify_value_category(context, term, value) {
 /**
  *
  *  Obtain a list of unique resources. This corresponds to the main body of
- * [§5.4.2.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#get-unique-urls).
+ * [§5.4.2.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#get-unique-urls).
  *
  * @param resources
  * @returns - the full list of unique resources
@@ -930,7 +968,7 @@ function get_unique_URLs(resources) {
 /**
  *
  * Remove empty arrays. This corresponds to the main body of
- * [§5.4.2.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest#remove-empty-arrays).
+ * [§5.4.2.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#remove-empty-arrays).
  *
  * The function is a slight misnomer: it checks whether the incoming value is an array and, if yes, checks whether it is empty or not; however
  * if the value is an objects, it looks for the constituent arrays and removes the empty ones from the object.
@@ -951,5 +989,69 @@ function remove_empty_arrays(value) {
         });
     }
     return true;
+}
+/**
+ * Add HTML Defaults. This corresponds to
+ * [§5.4.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#add-html-defaults).
+ *
+ * @param data - the (almost) final processed manifest
+ * @param document - the Document DOM node for the entry point, `undefined` if the process happens without such an entry point
+ * @returns - `null` if a fatal error has been raised, the original (albeit possibly modified) data otherwise.
+ */
+function add_HTML_defaults(data, document) {
+    /*
+    * Minor helper function on DOM manipulation: get the value of an attribute by also
+    * going up the DOM tree to get a possible inherited value. Used to locate the language or the
+    * direction of the title element.
+    */
+    const get_attr = (start, term) => {
+        let element = start;
+        do {
+            const attr = element.getAttribute(term);
+            if (attr !== null) {
+                return attr;
+            }
+            else {
+                element = element.parentElement;
+            }
+        } while (element !== null);
+        return '';
+    };
+    if (document !== undefined) {
+        if (!data.name) {
+            const title = document.querySelector('title');
+            let ls;
+            if (title) {
+                ls = create_LocalizableString(title.text);
+                const lang = get_attr(title, "lang");
+                if (lang !== '') {
+                    ls.language = lang;
+                }
+                const dir = get_attr(title, "dir");
+                if (dir !== '') {
+                    ls.direction = dir;
+                }
+                data.name = [ls];
+            }
+            else {
+                ls = create_LocalizableString('No Title');
+                Global.logger.log_validation_error('No title to set a default "name"', null, false);
+            }
+            data.name = [ls];
+        }
+        if (!data.readingOrder || data.readingOrder.length === 0) {
+            if (!document.location.href) {
+                Global.logger.log_fatal_error("No URL assigned to the HTML entry point", null, true);
+                return null;
+            }
+            else {
+                data.readingOrder = [create_LinkedResource(document.location.href)];
+                if (!data.uniqueResources.includes(document.location.href)) {
+                    data.uniqueResources.push(document.location.href);
+                }
+            }
+        }
+    }
+    return data;
 }
 //# sourceMappingURL=process.js.map
