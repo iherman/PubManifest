@@ -131,6 +131,50 @@ class Global  {
 }
 
 /* ====================================================================================================
+ This is not an "official" API, but a convenience function to handle the Manifest
+====================================================================================================== */
+
+/**
+ * The result of processing a manifest: the generated object as a [[PublicationManifest]] implementation as well as a [[Logger]] instance with the (possible) error messages.
+ */
+export interface ProcessResult {
+    manifest_object: PublicationManifest;
+    logger: Logger;
+}
+
+/**
+ * Process a manifest in two steps:
+ *
+ * 1. discover the manifest, per [§4 Manifest Discovery](https://www.w3.org/TR/pub-manifest/#manifest-discovery) (relying on the [[discover_manifest]] function);
+ * 2. generate a publication manifest object, per [§5 Processing a Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing) (relying on the [[generate_internal_representation]] function).
+ *
+ * @async
+ * @param url - The address of either the JSON file or the Primary entry point in HTML
+ * @return - the generated manifest object and a logger
+ */
+export async function process_manifest(url: URL): Promise<ProcessResult> {
+    const logger = new Logger();
+    let manifest_object = {} as PublicationManifest;
+
+    let args: GenerationArguments;
+    try {
+        args = await discover_manifest(url);
+    } catch(err) {
+        logger.log_fatal_error(`The manifest could not be discovered (${err.message})`);
+        return {manifest_object, logger}
+    }
+
+    try {
+        manifest_object = await generate_internal_representation(args, logger);
+    } catch(err) {
+        logger.log_fatal_error(`Some extra error occurred during generation (${err.message})`);
+    }
+    return {manifest_object, logger}
+}
+
+
+
+/* ====================================================================================================
  Direct utility functions in the processing steps
 
  (Factored out for a better readability)
@@ -992,3 +1036,5 @@ function remove_empty_arrays(value: any): boolean {
     }
     return true;
 }
+
+

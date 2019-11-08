@@ -6,49 +6,8 @@
  * For local testing: the base to the test URL-s. The CLI argument is appended to this URL as `test_{arg}.json` and is expected to point at
  * a bona fide publication manifest
  */
-import { generate_internal_representation } from "./process";
-import { Logger } from "./utilities";
+import { process_manifest, ProcessResult } from "./process";
 import { URL } from "./manifest";
-import { GenerationArguments, discover_manifest } from './manifest_discovery';
-import { PublicationManifest } from './manifest';
-
-/**
- * The result of processing a manifest: the generated object as a [[PublicationManifest]] implementation as well as a [[Logger]] instance with the (possible) error messages.
- */
-interface ProcessResult {
-    manifest_object: PublicationManifest;
-    logger: Logger;
-}
-
-/**
- * Process a manifest:
- *
- * 1. discover the manifest, per [§4 Manifest Discovery](https://www.w3.org/TR/pub-manifest/#manifest-discovery)
- * 2. generate a publication manifest object, per [§5 Processing a Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing)
- *
- * @async
- * @param url - The address of either the JSON file or the Primary entry point in HTML
- * @return - the generated manifest object and a logger
- */
-export async function process_manifest(url: URL): Promise<ProcessResult> {
-    const logger = new Logger();
-    let manifest_object = {} as PublicationManifest;
-
-    let args: GenerationArguments;
-    try {
-        args = await discover_manifest(url);
-    } catch(err) {
-        logger.log_fatal_error(`The manifest could not be discovered (${err.message})`);
-        return {manifest_object, logger}
-    }
-
-    try {
-        manifest_object = await generate_internal_representation(args, logger);
-    } catch(err) {
-        logger.log_fatal_error(`Some extra error occurred during generation (${err.message})`);
-    }
-    return {manifest_object, logger}
-}
 
 
 /* ====================================================================================================
@@ -72,7 +31,7 @@ const default_test = 'correct';
  * @async
  * @param url URL to a json file
  */
-async function test(url: string) {
+async function test(url: URL) {
     try {
         const results: ProcessResult = await process_manifest(url);
         console.log(JSON.stringify(results.manifest_object, null, 4));
