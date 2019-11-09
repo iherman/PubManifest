@@ -4,10 +4,10 @@
     "description": "Processing of a publication manifests into a Typescript internal representation.",
     "main": "dist/main.js",
     "scripts": {
-        "test": "ts-node src/main.ts",
-        "build": "tsc; typedoc --disableOutputCheck --out docs src/",
-        "run": "node dist/main.js",
-        "doc": "typedoc --disableOutputCheck --out docs src/"
+        "test": "ts-node tests/runner.ts",
+        "build": "tsc; typedoc src/ tests/",
+        "run": "node dist/tests/runner.js",
+        "doc": "typedoc src/ tests/"
     },
     "license": "W3C-20150513",
     "keywords": [

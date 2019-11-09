@@ -1,0 +1,619 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Terms | Processing the Publishing Manifest</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">Processing the Publishing Manifest</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="../modules/_src_manifest_classes_.html">&quot;src/manifest_classes&quot;</a>
+				</li>
+				<li>
+					<a href="_src_manifest_classes_.terms.html">Terms</a>
+				</li>
+			</ul>
+			<h1>Class Terms</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Categorization of terms per value types.</p>
+					</div>
+					<p>A wrapper around arrays for terms as single literal values, multiple literal values (i.e., that must be turned into an array of strings),
+						single localizable string and an array of localizable strings, array of entities, array of linked resources, urls, booleans, etc. These arrays
+					are used in generic method calls to handle, e.g., the creation and check of arrays of localizable strings. There are accessors to return combination of terms, used by the main algorithm: all terms that refer to arrays, to literals, resp. URL-s, in some ways (arrays or not), etc.</p>
+					<p>The pattern used for these classes is to</p>
+					<ul>
+						<li>define a number of static variables for each implementation class, listing the relevant terms</li>
+						<li>define an instance of the <a href="_src_manifest_classes_.terms.html">Terms</a> class for each implementation class using this terms.</li>
+					</ul>
+					<p>The reason for this pattern is that end user, who gets an instance of, say, the <a href="_src_manifest_classes_.entity_impl.html">Entity_Impl</a> class implementing the <a href="../interfaces/_src_manifest_.entity.html">Entity</a> interface,
+					can use generic methods to check, normalize, validate, etc., term values.</p>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">Terms</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<a href="_src_manifest_classes_.entityterms.html" class="tsd-signature-type">EntityTerms</a>
+							</li>
+							<li>
+								<a href="_src_manifest_classes_.linkedresourceterms.html" class="tsd-signature-type">LinkedResourceTerms</a>
+							</li>
+							<li>
+								<a href="_src_manifest_classes_.localizablestringterms.html" class="tsd-signature-type">LocalizableStringTerms</a>
+							</li>
+							<li>
+								<a href="_src_manifest_classes_.publicationmanifestterms.html" class="tsd-signature-type">PublicationManifestTerms</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#array_of_entities" class="tsd-kind-icon">array_<wbr>of_<wbr>entities</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#array_of_links" class="tsd-kind-icon">array_<wbr>of_<wbr>links</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#array_of_literals" class="tsd-kind-icon">array_<wbr>of_<wbr>literals</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#array_of_miscs" class="tsd-kind-icon">array_<wbr>of_<wbr>miscs</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#array_of_strings" class="tsd-kind-icon">array_<wbr>of_<wbr>strings</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#array_of_urls" class="tsd-kind-icon">array_<wbr>of_<wbr>urls</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#single_boolean" class="tsd-kind-icon">single_<wbr>boolean</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#single_literal" class="tsd-kind-icon">single_<wbr>literal</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#single_misc" class="tsd-kind-icon">single_<wbr>misc</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#single_number" class="tsd-kind-icon">single_<wbr>number</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#single_url" class="tsd-kind-icon">single_<wbr>url</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Accessors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#all_terms" class="tsd-kind-icon">all_<wbr>terms</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#array_or_single_literals" class="tsd-kind-icon">array_<wbr>or_<wbr>single_<wbr>literals</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#array_or_single_urls" class="tsd-kind-icon">array_<wbr>or_<wbr>single_<wbr>urls</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#array_terms" class="tsd-kind-icon">array_<wbr>terms</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_src_manifest_classes_.terms.html#maps" class="tsd-kind-icon">maps</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="array_of_entities" class="tsd-anchor"></a>
+					<h3>array_<wbr>of_<wbr>entities</h3>
+					<div class="tsd-signature tsd-kind-icon">array_<wbr>of_<wbr>entities<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L74">src/manifest_classes.ts:74</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Terms referring to an array of entities (e.g., the terms in <a href="../modules/_src_manifest_classes_.html#creator_properties">creator_properties</a>)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="array_of_links" class="tsd-anchor"></a>
+					<h3>array_<wbr>of_<wbr>links</h3>
+					<div class="tsd-signature tsd-kind-icon">array_<wbr>of_<wbr>links<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L76">src/manifest_classes.ts:76</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Terms referring to an array of linked resources (e.g., <code>readingOrder</code>)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="array_of_literals" class="tsd-anchor"></a>
+					<h3>array_<wbr>of_<wbr>literals</h3>
+					<div class="tsd-signature tsd-kind-icon">array_<wbr>of_<wbr>literals<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L70">src/manifest_classes.ts:70</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Terms referring to an array (list) of literals (e.g., the terms in <a href="../modules/_src_manifest_classes_.html#a11y_properties">a11y_properties</a>)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="array_of_miscs" class="tsd-anchor"></a>
+					<h3>array_<wbr>of_<wbr>miscs</h3>
+					<div class="tsd-signature tsd-kind-icon">array_<wbr>of_<wbr>miscs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L88">src/manifest_classes.ts:88</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Terms referring to an array of values not listed above (e.g., <code>accessModeSufficient</code>)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="array_of_strings" class="tsd-anchor"></a>
+					<h3>array_<wbr>of_<wbr>strings</h3>
+					<div class="tsd-signature tsd-kind-icon">array_<wbr>of_<wbr>strings<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L72">src/manifest_classes.ts:72</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Terms referring to an array of (localizable) strings (e.g., <code>name</code>)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="array_of_urls" class="tsd-anchor"></a>
+					<h3>array_<wbr>of_<wbr>urls</h3>
+					<div class="tsd-signature tsd-kind-icon">array_<wbr>of_<wbr>urls<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L80">src/manifest_classes.ts:80</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Terms referring to an array of URLs (e.g., <code>url</code>)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="single_boolean" class="tsd-anchor"></a>
+					<h3>single_<wbr>boolean</h3>
+					<div class="tsd-signature tsd-kind-icon">single_<wbr>boolean<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L82">src/manifest_classes.ts:82</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Terms referring to a single boolean (e.g., <code>abridged</code>)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="single_literal" class="tsd-anchor"></a>
+					<h3>single_<wbr>literal</h3>
+					<div class="tsd-signature tsd-kind-icon">single_<wbr>literal<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L68">src/manifest_classes.ts:68</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Terms referring to a single literal (e.g., <code>id</code>)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="single_misc" class="tsd-anchor"></a>
+					<h3>single_<wbr>misc</h3>
+					<div class="tsd-signature tsd-kind-icon">single_<wbr>misc<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L86">src/manifest_classes.ts:86</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Terms referring to a single value not listed above (not used at present, added as a placeholder)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="single_number" class="tsd-anchor"></a>
+					<h3>single_<wbr>number</h3>
+					<div class="tsd-signature tsd-kind-icon">single_<wbr>number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L84">src/manifest_classes.ts:84</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Terms referring to a single number (e.g., <code>length</code>)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="single_url" class="tsd-anchor"></a>
+					<h3>single_<wbr>url</h3>
+					<div class="tsd-signature tsd-kind-icon">single_<wbr>url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L78">src/manifest_classes.ts:78</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Terms referring to a single URL (not used at present, added as a placeholder)</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="all_terms" class="tsd-anchor"></a>
+					<h3>all_<wbr>terms</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> all_terms<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L128">src/manifest_classes.ts:128</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>All terms defined for this type</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="array_or_single_literals" class="tsd-anchor"></a>
+					<h3>array_<wbr>or_<wbr>single_<wbr>literals</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> array_or_single_literals<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L107">src/manifest_classes.ts:107</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Terms referring to literals, either as individual values or arrays</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="array_or_single_urls" class="tsd-anchor"></a>
+					<h3>array_<wbr>or_<wbr>single_<wbr>urls</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> array_or_single_urls<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L114">src/manifest_classes.ts:114</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Terms referring to URLs, either as individual values or arrays</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="array_terms" class="tsd-anchor"></a>
+					<h3>array_<wbr>terms</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> array_terms<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L93">src/manifest_classes.ts:93</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Terms that expect arrays as values</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="maps" class="tsd-anchor"></a>
+					<h3>maps</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> maps<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/76837c9/src/manifest_classes.ts#L121">src/manifest_classes.ts:121</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Terms referring to a single map (not used at present, added as a placeholder))</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_src_manifest_.html">"src/manifest"</a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="../modules/_src_manifest_classes_.html">"src/manifest_<wbr>classes"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_src_manifest_discovery_.html">"src/manifest_<wbr>discovery"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_src_process_.html">"src/process"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_src_utilities_.html">"src/utilities"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_tests_runner_.html">"tests/runner"</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_src_manifest_classes_.entityterms.html" class="tsd-kind-icon">Entity<wbr>Terms</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_src_manifest_classes_.entity_impl.html" class="tsd-kind-icon">Entity_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_src_manifest_classes_.linkedresourceterms.html" class="tsd-kind-icon">Linked<wbr>Resource<wbr>Terms</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_src_manifest_classes_.linkedresource_impl.html" class="tsd-kind-icon">Linked<wbr>Resource_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_src_manifest_classes_.localizablestringterms.html" class="tsd-kind-icon">Localizable<wbr>String<wbr>Terms</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_src_manifest_classes_.localizablestring_impl.html" class="tsd-kind-icon">Localizable<wbr>String_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_src_manifest_classes_.organization_impl.html" class="tsd-kind-icon">Organization_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_src_manifest_classes_.person_impl.html" class="tsd-kind-icon">Person_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_src_manifest_classes_.publicationmanifestterms.html" class="tsd-kind-icon">Publication<wbr>Manifest<wbr>Terms</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_src_manifest_classes_.publicationmanifest_impl.html" class="tsd-kind-icon">Publication<wbr>Manifest_<wbr><wbr>Impl</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_src_manifest_classes_.terms.html" class="tsd-kind-icon">Terms</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#array_of_entities" class="tsd-kind-icon">array_<wbr>of_<wbr>entities</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#array_of_links" class="tsd-kind-icon">array_<wbr>of_<wbr>links</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#array_of_literals" class="tsd-kind-icon">array_<wbr>of_<wbr>literals</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#array_of_miscs" class="tsd-kind-icon">array_<wbr>of_<wbr>miscs</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#array_of_strings" class="tsd-kind-icon">array_<wbr>of_<wbr>strings</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#array_of_urls" class="tsd-kind-icon">array_<wbr>of_<wbr>urls</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#single_boolean" class="tsd-kind-icon">single_<wbr>boolean</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#single_literal" class="tsd-kind-icon">single_<wbr>literal</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#single_misc" class="tsd-kind-icon">single_<wbr>misc</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#single_number" class="tsd-kind-icon">single_<wbr>number</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#single_url" class="tsd-kind-icon">single_<wbr>url</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#all_terms" class="tsd-kind-icon">all_<wbr>terms</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#array_or_single_literals" class="tsd-kind-icon">array_<wbr>or_<wbr>single_<wbr>literals</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#array_or_single_urls" class="tsd-kind-icon">array_<wbr>or_<wbr>single_<wbr>urls</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#array_terms" class="tsd-kind-icon">array_<wbr>terms</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="_src_manifest_classes_.terms.html#maps" class="tsd-kind-icon">maps</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_manifest_classes_.html#recognizedtypes_impl" class="tsd-kind-icon">Recognized<wbr>Types_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_src_manifest_classes_.html#a11y_properties" class="tsd-kind-icon">a11y_<wbr>properties</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_src_manifest_classes_.html#creator_properties" class="tsd-kind-icon">creator_<wbr>properties</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
