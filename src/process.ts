@@ -403,7 +403,7 @@ export function generate_internal_representation(args: GenerationArguments, logg
         let lang = '';
         let dir  = '';
         for (let i = contexts.length - 1; i >= 0; i--) {
-            if (typeof contexts[i] === 'object') {
+            if (isMap(contexts[i])) {
                 let c = contexts[i] as lang_dir;
                 if (lang === '' && c.language) {
                     lang = c.language
@@ -569,19 +569,19 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
  * This is used for the implementation of step §4.3.1/5, i.e.,
 * [§5.4.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#convert-absolute-url).
  *
- * @param resource - the (absolute or relative) URL
+ * @param url - the (absolute or relative) URL
  * @returns - the absolute URL using the `base` value of [[Global]], or `undefined` in case of error (e.g., invalid URL)
  */
-const convert_to_absolute_URL = (resource: URL): URL => {
+const convert_to_absolute_URL = (url: URL): URL => {
     if (!_.isString(Global.base) || Global.base === '' || Global.base === null) {
         Global.logger.log_validation_error(`Invalid base ${Global.base}`, null, true);
         return undefined;
     }
-    if (!_.isString(resource)  || resource === '' || resource === null ) {
-        Global.logger.log_validation_error(`Invalid relative URL ${resource}`, null, true);
+    if (!_.isString(url)  || url === '' || url === null ) {
+        Global.logger.log_validation_error(`Invalid relative URL ${url}`, null, true);
         return undefined;
     } else {
-        const new_url = urlHandler.resolve(Global.base, resource);
+        const new_url = urlHandler.resolve(Global.base, url);
         // The check URL function checks the validity of the URL and whether it is a valid URL
         if (validUrl.isUri(new_url) === undefined) {
             Global.logger.log_validation_error(`${new_url} is an invalid URL`);
