@@ -1,7 +1,7 @@
 
 # Publication Manifest Processing
 
-Implementation (with minor omissions, see below) of the Processing steps as defined in [§5 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing).
+Implementation (with minor omissions, see below) of the Processing steps as defined in [§7 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing).
 
 It is _not_ a meaningful implementation insofar as it could be embedded in a full-blown User Agent implementation based on Publication Manifests right away. _Its main purpose is to check the correctness of the specification itself_. This means that, for example, necessary checks on, e.g., the security and validity on the URL-s in the manifest are omitted.  It does not have a proper user interface and only a rudimentary command line interface is used.
 

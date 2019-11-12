@@ -5,7 +5,7 @@
  * - retrieving it via an HTML file when it is referred to via a `<link>` element; or
  * - retrieving it via a direct reference to a JSON resource
  *
- * This corresponds to the [§4 Manifest Discovery](https://www.w3.org/TR/pub-manifest/#manifest-discovery) section of the specification.
+ * This corresponds to the [§6 Manifest Discovery](https://www.w3.org/TR/pub-manifest/#manifest-discovery) section of the specification.
  *
  */
 /**
