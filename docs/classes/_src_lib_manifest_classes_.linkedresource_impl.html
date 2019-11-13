@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Entity_Impl | Processing the Publishing Manifest</title>
+	<title>LinkedResource_Impl | Processing the Publishing Manifest</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_src_manifest_classes_.html">&quot;src/manifest_classes&quot;</a>
+					<a href="../modules/_src_lib_manifest_classes_.html">&quot;src/lib/manifest_classes&quot;</a>
 				</li>
 				<li>
-					<a href="_src_manifest_classes_.entity_impl.html">Entity_Impl</a>
+					<a href="_src_lib_manifest_classes_.linkedresource_impl.html">LinkedResource_Impl</a>
 				</li>
 			</ul>
-			<h1>Class Entity_Impl</h1>
+			<h1>Class LinkedResource_Impl</h1>
 		</div>
 	</div>
 </header>
@@ -72,7 +72,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Implementation of <a href="../interfaces/_src_manifest_.entity.html">Entity</a>, superclass for <a href="_src_manifest_classes_.person_impl.html">Person_Impl</a> or <a href="_src_manifest_classes_.organization_impl.html">Organization_Impl</a></p>
+						<p>Implementation for <a href="../interfaces/_src_manifest_.linkedresource.html">LinkedResource</a></p>
 					</div>
 				</div>
 			</section>
@@ -80,22 +80,14 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Entity_Impl</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<a href="_src_manifest_classes_.person_impl.html" class="tsd-signature-type">Person_Impl</a>
-							</li>
-							<li>
-								<a href="_src_manifest_classes_.organization_impl.html" class="tsd-signature-type">Organization_Impl</a>
-							</li>
-						</ul>
+						<span class="target">LinkedResource_Impl</span>
 					</li>
 				</ul>
 			</section>
 			<section class="tsd-panel">
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/_src_manifest_.entity.html" class="tsd-signature-type">Entity</a></li>
+					<li><a href="../interfaces/_src_manifest_.linkedresource.html" class="tsd-signature-type">LinkedResource</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-kind-class tsd-parent-kind-external-module">
@@ -103,7 +95,7 @@
 				<div class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">[</span>propName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">any</span></div>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Implementation of <a href="../interfaces/_src_manifest_.entity.html">Entity</a>, superclass for <a href="_src_manifest_classes_.person_impl.html">Person_Impl</a> or <a href="_src_manifest_classes_.organization_impl.html">Organization_Impl</a></p>
+						<p>Implementation for <a href="../interfaces/_src_manifest_.linkedresource.html">LinkedResource</a></p>
 					</div>
 				</div>
 			</section>
@@ -114,17 +106,20 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.entity_impl.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.entity_impl.html#identifier" class="tsd-kind-icon">identifier</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.entity_impl.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.entity_impl.html#type" class="tsd-kind-icon">type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_manifest_classes_.entity_impl.html#url" class="tsd-kind-icon">url</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_lib_manifest_classes_.linkedresource_impl.html#alternate" class="tsd-kind-icon">alternate</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_lib_manifest_classes_.linkedresource_impl.html#description" class="tsd-kind-icon">description</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_lib_manifest_classes_.linkedresource_impl.html#encodingformat" class="tsd-kind-icon">encoding<wbr>Format</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_lib_manifest_classes_.linkedresource_impl.html#integrity" class="tsd-kind-icon">integrity</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_lib_manifest_classes_.linkedresource_impl.html#length" class="tsd-kind-icon">length</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_lib_manifest_classes_.linkedresource_impl.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_lib_manifest_classes_.linkedresource_impl.html#rel" class="tsd-kind-icon">rel</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_lib_manifest_classes_.linkedresource_impl.html#url" class="tsd-kind-icon">url</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_src_manifest_classes_.entity_impl.html#terms" class="tsd-kind-icon">terms</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_src_lib_manifest_classes_.linkedresource_impl.html#terms" class="tsd-kind-icon">terms</a></li>
 							</ul>
 						</section>
 					</div>
@@ -133,24 +128,57 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="id" class="tsd-anchor"></a>
-					<h3>id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="alternate" class="tsd-anchor"></a>
+					<h3>alternate</h3>
+					<div class="tsd-signature tsd-kind-icon">alternate<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_src_manifest_.linkedresource.html" class="tsd-signature-type">LinkedResource</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/_src_manifest_.entity.html">Entity</a>.<a href="../interfaces/_src_manifest_.entity.html#id">id</a></p>
+						<p>Implementation of <a href="../interfaces/_src_manifest_.linkedresource.html">LinkedResource</a>.<a href="../interfaces/_src_manifest_.linkedresource.html#alternate">alternate</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/7e88642/src/manifest_classes.ts#L228">src/manifest_classes.ts:228</a></li>
+							<li>Defined in src/lib/manifest_classes.ts:277</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="identifier" class="tsd-anchor"></a>
-					<h3>identifier</h3>
-					<div class="tsd-signature tsd-kind-icon">identifier<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<a name="description" class="tsd-anchor"></a>
+					<h3>description</h3>
+					<div class="tsd-signature tsd-kind-icon">description<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_src_manifest_.localizablestring.html" class="tsd-signature-type">LocalizableString</a></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/_src_manifest_.entity.html">Entity</a>.<a href="../interfaces/_src_manifest_.entity.html#identifier">identifier</a></p>
+						<p>Implementation of <a href="../interfaces/_src_manifest_.linkedresource.html">LinkedResource</a>.<a href="../interfaces/_src_manifest_.linkedresource.html#description">description</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/7e88642/src/manifest_classes.ts#L230">src/manifest_classes.ts:230</a></li>
+							<li>Defined in src/lib/manifest_classes.ts:273</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="encodingformat" class="tsd-anchor"></a>
+					<h3>encoding<wbr>Format</h3>
+					<div class="tsd-signature tsd-kind-icon">encoding<wbr>Format<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/_src_manifest_.linkedresource.html">LinkedResource</a>.<a href="../interfaces/_src_manifest_.linkedresource.html#encodingformat">encodingFormat</a></p>
+						<ul>
+							<li>Defined in src/lib/manifest_classes.ts:271</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="integrity" class="tsd-anchor"></a>
+					<h3>integrity</h3>
+					<div class="tsd-signature tsd-kind-icon">integrity<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/_src_manifest_.linkedresource.html">LinkedResource</a>.<a href="../interfaces/_src_manifest_.linkedresource.html#integrity">integrity</a></p>
+						<ul>
+							<li>Defined in src/lib/manifest_classes.ts:275</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="length" class="tsd-anchor"></a>
+					<h3>length</h3>
+					<div class="tsd-signature tsd-kind-icon">length<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/_src_manifest_.linkedresource.html">LinkedResource</a>.<a href="../interfaces/_src_manifest_.linkedresource.html#length">length</a></p>
+						<ul>
+							<li>Defined in src/lib/manifest_classes.ts:276</li>
 						</ul>
 					</aside>
 				</section>
@@ -159,31 +187,31 @@
 					<h3>name</h3>
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_src_manifest_.localizablestring.html" class="tsd-signature-type">LocalizableString</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/_src_manifest_.entity.html">Entity</a>.<a href="../interfaces/_src_manifest_.entity.html#name">name</a></p>
+						<p>Implementation of <a href="../interfaces/_src_manifest_.linkedresource.html">LinkedResource</a>.<a href="../interfaces/_src_manifest_.linkedresource.html#name">name</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/7e88642/src/manifest_classes.ts#L227">src/manifest_classes.ts:227</a></li>
+							<li>Defined in src/lib/manifest_classes.ts:272</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="type" class="tsd-anchor"></a>
-					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<a name="rel" class="tsd-anchor"></a>
+					<h3>rel</h3>
+					<div class="tsd-signature tsd-kind-icon">rel<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/_src_manifest_.entity.html">Entity</a>.<a href="../interfaces/_src_manifest_.entity.html#type">type</a></p>
+						<p>Implementation of <a href="../interfaces/_src_manifest_.linkedresource.html">LinkedResource</a>.<a href="../interfaces/_src_manifest_.linkedresource.html#rel">rel</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/7e88642/src/manifest_classes.ts#L226">src/manifest_classes.ts:226</a></li>
+							<li>Defined in src/lib/manifest_classes.ts:274</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="url" class="tsd-anchor"></a>
 					<h3>url</h3>
-					<div class="tsd-signature tsd-kind-icon">url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<div class="tsd-signature tsd-kind-icon">url<span class="tsd-signature-symbol">:</span> <a href="../modules/_src_manifest_.html#url" class="tsd-signature-type">URL</a></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/_src_manifest_.entity.html">Entity</a>.<a href="../interfaces/_src_manifest_.entity.html#url">url</a></p>
+						<p>Implementation of <a href="../interfaces/_src_manifest_.linkedresource.html">LinkedResource</a>.<a href="../interfaces/_src_manifest_.linkedresource.html#url">url</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/7e88642/src/manifest_classes.ts#L229">src/manifest_classes.ts:229</a></li>
+							<li>Defined in src/lib/manifest_classes.ts:270</li>
 						</ul>
 					</aside>
 				</section>
@@ -194,21 +222,21 @@
 					<a name="terms" class="tsd-anchor"></a>
 					<h3>terms</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> terms<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_manifest_classes_.terms.html" class="tsd-signature-type">Terms</a></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> terms<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_lib_manifest_classes_.terms.html" class="tsd-signature-type">Terms</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/7e88642/src/manifest_classes.ts#L222">src/manifest_classes.ts:222</a></li>
+									<li>Defined in src/lib/manifest_classes.ts:266</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>A <a href="_src_manifest_classes_.terms.html">Terms</a> instance referring to the terms defined for <a href="../interfaces/_src_manifest_.entity.html">Entity</a></p>
+									<p>A <a href="_src_lib_manifest_classes_.terms.html">Terms</a> instance referring to the terms defined for <a href="../interfaces/_src_manifest_.linkedresource.html">LinkedResource</a></p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <a href="_src_manifest_classes_.terms.html" class="tsd-signature-type">Terms</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_src_lib_manifest_classes_.terms.html" class="tsd-signature-type">Terms</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -220,20 +248,20 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="../modules/_src_lib_manifest_classes_.html">"src/lib/manifest_<wbr>classes"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_src_lib_manifest_discovery_.html">"src/lib/manifest_<wbr>discovery"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_src_lib_utilities_.html">"src/lib/utilities"</a>
+					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_src_manifest_.html">"src/manifest"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
-						<a href="../modules/_src_manifest_classes_.html">"src/manifest_<wbr>classes"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_src_manifest_discovery_.html">"src/manifest_<wbr>discovery"</a>
-					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_src_process_.html">"src/process"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_src_utilities_.html">"src/utilities"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_tests_runner_.html">"tests/runner"</a>
@@ -243,70 +271,79 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_src_manifest_classes_.entityterms.html" class="tsd-kind-icon">Entity<wbr>Terms</a>
+						<a href="_src_lib_manifest_classes_.entityterms.html" class="tsd-kind-icon">Entity<wbr>Terms</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_src_lib_manifest_classes_.entity_impl.html" class="tsd-kind-icon">Entity_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_src_lib_manifest_classes_.linkedresourceterms.html" class="tsd-kind-icon">Linked<wbr>Resource<wbr>Terms</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_src_manifest_classes_.entity_impl.html" class="tsd-kind-icon">Entity_<wbr><wbr>Impl</a>
+						<a href="_src_lib_manifest_classes_.linkedresource_impl.html" class="tsd-kind-icon">Linked<wbr>Resource_<wbr><wbr>Impl</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_manifest_classes_.entity_impl.html#id" class="tsd-kind-icon">id</a>
+								<a href="_src_lib_manifest_classes_.linkedresource_impl.html#alternate" class="tsd-kind-icon">alternate</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_manifest_classes_.entity_impl.html#identifier" class="tsd-kind-icon">identifier</a>
+								<a href="_src_lib_manifest_classes_.linkedresource_impl.html#description" class="tsd-kind-icon">description</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_manifest_classes_.entity_impl.html#name" class="tsd-kind-icon">name</a>
+								<a href="_src_lib_manifest_classes_.linkedresource_impl.html#encodingformat" class="tsd-kind-icon">encoding<wbr>Format</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_manifest_classes_.entity_impl.html#type" class="tsd-kind-icon">type</a>
+								<a href="_src_lib_manifest_classes_.linkedresource_impl.html#integrity" class="tsd-kind-icon">integrity</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_manifest_classes_.entity_impl.html#url" class="tsd-kind-icon">url</a>
+								<a href="_src_lib_manifest_classes_.linkedresource_impl.html#length" class="tsd-kind-icon">length</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_lib_manifest_classes_.linkedresource_impl.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_lib_manifest_classes_.linkedresource_impl.html#rel" class="tsd-kind-icon">rel</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_lib_manifest_classes_.linkedresource_impl.html#url" class="tsd-kind-icon">url</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
-								<a href="_src_manifest_classes_.entity_impl.html#terms" class="tsd-kind-icon">terms</a>
+								<a href="_src_lib_manifest_classes_.linkedresource_impl.html#terms" class="tsd-kind-icon">terms</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_src_manifest_classes_.linkedresourceterms.html" class="tsd-kind-icon">Linked<wbr>Resource<wbr>Terms</a>
+						<a href="_src_lib_manifest_classes_.localizablestringterms.html" class="tsd-kind-icon">Localizable<wbr>String<wbr>Terms</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_src_manifest_classes_.linkedresource_impl.html" class="tsd-kind-icon">Linked<wbr>Resource_<wbr><wbr>Impl</a>
+						<a href="_src_lib_manifest_classes_.localizablestring_impl.html" class="tsd-kind-icon">Localizable<wbr>String_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_src_lib_manifest_classes_.organization_impl.html" class="tsd-kind-icon">Organization_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_src_lib_manifest_classes_.person_impl.html" class="tsd-kind-icon">Person_<wbr><wbr>Impl</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_src_manifest_classes_.localizablestringterms.html" class="tsd-kind-icon">Localizable<wbr>String<wbr>Terms</a>
+						<a href="_src_lib_manifest_classes_.publicationmanifestterms.html" class="tsd-kind-icon">Publication<wbr>Manifest<wbr>Terms</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_src_manifest_classes_.localizablestring_impl.html" class="tsd-kind-icon">Localizable<wbr>String_<wbr><wbr>Impl</a>
+						<a href="_src_lib_manifest_classes_.publicationmanifest_impl.html" class="tsd-kind-icon">Publication<wbr>Manifest_<wbr><wbr>Impl</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_src_manifest_classes_.organization_impl.html" class="tsd-kind-icon">Organization_<wbr><wbr>Impl</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_src_manifest_classes_.person_impl.html" class="tsd-kind-icon">Person_<wbr><wbr>Impl</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_src_manifest_classes_.publicationmanifestterms.html" class="tsd-kind-icon">Publication<wbr>Manifest<wbr>Terms</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_src_manifest_classes_.publicationmanifest_impl.html" class="tsd-kind-icon">Publication<wbr>Manifest_<wbr><wbr>Impl</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_src_manifest_classes_.terms.html" class="tsd-kind-icon">Terms</a>
+						<a href="_src_lib_manifest_classes_.terms.html" class="tsd-kind-icon">Terms</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/_src_manifest_classes_.html#recognizedtypes_impl" class="tsd-kind-icon">Recognized<wbr>Types_<wbr><wbr>Impl</a>
+						<a href="../modules/_src_lib_manifest_classes_.html#recognizedtypes_impl" class="tsd-kind-icon">Recognized<wbr>Types_<wbr><wbr>Impl</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_manifest_classes_.html#a11y_properties" class="tsd-kind-icon">a11y_<wbr>properties</a>
+						<a href="../modules/_src_lib_manifest_classes_.html#a11y_properties" class="tsd-kind-icon">a11y_<wbr>properties</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_manifest_classes_.html#creator_properties" class="tsd-kind-icon">creator_<wbr>properties</a>
+						<a href="../modules/_src_lib_manifest_classes_.html#creator_properties" class="tsd-kind-icon">creator_<wbr>properties</a>
 					</li>
 				</ul>
 			</nav>

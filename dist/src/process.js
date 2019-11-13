@@ -3,7 +3,7 @@
  * Implementation of the Processing Steps.
  *
  * (As defined in
- * [§5 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing)).
+ * [§7 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing)).
  *
  * The functions, including their names, follow, as far as possible, the names used in the specification.
  *
@@ -32,15 +32,15 @@ const manifest_1 = require("./manifest");
 /**
  * The implementations for the official interfaces, i.e., the bona fide classes
  */
-const manifest_classes_1 = require("./manifest_classes");
+const manifest_classes_1 = require("./lib/manifest_classes");
 /**
  * Various utilities
  */
-const utilities_1 = require("./utilities");
+const utilities_1 = require("./lib/utilities");
 /**
  * Manifest discovery function
  */
-const manifest_discovery_1 = require("./manifest_discovery");
+const manifest_discovery_1 = require("./lib/manifest_discovery");
 const urlHandler = __importStar(require("url"));
 const validUrl = __importStar(require("valid-url"));
 const _ = __importStar(require("underscore"));
@@ -104,8 +104,8 @@ Global.profile = '';
 /**
  * Process a manifest in two steps:
  *
- * 1. discover the manifest, per [§4 Manifest Discovery](https://www.w3.org/TR/pub-manifest/#manifest-discovery) (relying on the [[discover_manifest]] function);
- * 2. generate a publication manifest object, per [§5 Processing a Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing) (relying on the [[generate_internal_representation]] function).
+ * 1. discover the manifest, per [§6 Manifest Discovery](https://www.w3.org/TR/pub-manifest/#manifest-discovery) (relying on the [[discover_manifest]] function);
+ * 2. generate a publication manifest object, per [§7 Processing a Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing) (relying on the [[generate_internal_representation]] function).
  *
  * @async
  * @param url - The address of either the JSON file or the entry point in HTML
@@ -141,7 +141,7 @@ exports.process_manifest = process_manifest;
  * The input argument may be a string or an existing object; the specs describes how a full
  * class instance should be created.
  *
- * This corresponds to [§5.4.1/4](https://www.w3.org/TR/pub-manifest/#normalize-data).
+ * This corresponds to [§7.4.1/4](https://www.w3.org/TR/pub-manifest/#normalize-data).
  *
  * @param resource - either a string or a (originally JSON) object
  */
@@ -193,7 +193,7 @@ const create_Entity = (resource) => {
  * The input argument may be a string or an existing object; the specs describes how a full
  * class instance should be created.
  *
- * This corresponds to [§5.4.1/5](https://www.w3.org/TR/pub-manifest/#normalize-data).
+ * This corresponds to [§7.4.1/5](https://www.w3.org/TR/pub-manifest/#normalize-data).
  *
  * @param resource - either a string or a (originally JSON) object
  */
@@ -245,7 +245,7 @@ const create_LocalizableString = (resource) => {
  * The input argument may be a string or an existing object; the specs describes how a full
  * class instance should be created.
  *
- * This corresponds to [§5.4.1/6](https://www.w3.org/TR/pub-manifest/#normalize-data).
+ * This corresponds to [§7.4.1/6](https://www.w3.org/TR/pub-manifest/#normalize-data).
  *
  * @param resource - either a string or a (originally JSON) object
  */
@@ -291,7 +291,7 @@ const create_LinkedResource = (resource) => {
 ====================================================================================================== */
 /**
  * Process the manifest. This corresponds to the main body of
- * [§5.4  Publication Manifest](https://www.w3.org/TR/pub-manifest/#processing-algorithm), i.e., the starting
+ * [§7.4  Publication Manifest](https://www.w3.org/TR/pub-manifest/#processing-algorithm), i.e., the starting
  * point of the algorithm.
  *
  * @param args - the arguments to the generation: the (JSON) text of the manifest, the base URL, and the (DOM) document object
@@ -413,7 +413,7 @@ exports.generate_internal_representation = generate_internal_representation;
 /**
  *
  * Normalize Data. This corresponds to the main body of
- * [§5.4.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#normalize-data).
+ * [§7.4.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#normalize-data).
  *
  * @param context - 'context', i.e., the object on which the function has been invoked
  * @param term - property term
@@ -511,7 +511,7 @@ function normalize_data(context, term, value) {
  * Convert to absolute URL
  *
  * This is used for the implementation of step §4.3.1/5, i.e.,
-* [§5.4.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#convert-absolute-url).
+* [§7.4.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#convert-absolute-url).
  *
  * @param url - the (absolute or relative) URL
  * @returns - the absolute URL using the `base` value of [[Global]], or `undefined` in case of error (e.g., invalid URL)
@@ -540,7 +540,7 @@ const convert_to_absolute_URL = (url) => {
 /**
  *
  * Data Validation. This corresponds to the main body of
- * [§5.4.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#validate-data).
+ * [§7.4.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#validate-data).
  *
  * @param data - the data to be checked
  * @return - checked data (becomes the final value of `processed` in [[generate_internal_representation]] before returned to the caller)
@@ -693,7 +693,7 @@ function data_validation(data) {
 /**
  *
  * Global Data Check. This corresponds to the main body of
- * [§5.4.2.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#global-data-checks).
+ * [§7.4.2.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#global-data-checks).
  *
  * This is a recursive function.
  *
@@ -805,7 +805,7 @@ function global_data_checks(context, term, value) {
 /**
  *
  * Verify the value category. This corresponds to the main body of
- * [§5.4.2.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#verify-value-category).
+ * [§7.4.2.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#verify-value-category).
  *
  * @param context - 'context', in this case the object that has invoked the function
  * @param term - property term
@@ -936,7 +936,7 @@ function verify_value_category(context, term, value) {
 /**
  *
  *  Obtain a list of unique resources. This corresponds to the main body of
- * [§5.4.2.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#get-unique-urls).
+ * [§7.4.2.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#get-unique-urls).
  *
  * @param resources
  * @returns - the full list of unique resources
@@ -961,7 +961,7 @@ function get_unique_URLs(resources) {
 /**
  *
  * Remove empty arrays. This corresponds to the main body of
- * [§5.4.2.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#remove-empty-arrays).
+ * [§7.4.2.4 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#remove-empty-arrays).
  *
  * The function is a slight misnomer: it checks whether the incoming value is an array and, if yes, checks whether it is empty or not; however
  * if the value is an objects, it looks for the constituent arrays and removes the empty ones from the object.
@@ -985,7 +985,7 @@ function remove_empty_arrays(value) {
 }
 /**
  * Add default values. This corresponds to
- * [§5.4.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#add-html-defaults).
+ * [§7.4.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#add-html-defaults).
  *
  * @param data - the (almost) final processed manifest
  * @param document - the Document DOM node for the entry point, `undefined` if the process happens without such an entry point

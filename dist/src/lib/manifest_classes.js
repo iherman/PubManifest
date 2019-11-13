@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * The core interfaces that are implemented in this module
  */
-const manifest_1 = require("./manifest");
+const manifest_1 = require("../manifest");
 // -------------------------------------------- Convenience variables -------------------------------------
 /**
  * A11Y properties that have lists of literals as values

@@ -14,7 +14,7 @@ import {
     Person,
     Organization,
     ProgressionDirection
-} from './manifest';
+} from '../manifest';
 
 // -------------------------------------------- Convenience variables -------------------------------------
 /**

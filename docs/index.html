@@ -71,7 +71,7 @@
 				<p>It is <em>not</em> a meaningful implementation insofar as it could be embedded in a full-blown User Agent implementation based on Publication Manifests right away. <em>Its main purpose is to check the correctness of the specification itself</em>. This means that, for example, necessary checks on, e.g., the security and validity on the URL-s in the manifest are omitted.  It does not have a proper user interface and only a rudimentary command line interface is used.</p>
 				<p>The following public functions are available:</p>
 				<ul>
-					<li>The <a href="modules/_src_manifest_discovery_.html#discover_manifest">discover_manifest</a> function, implementing the manifest discovery, returning a manifest (text);</li>
+					<li>The <a href="modules/_src_lib_manifest_discovery_.html#discover_manifest">discover_manifest</a> function, implementing the manifest discovery, returning a manifest (text);</li>
 					<li>The <a href="modules/_src_process_.html#generate_internal_representation">generate_internal_representation</a> function, implementing the processing algorithm itself and resulting in a class implementing the <a href="interfaces/_src_manifest_.publicationmanifest.html">PublicationManifest</a> interface;</li>
 					<li>The <a href="modules/_src_process_.html#process_manifest">process_manifest</a> function, a wrapper of around the combination of the two previous functions to provide a single entry point.</li>
 				</ul>
@@ -81,7 +81,7 @@
 				<p>The implementation is in Typescript and on top of <code>node.js</code>.</p>
 				<ul>
 					<li>When the document says &#39;failure is returned&#39;, this appears in the code as returning the Javascript value <code>undefined</code> or, when the function returns a boolean, <code>false</code>.</li>
-					<li>The notion of a &#39;context&#39; in the algorithm is implemented via one of the <code>*_Impl</code> class instances corresponding to the TS Interface definitions for the internal representations (see <a href="modules/_manifest_.html">manifest</a> and <a href="modules/_manifest_classes_.html">manifest_classes</a> for details). All these classes have a reference to a <a href="classes/_src_manifest_classes_.terms.html">Terms</a> instance that classifies the terms defined for that class (type).</li>
+					<li>The notion of a &#39;context&#39; in the algorithm is implemented via one of the <code>*_Impl</code> class instances corresponding to the TS Interface definitions for the internal representations (see <a href="modules/_manifest_.html">manifest</a> and <a href="modules/_manifest_classes_.html">manifest_classes</a> for details). All these classes have a reference to a <a href="classes/_src_lib_manifest_classes_.terms.html">Terms</a> instance that classifies the terms defined for that class (type).</li>
 				</ul>
 				<p>Also, the implementation is a bit more complicated than it would be in Javascript, mainly due to the requirements of Typescript.
 					For example, the original object, parsed from JSON, cannot be directly modified and returned as <code>processed</code>; instead, Typescript classes, duly defined as
@@ -99,19 +99,19 @@
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_lib_manifest_classes_.html">"src/lib/manifest_<wbr>classes"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_lib_manifest_discovery_.html">"src/lib/manifest_<wbr>discovery"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_lib_utilities_.html">"src/lib/utilities"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_manifest_.html">"src/manifest"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_manifest_classes_.html">"src/manifest_<wbr>classes"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_manifest_discovery_.html">"src/manifest_<wbr>discovery"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_process_.html">"src/process"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_utilities_.html">"src/utilities"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_tests_runner_.html">"tests/runner"</a>

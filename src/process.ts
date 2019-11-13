@@ -40,7 +40,7 @@ import {
     RecognizedTypes_Impl,
     PublicationManifest_Impl,
     Terms
-} from './manifest_classes';
+} from './lib/manifest_classes';
 
 /**
  * Various utilities
@@ -55,12 +55,12 @@ import {
     recognized_type,
     get_terms,
     remove_url_fragment
-} from './utilities';
+} from './lib/utilities';
 
 /**
  * Manifest discovery function
  */
-import { discover_manifest, GenerationArguments } from './manifest_discovery';
+import { discover_manifest, GenerationArguments } from './lib/manifest_discovery';
 
 import * as urlHandler from 'url';
 import * as validUrl from 'valid-url';
