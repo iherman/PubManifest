@@ -10,6 +10,13 @@ const fs = require('fs');
 import { process_manifest, ProcessResult } from "../src/process";
 import { URL } from "../src/manifest";
 
+// All calls use these two profiles in the caller
+import { Profile, default_profile } from '../src/lib/profile';
+import { audiobook_profile } from '../src/audiobooks';
+
+const test_profiles: Profile[] = [audiobook_profile, default_profile];
+
+
 /**
  * Interface for a single test. The `format` key defines whether the test is an HTML or a JSON-LD file.
  *
@@ -79,7 +86,7 @@ function get_tests(file_name: string): FlattenedSuite {
  */
 async function run_test(url: URL) {
     try {
-        const results: ProcessResult = await process_manifest(url);
+        const results: ProcessResult = await process_manifest(url, test_profiles);
         console.log(JSON.stringify(results.manifest_object, null, 4));
         console.log(results.logger.toString());
     } catch(e) {

@@ -85,12 +85,6 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Classes</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported"><a href="../classes/_src_process_.global.html" class="tsd-kind-icon">Global</a></li>
-							</ul>
-						</section>
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
@@ -100,8 +94,7 @@
 						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_src_process_.html#default_profile" class="tsd-kind-icon">default_<wbr>profile</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_src_process_.html#known_profiles" class="tsd-kind-icon">known_<wbr>profiles</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_src_process_.html#global_data" class="tsd-kind-icon">global_<wbr>data</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_src_process_.html#structural_resources" class="tsd-kind-icon">structural_<wbr>resources</a></li>
 							</ul>
 						</section>
@@ -131,35 +124,19 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Variables</h2>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="default_profile" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> default_<wbr>profile</h3>
-					<div class="tsd-signature tsd-kind-icon">default_<wbr>profile<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"https://www.w3.org/TR/pub-manifest/"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;https://www.w3.org/TR/pub-manifest/&quot;</span></div>
+					<a name="global_data" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> global_<wbr>data</h3>
+					<div class="tsd-signature tsd-kind-icon">global_<wbr>data<span class="tsd-signature-symbol">:</span> <a href="../classes/_src_lib_utilities_.globaldata.html" class="tsd-signature-type">GlobalData</a><span class="tsd-signature-symbol"> =&nbsp;new GlobalData()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L102">src/process.ts:102</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L128">src/process.ts:128</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The URL of the &#39;default&#39; profile for the conformance.
-							(This still has to be stabilize in the spec.)</p>
+							<p>&quot;Global data&quot; object.</p>
 						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="known_profiles" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> known_<wbr>profiles</h3>
-					<div class="tsd-signature tsd-kind-icon">known_<wbr>profiles<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[default_profile, &#x27;https://www.w3.org/TR/audiobooks/&#x27;]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L108">src/process.ts:108</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The &quot;known&quot; profiles. This is just for testing purposes; a real life implementation should include
-							the URI-s for the profiles the user agent implements.</p>
-						</div>
+						<p>These values are, conceptually, global variables shared among functions and extensions</p>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
@@ -168,7 +145,7 @@
 					<div class="tsd-signature tsd-kind-icon">structural_<wbr>resources<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[&quot;contents&quot;, &quot;pagelist&quot;,&quot;cover&quot;]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L115">src/process.ts:115</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L121">src/process.ts:121</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -191,7 +168,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L1060">src/process.ts:1060</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L1065">src/process.ts:1065</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -232,7 +209,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L575">src/process.ts:575</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L576">src/process.ts:576</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -255,7 +232,7 @@
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_src_manifest_.html#url" class="tsd-signature-type">URL</a></h4>
 							<ul>
-								<li>the absolute URL using the <code>base</code> value of <a href="../classes/_src_process_.global.html">Global</a>, or <code>undefined</code> in case of error (e.g., invalid URL)</li>
+								<li>the absolute URL using the <code>base</code> value of <a href="_src_process_.html#global_data">global_data</a>, or <code>undefined</code> in case of error (e.g., invalid URL)</li>
 							</ul>
 						</li>
 					</ul>
@@ -270,7 +247,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L194">src/process.ts:194</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L189">src/process.ts:189</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -309,7 +286,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L289">src/process.ts:289</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L284">src/process.ts:284</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -345,7 +322,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L242">src/process.ts:242</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L237">src/process.ts:237</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -381,7 +358,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L604">src/process.ts:604</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L605">src/process.ts:605</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -410,13 +387,13 @@
 					<a name="generate_internal_representation" class="tsd-anchor"></a>
 					<h3>generate_<wbr>internal_<wbr>representation</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">generate_<wbr>internal_<wbr>representation<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_lib_manifest_discovery_.generationarguments.html" class="tsd-signature-type">GenerationArguments</a>, logger<span class="tsd-signature-symbol">: </span><a href="../classes/_src_lib_utilities_.logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_manifest_.publicationmanifest.html" class="tsd-signature-type">PublicationManifest</a></li>
+						<li class="tsd-signature tsd-kind-icon">generate_<wbr>internal_<wbr>representation<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_lib_manifest_discovery_.generationarguments.html" class="tsd-signature-type">GenerationArguments</a>, logger<span class="tsd-signature-symbol">: </span><a href="../classes/_src_lib_utilities_.logger.html" class="tsd-signature-type">Logger</a>, profiles<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_src_lib_profile_.profile.html" class="tsd-signature-type">Profile</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_manifest_.publicationmanifest.html" class="tsd-signature-type">PublicationManifest</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L339">src/process.ts:339</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L335">src/process.ts:335</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -440,6 +417,12 @@
 										<p>an extra parameter to collect the error messages in one place, to be then processed by the caller</p>
 									</div>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> profiles: <a href="../interfaces/_src_lib_profile_.profile.html" class="tsd-signature-type">Profile</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[default_profile]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the sets of profiles that the caller can handle</p>
+									</div>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_manifest_.publicationmanifest.html" class="tsd-signature-type">PublicationManifest</a></h4>
 							<ul>
@@ -458,7 +441,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L1007">src/process.ts:1007</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L1012">src/process.ts:1012</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -490,7 +473,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L774">src/process.ts:774</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L779">src/process.ts:779</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -538,7 +521,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L82">src/process.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L88">src/process.ts:88</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -574,7 +557,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L469">src/process.ts:469</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L469">src/process.ts:469</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -615,13 +598,13 @@
 					<a name="process_manifest" class="tsd-anchor"></a>
 					<h3>process_<wbr>manifest</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">process_<wbr>manifest<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><a href="_src_manifest_.html#url" class="tsd-signature-type">URL</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_src_process_.processresult.html" class="tsd-signature-type">ProcessResult</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">process_<wbr>manifest<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><a href="_src_manifest_.html#url" class="tsd-signature-type">URL</a>, profiles<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_src_lib_profile_.profile.html" class="tsd-signature-type">Profile</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_src_process_.processresult.html" class="tsd-signature-type">ProcessResult</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L158">src/process.ts:158</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L153">src/process.ts:153</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -645,6 +628,12 @@
 										<p>The address of either the JSON file or the entry point in HTML</p>
 									</div>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> profiles: <a href="../interfaces/_src_lib_profile_.profile.html" class="tsd-signature-type">Profile</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[default_profile]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the sets of profiles that the caller can handle</p>
+									</div>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_src_process_.processresult.html" class="tsd-signature-type">ProcessResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
 							<ul>
@@ -663,7 +652,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L90">src/process.ts:90</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L96">src/process.ts:96</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -716,7 +705,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L1037">src/process.ts:1037</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L1042">src/process.ts:1042</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -753,7 +742,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L887">src/process.ts:887</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/process.ts#L892">src/process.ts:892</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -799,10 +788,16 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="_src_audiobooks_.html">"src/audiobooks"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="_src_lib_manifest_classes_.html">"src/lib/manifest_<wbr>classes"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_src_lib_manifest_discovery_.html">"src/lib/manifest_<wbr>discovery"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_src_lib_profile_.html">"src/lib/profile"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_src_lib_utilities_.html">"src/lib/utilities"</a>
@@ -820,17 +815,11 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../classes/_src_process_.global.html" class="tsd-kind-icon">Global</a>
-					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="../interfaces/_src_process_.processresult.html" class="tsd-kind-icon">Process<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_src_process_.html#default_profile" class="tsd-kind-icon">default_<wbr>profile</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_src_process_.html#known_profiles" class="tsd-kind-icon">known_<wbr>profiles</a>
+						<a href="_src_process_.html#global_data" class="tsd-kind-icon">global_<wbr>data</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_src_process_.html#structural_resources" class="tsd-kind-icon">structural_<wbr>resources</a>

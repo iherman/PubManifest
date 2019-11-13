@@ -13,6 +13,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const manifest_classes_1 = require("./manifest_classes");
 const _ = __importStar(require("underscore"));
 const urlHandler = __importStar(require("url"));
+/**
+ * "Global data" object.
+ *
+ * These values are, conceptually, global variables shared among functions and profile extensions.
+ *
+ * An instance of this class is set up at the beginning of the processing, is shared among functions and
+ * is made available to all profile extensions.
+ */
+class GlobalData {
+    constructor() {
+        /** Global language tag declaration */
+        this.lang = '';
+        /** Global base direction declaration */
+        this.dir = '';
+        /** Global base URL */
+        this.base = '';
+    }
+}
+exports.GlobalData = GlobalData;
+;
 /* **************************** General utilities **************************** */
 /**
  * Name tells it all: if the argument is  single value, it is encapsulated into

@@ -27,11 +27,33 @@ import {
     Terms
 } from './manifest_classes';
 
+import { Profile } from './profile';
+
 import * as _ from 'underscore';
 import * as urlHandler from 'url';
 
-/* **************************** General utilities **************************** */
+/**
+ * "Global data" object.
+ *
+ * These values are, conceptually, global variables shared among functions and profile extensions.
+ *
+ * An instance of this class is set up at the beginning of the processing, is shared among functions and
+ * is made available to all profile extensions.
+ */
+export class GlobalData {
+    /** A [[Logger]] instance used to store the fatal and validation errors during processing. */
+    logger : Logger;
+    /** Global language tag declaration */
+    lang   : string = '';
+    /** Global base direction declaration */
+    dir    : string = '';
+    /** Global base URL */
+    base   : URL = '';
+    /** Final profile for the User Agent (stored only for testing purpose, not really used). */
+    profile: Profile;
+};
 
+/* **************************** General utilities **************************** */
 
 /**
  * Name tells it all: if the argument is  single value, it is encapsulated into

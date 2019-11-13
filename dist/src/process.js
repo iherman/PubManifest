@@ -34,6 +34,10 @@ const manifest_1 = require("./manifest");
  */
 const manifest_classes_1 = require("./lib/manifest_classes");
 /**
+ * Interfaces and instances for profile management
+ */
+const profile_1 = require("./lib/profile");
+/**
  * Various utilities
  */
 const utilities_1 = require("./lib/utilities");
@@ -73,12 +77,12 @@ const process_object_keys = (obj, callback) => {
  * The URL of the 'default' profile for the conformance.
  * (This still has to be stabilize in the spec.)
  */
-const default_profile = 'https://www.w3.org/TR/pub-manifest/';
+// const default_profile = 'https://www.w3.org/TR/pub-manifest/';
 /**
  * The "known" profiles. This is just for testing purposes; a real life implementation should include
  * the URI-s for the profiles the user agent implements.
  */
-const known_profiles = [default_profile, 'https://www.w3.org/TR/audiobooks/'];
+// const known_profiles = [default_profile, 'https://www.w3.org/TR/audiobooks/']
 /**
  * Structural resources' `rel` value. (These are treated specially by the algorithm)
  *
@@ -86,21 +90,11 @@ const known_profiles = [default_profile, 'https://www.w3.org/TR/audiobooks/'];
  */
 const structural_resources = ["contents", "pagelist", "cover"];
 /**
- * "Global" object.
+ * "Global data" object.
  *
- * These values are, conceptually, global variables shared among functions.
- *
+ * These values are, conceptually, global variables shared among functions and extensions
  */
-class Global {
-}
-/** Global language tag declaration */
-Global.lang = '';
-/** Global base direction declaration */
-Global.dir = '';
-/** Global base URL */
-Global.base = '';
-/** Final profile for the User Agent (stored only for testing purpose, not really used). */
-Global.profile = '';
+const global_data = new utilities_1.GlobalData();
 /**
  * Process a manifest in two steps:
  *
@@ -109,9 +103,10 @@ Global.profile = '';
  *
  * @async
  * @param url - The address of either the JSON file or the entry point in HTML
+ * @param profiles - the sets of profiles that the caller can handle
  * @return - the generated manifest object and a logger
  */
-async function process_manifest(url) {
+async function process_manifest(url, profiles = [profile_1.default_profile]) {
     const logger = new utilities_1.Logger();
     let manifest_object = {};
     let args;
@@ -123,7 +118,7 @@ async function process_manifest(url) {
         return { manifest_object, logger };
     }
     try {
-        manifest_object = await generate_internal_representation(args, logger);
+        manifest_object = await generate_internal_representation(args, logger, profiles);
     }
     catch (err) {
         logger.log_fatal_error(`Some extra error occurred during generation (${err.message})`);
@@ -148,7 +143,7 @@ exports.process_manifest = process_manifest;
 const create_Entity = (resource) => {
     if (resource === null) {
         // This should not happen, but better check, just to be on the safe side
-        Global.logger.log_validation_error(`Invalid entity`, resource, true);
+        global_data.logger.log_validation_error(`Invalid entity`, resource, true);
         return undefined;
     }
     else if (_.isString(resource)) {
@@ -182,7 +177,7 @@ const create_Entity = (resource) => {
         return new_entity;
     }
     else {
-        Global.logger.log_validation_error(`Invalid entity`, resource, true);
+        global_data.logger.log_validation_error(`Invalid entity`, resource, true);
         return undefined;
         // Actually, returning undefined is a default action when no 'return' is present
         // but it is cleaner to make this explicit
@@ -200,17 +195,17 @@ const create_Entity = (resource) => {
 const create_LocalizableString = (resource) => {
     if (resource === null) {
         // This should not happen, but better check, just to be on the safe side
-        Global.logger.log_validation_error(`Invalid localizable string`, resource, true);
+        global_data.logger.log_validation_error(`Invalid localizable string`, resource, true);
         return undefined;
     }
     else if (_.isString(resource)) {
         const new_ls = new manifest_classes_1.LocalizableString_Impl();
         new_ls.value = resource;
-        if (Global.lang !== '') {
-            new_ls.language = Global.lang;
+        if (global_data.lang !== '') {
+            new_ls.language = global_data.lang;
         }
-        if (Global.dir !== '') {
-            new_ls.direction = Global.dir;
+        if (global_data.dir !== '') {
+            new_ls.direction = global_data.dir;
         }
         return new_ls;
     }
@@ -221,20 +216,20 @@ const create_LocalizableString = (resource) => {
             if (new_ls.language === null)
                 delete new_ls.language;
         }
-        else if (Global.lang !== '') {
-            new_ls.language = Global.lang;
+        else if (global_data.lang !== '') {
+            new_ls.language = global_data.lang;
         }
         if (new_ls.direction) {
             if (new_ls.direction === null)
                 delete new_ls.direction;
         }
-        else if (Global.dir !== '') {
-            new_ls.direction = Global.dir;
+        else if (global_data.dir !== '') {
+            new_ls.direction = global_data.dir;
         }
         return new_ls;
     }
     else {
-        Global.logger.log_validation_error(`Invalid localizable string`, resource, true);
+        global_data.logger.log_validation_error(`Invalid localizable string`, resource, true);
         return undefined;
         // Actually, returning undefined is a default action when no 'return' is present
         // but it is cleaner to make this explicit
@@ -252,7 +247,7 @@ const create_LocalizableString = (resource) => {
 const create_LinkedResource = (resource) => {
     if (resource === null) {
         // This should not happen, but better check, just to be on the safe side
-        Global.logger.log_validation_error(`Invalid Linked Resource`, resource, true);
+        global_data.logger.log_validation_error(`Invalid Linked Resource`, resource, true);
         return undefined;
     }
     else if (_.isString(resource)) {
@@ -276,7 +271,7 @@ const create_LinkedResource = (resource) => {
     }
     else {
         // I am not sure this would occur at all but, just to be on the safe side...
-        Global.logger.log_validation_error(`Invalid Linked Resource`, resource, true);
+        global_data.logger.log_validation_error(`Invalid Linked Resource`, resource, true);
         return undefined;
         // Actually, returning undefined is a default action when no 'return' is present
         // but it is cleaner to make this explicit
@@ -297,12 +292,13 @@ const create_LinkedResource = (resource) => {
  * @param args - the arguments to the generation: the (JSON) text of the manifest, the base URL, and the (DOM) document object
  * @param base - base URL; if undefined or empty, fall back on the value of url
  * @param logger - an extra parameter to collect the error messages in one place, to be then processed by the caller
+ * @param profiles - the sets of profiles that the caller can handle
  * @return - the processed manifest
  */
 //export async function generate_internal_representation(url: URL, base: URL, logger: Logger): Promise<PublicationManifest> {
-function generate_internal_representation(args, logger) {
-    Global.logger = logger;
-    Global.base = args.base;
+function generate_internal_representation(args, logger, profiles = [profile_1.default_profile]) {
+    global_data.logger = logger;
+    global_data.base = args.base;
     /* ============ The individual processing steps, following the spec ============== */
     /* Step: create the, initially empty, processed manifest */
     let processed = new manifest_classes_1.PublicationManifest_Impl();
@@ -334,26 +330,29 @@ function generate_internal_representation(args, logger) {
     if (!(manifest.conformsTo)) {
         // No conformance has been provided. That is, in this case, a validation error
         logger.log_validation_error(`No conformance was set (falling back to default)`);
-        Global.profile = default_profile;
+        global_data.profile = profile_1.default_profile;
     }
     else {
         const conforms = utilities_1.toArray(manifest.conformsTo);
-        const acceptable_values = conforms.filter((value) => known_profiles.includes(value));
-        if (acceptable_values.length === 0) {
+        // Gathering all profiles whose identifier is in the set of conforming profiles
+        const acceptable_profiles = conforms.map((url) => {
+            return profiles.find((profile) => profile.identifier === url);
+        }).filter((item) => item !== undefined);
+        if (acceptable_profiles.length === 0) {
             // No acceptable values were detected for the profile
             // At this point, the UA should inspect the media types and make a best guess.
             // This is not implemented, and the result of this test is supposed to be true...
             logger.log_validation_error(`No known conformance was set (falling back to default)`);
-            Global.profile = default_profile;
+            global_data.profile = profile_1.default_profile;
             // If the non implemented test resulted in false, a Fatal Error should be added here:
             // logger.log_fatal_error(`Couldn't establish any acceptable profile`);
             // return {} as PublicationManifest
         }
         else {
-            Global.profile = conforms[0];
+            global_data.profile = acceptable_profiles[0];
         }
     }
-    processed.profile = Global.profile;
+    processed.profile = global_data.profile.identifier;
     /* Step: global declarations, ie, extract the global language and direction settings if any */
     {
         let lang = '';
@@ -373,7 +372,7 @@ function generate_internal_representation(args, logger) {
         }
         if (lang !== '') {
             if (utilities_1.check_language_tag(lang, logger)) {
-                Global.lang = lang;
+                global_data.lang = lang;
             }
             else {
                 // error message is generated in the check_language_tag function;
@@ -381,7 +380,7 @@ function generate_internal_representation(args, logger) {
         }
         if (dir !== '') {
             if (utilities_1.check_direction_tag(dir, logger)) {
-                Global.dir = dir;
+                global_data.dir = dir;
             }
             else {
                 // error message is generated in the check_direction_tag function;
@@ -406,8 +405,8 @@ function generate_internal_representation(args, logger) {
             return {};
         }
     }
-    /* Step: return processed */
-    return processed;
+    /* Step: Profile specific processing, and return: */
+    return global_data.profile.generate_internal_representation(global_data, processed);
 }
 exports.generate_internal_representation = generate_internal_representation;
 /**
@@ -488,12 +487,13 @@ function normalize_data(context, term, value) {
                 normalized = normalized.map(convert_to_absolute_URL).filter((entity) => entity !== undefined);
             }
             else {
-                Global.logger.log_validation_error(`Invalid URL value for "${term}"`, normalized, true);
+                global_data.logger.log_validation_error(`Invalid URL value for "${term}"`, normalized, true);
                 return undefined;
             }
         }
     }
-    /* Step: extension point (not implemented) */
+    /* Step: Profile specific normalization */
+    normalized = global_data.profile.normalize_data(global_data, context, term, normalized);
     /* Step: recursively normalize the values of normalize */
     // A previous step may have set an undefined value, this has to be ignored, again just to be on the safe side
     if (normalized !== undefined) {
@@ -517,19 +517,19 @@ function normalize_data(context, term, value) {
  * @returns - the absolute URL using the `base` value of [[Global]], or `undefined` in case of error (e.g., invalid URL)
  */
 const convert_to_absolute_URL = (url) => {
-    if (!_.isString(Global.base) || Global.base === '' || Global.base === null) {
-        Global.logger.log_validation_error(`Invalid base ${Global.base}`, null, true);
+    if (!_.isString(global_data.base) || global_data.base === '' || global_data.base === null) {
+        global_data.logger.log_validation_error(`Invalid base ${global_data.base}`, null, true);
         return undefined;
     }
     if (!_.isString(url) || url === '' || url === null) {
-        Global.logger.log_validation_error(`Invalid relative URL ${url}`, null, true);
+        global_data.logger.log_validation_error(`Invalid relative URL ${url}`, null, true);
         return undefined;
     }
     else {
-        const new_url = urlHandler.resolve(Global.base, url);
+        const new_url = urlHandler.resolve(global_data.base, url);
         // The check URL function checks the validity of the URL and whether it is a valid URL
         if (validUrl.isUri(new_url) === undefined) {
-            Global.logger.log_validation_error(`${new_url} is an invalid URL`);
+            global_data.logger.log_validation_error(`${new_url} is an invalid URL`);
             return undefined;
         }
         else {
@@ -566,7 +566,7 @@ function data_validation(data) {
     }
     /* Step: publication type */
     if (!data.type) {
-        Global.logger.log_validation_error(`Missing publication type (set default)`);
+        global_data.logger.log_validation_error(`Missing publication type (set default)`);
         data.type = ["CreativeWork"];
     }
     /* Step: accessibility */
@@ -574,48 +574,48 @@ function data_validation(data) {
         data.accessModeSufficient = data.accessModeSufficient.filter((ams) => {
             const check_value = isMap(ams) && ams.type && ams.type === 'ItemList';
             if (!check_value) {
-                Global.logger.log_validation_error(`Value of "accessModeSufficient" is invalid`, ams, true);
+                global_data.logger.log_validation_error(`Value of "accessModeSufficient" is invalid`, ams, true);
             }
             return check_value;
         });
     }
     /* Step: identifier check; has been mostly done by virtue of checking the URL */
     if (!data.id)
-        Global.logger.log_validation_error(`No id provided`);
+        global_data.logger.log_validation_error(`No id provided`);
     // This removes the '' string, if present
     delete data.id;
     /* Step: duration check */
     if (data.duration) {
         const durationCheck = RegExp('P((([0-9]*\.?[0-9]*)Y)?(([0-9]*\.?[0-9]*)M)?(([0-9]*\.?[0-9]*)W)?(([0-9]*\.?[0-9]*)D)?)?(T(([0-9]*\.?[0-9]*)H)?(([0-9]*\.?[0-9]*)M)?(([0-9]*\.?[0-9]*)S)?)?');
         if (!(durationCheck.test(data.duration))) {
-            Global.logger.log_validation_error(`"${data.duration}" is an incorrect duration value`, null, true);
+            global_data.logger.log_validation_error(`"${data.duration}" is an incorrect duration value`, null, true);
             delete data.duration;
         }
     }
     /* Step: last modification date */
     if (data.dateModified) {
         if (!moment_1.default(data.dateModified, moment_1.default.ISO_8601).isValid()) {
-            Global.logger.log_validation_error(`"${data.dateModified}" is an incorrect date string`, null, true);
+            global_data.logger.log_validation_error(`"${data.dateModified}" is an incorrect date string`, null, true);
             delete data.dateModified;
         }
     }
     /* Step: Publication date */
     if (data.datePublished) {
         if (!moment_1.default(data.datePublished, moment_1.default.ISO_8601).isValid()) {
-            Global.logger.log_validation_error(`"${data.datePublished}" is an incorrect date string`, null, true);
+            global_data.logger.log_validation_error(`"${data.datePublished}" is an incorrect date string`, null, true);
             delete data.datePublished;
         }
     }
     /* Step: inLanguage */
     if (data.inLanguage) {
         data.inLanguage = data.inLanguage.filter((item) => {
-            const check_result = utilities_1.check_language_tag(item, Global.logger);
+            const check_result = utilities_1.check_language_tag(item, global_data.logger);
             return check_result !== null && check_result !== undefined;
         });
     }
     /* Step: progression direction */
     if (data.readingProgression) {
-        const check_result = utilities_1.check_direction_tag(data.readingProgression, Global.logger);
+        const check_result = utilities_1.check_direction_tag(data.readingProgression, global_data.logger);
         if (check_result === undefined)
             data.readingProgression = manifest_1.ProgressionDirection.ltr;
     }
@@ -633,17 +633,17 @@ function data_validation(data) {
         data.links = data.links.filter((link) => {
             const check_result = data.uniqueResources.includes(utilities_1.remove_url_fragment(link.url));
             if (check_result) {
-                Global.logger.log_validation_error(`${link.url} appears in "links" but is within the bounds of the publication`, null, true);
+                global_data.logger.log_validation_error(`${link.url} appears in "links" but is within the bounds of the publication`, null, true);
                 return false;
             }
             else {
                 if (!link["rel"] || link["rel"].length === 0) {
-                    Global.logger.log_validation_error(`Rel value in "links" not set`, link, false);
+                    global_data.logger.log_validation_error(`Rel value in "links" not set`, link, false);
                 }
                 else {
                     const intersection = _.intersection(link["rel"], structural_resources);
                     if (intersection.length > 0) {
-                        Global.logger.log_validation_error(`Linked Resource in "links" includes "${intersection}"`, link, true);
+                        global_data.logger.log_validation_error(`Linked Resource in "links" includes "${intersection}"`, link, true);
                         return false;
                     }
                 }
@@ -664,13 +664,13 @@ function data_validation(data) {
                         // we found a possible structural resource
                         if (flags[str] === true) {
                             // Duplicate, should not be used
-                            Global.logger.log_validation_error(`Multiple definition for the structural resource "${str}"`, resource, false);
+                            global_data.logger.log_validation_error(`Multiple definition for the structural resource "${str}"`, resource, false);
                         }
                         else {
                             flags[str] = true;
                             // For the 'cover' case, there is an extra check for an image
                             if (str === 'cover' && resource.encodingFormat && resource.encodingFormat.startsWith('image/') && !resource.name) {
-                                Global.logger.log_validation_error(`No name provided for a cover page image`, resource, false);
+                                global_data.logger.log_validation_error(`No name provided for a cover page image`, resource, false);
                             }
                         }
                     }
@@ -678,16 +678,20 @@ function data_validation(data) {
             }
         });
     }
-    /* Step: profile extension point (not implemented) */
+    /* Step: profile extension point */
+    data = global_data.profile.data_validation(global_data, data);
     /* Step: run remove empty arrays */
     // Care should be taken to run this only on entries that are part of the definition of this object!
-    process_object_keys(data, (key) => {
-        if (defined_terms.includes(key)) {
-            if (!(remove_empty_arrays(data[key]))) {
-                delete data[key];
+    // The previous step may have raised a fatal error, better check
+    if (data !== undefined) {
+        process_object_keys(data, (key) => {
+            if (defined_terms.includes(key)) {
+                if (!(remove_empty_arrays(data[key]))) {
+                    delete data[key];
+                }
             }
-        }
-    });
+        });
+    }
     return data;
 }
 /**
@@ -746,17 +750,17 @@ function global_data_checks(context, term, value) {
         if (terms.array_of_strings.includes(term)) {
             value = value.filter((item) => {
                 if (!item.value) {
-                    Global.logger.log_validation_error(`Missing value for a Localizable String`, item, true);
+                    global_data.logger.log_validation_error(`Missing value for a Localizable String`, item, true);
                     return false;
                 }
                 if (item.language) {
-                    const lang_check = utilities_1.check_language_tag(item.language, Global.logger);
+                    const lang_check = utilities_1.check_language_tag(item.language, global_data.logger);
                     if (lang_check === undefined || lang_check === null) {
                         delete item.language;
                     }
                 }
                 if (item.direction) {
-                    const dir_check = utilities_1.check_direction_tag(item.direction, Global.logger);
+                    const dir_check = utilities_1.check_direction_tag(item.direction, global_data.logger);
                     if (dir_check === undefined || dir_check === null) {
                         delete item.direction;
                     }
@@ -768,7 +772,7 @@ function global_data_checks(context, term, value) {
         if (terms.array_of_entities.includes(term)) {
             value = value.filter((item) => {
                 if (!item.name) {
-                    Global.logger.log_validation_error(`Missing name for a Person or Organization in "${term}"`, item, true);
+                    global_data.logger.log_validation_error(`Missing name for a Person or Organization in "${term}"`, item, true);
                     return false;
                 }
                 else {
@@ -781,18 +785,18 @@ function global_data_checks(context, term, value) {
         if (terms.array_of_links.includes(term)) {
             value = value.filter((resource) => {
                 if (!resource.url) {
-                    Global.logger.log_validation_error(`URL is missing from a linked resource in "${term}"`, resource, true);
+                    global_data.logger.log_validation_error(`URL is missing from a linked resource in "${term}"`, resource, true);
                     return false;
                 }
                 else {
                     if (validUrl.isUri(resource.url) === undefined) {
-                        Global.logger.log_validation_error(`"${resource.url}" is is not a valid URL`, null, true);
+                        global_data.logger.log_validation_error(`"${resource.url}" is is not a valid URL`, null, true);
                         return false;
                     }
                 }
                 if (resource.length) {
                     if (!(_.isNumber(resource.length) && resource.length >= 0)) {
-                        Global.logger.log_validation_error(`Linked Resource length is is invalid in  "${term}"`, resource, true);
+                        global_data.logger.log_validation_error(`Linked Resource length is is invalid in  "${term}"`, resource, true);
                         return false;
                     }
                 }
@@ -856,7 +860,7 @@ function verify_value_category(context, term, value) {
     const check_expected_type_and_report = (keys, key, val) => {
         const check_result = check_expected_type(keys, key, val);
         if (!check_result) {
-            Global.logger.log_validation_error(`Type validation error for "${key}":`, value, true);
+            global_data.logger.log_validation_error(`Type validation error for "${key}":`, value, true);
         }
         return check_result;
     };
@@ -888,7 +892,7 @@ function verify_value_category(context, term, value) {
     const terms = utilities_1.get_terms(context);
     if (terms.array_terms.includes(term)) {
         if (!(_.isArray(value))) {
-            Global.logger.log_validation_error(`Value should be an array for "${term}"`, value);
+            global_data.logger.log_validation_error(`Value should be an array for "${term}"`, value);
             return false;
         }
         else {
@@ -908,7 +912,7 @@ function verify_value_category(context, term, value) {
                     }
                 }).filter((item) => item !== undefined);
                 if (value.length === 0) {
-                    Global.logger.log_validation_error(`Empty array after value type check for "${term}"`, null, true);
+                    global_data.logger.log_validation_error(`Empty array after value type check for "${term}"`, null, true);
                     return false;
                 }
                 else {
@@ -922,7 +926,7 @@ function verify_value_category(context, term, value) {
     }
     else if (terms.maps.includes(term)) {
         if (!(isMap(value))) {
-            Global.logger.log_validation_error(`Value should be a map for "${term}"`, value);
+            global_data.logger.log_validation_error(`Value should be a map for "${term}"`, value);
             return false;
         }
         else {
@@ -946,7 +950,7 @@ function get_unique_URLs(resources) {
     const get_url_from_link = (link) => {
         const check_result = uniqueResources.push(utilities_1.remove_url_fragment(link.url));
         if (!check_result) {
-            Global.logger.log_validation_error(`Duplicate value for ${link.url}`);
+            global_data.logger.log_validation_error(`Duplicate value for ${link.url}`);
         }
     };
     const get_all_urls_from_link = (link) => {
@@ -1028,19 +1032,19 @@ function add_default_values(data, document = undefined) {
             }
             else {
                 ls = create_LocalizableString('*No Title*');
-                Global.logger.log_validation_error('No title element to set as a default "name"', null, false);
+                global_data.logger.log_validation_error('No title element to set as a default "name"', null, false);
             }
         }
         else {
             ls = create_LocalizableString('*No Title*');
-            Global.logger.log_validation_error('No "name" set and no default value', null, false);
+            global_data.logger.log_validation_error('No "name" set and no default value', null, false);
         }
         data.name = [ls];
     }
     if (!data.readingOrder || data.readingOrder.length === 0) {
         if (document !== undefined) {
             if (!document.location.href) {
-                Global.logger.log_fatal_error("Empty reading order, and no URL assigned to the HTML entry point to serve as default", null, false);
+                global_data.logger.log_fatal_error("Empty reading order, and no URL assigned to the HTML entry point to serve as default", null, false);
                 return null;
             }
             else {
@@ -1051,11 +1055,11 @@ function add_default_values(data, document = undefined) {
             }
         }
         else {
-            Global.logger.log_fatal_error("Empty reading order", null, false);
+            global_data.logger.log_fatal_error("Empty reading order", null, false);
             return null;
         }
     }
     /* Profile specific fallback */
-    return data;
+    return global_data.profile.add_default_values(global_data, data, document);
 }
 //# sourceMappingURL=process.js.map

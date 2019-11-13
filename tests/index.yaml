@@ -67,6 +67,10 @@ tests:
                 description: No known conformance value
                 actions: Set profile to user agents default
                 errors: Validation error on no known conformance
+            -   id: 2703
+                description: Non-default conformance value
+                actions: Set profile to the audiobooks profile value
+                errors: none
     -   section: §2.8.1.1 Abridged
         ref: https://www.w3.org/TR/pub-manifest/#abridged
         tests:
