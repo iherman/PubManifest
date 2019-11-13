@@ -158,7 +158,7 @@ class EntityTerms extends Terms {
  * Terms defined for [[LinkedResource]] implementations
  */
 class LinkedResourceTerms extends Terms {
-    single_literal   : string[] = ['encodingFormat', 'integrity'];
+    single_literal   : string[] = ['encodingFormat', 'integrity', 'duration'];
     array_of_literals: string[] = ['rel'];
     array_of_strings : string[] = ['name', 'description'];
     array_of_entities: string[] = [];
@@ -166,7 +166,7 @@ class LinkedResourceTerms extends Terms {
     single_url       : string[] = ['url'];
     array_of_urls    : string[] = [];
     single_boolean   : string[] = [];
-    single_number    : string[] = ['length'];
+    single_number    : string[] = [];
     single_misc      : string[] = [];
     array_of_miscs   : string[] = [];
 }
@@ -273,7 +273,7 @@ export class LinkedResource_Impl implements LinkedResource {
     description   : LocalizableString;
     rel           : string[];
     integrity     : string;
-    length        : number;
+    duration      : string;
     alternate     : LinkedResource[];
 
     [propName: string]: any;

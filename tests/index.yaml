@@ -128,7 +128,15 @@ tests:
                 errors: Validation error on incorrect duration format
             -   id: 281602
                 description: Correct duration
-                actions: duration value should be present in the output
+                actions: Duration value should be present in the output
+                errors: none
+            -   id: 281603
+                description: Incorrect duration format in a linked resource
+                actions: Duration should be removed from output
+                errors: Validation error on incorrect duration format
+            -   id: 281604
+                description: Correct duration format in a linked resource
+                actions: Duration value should be present in the output
                 errors: none
     -   section:
             - §2.8.1.7 Last Modification Date

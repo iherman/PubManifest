@@ -62,7 +62,7 @@ export interface LinkedResource {
     description?      : LocalizableString;
     rel?              : string[];
     integrity?        : string;
-    length?           : number;
+    duration?         : string;
     alternate?        : LinkedResource[];
     [propName: string]: any;
 };

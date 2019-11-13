@@ -89,12 +89,14 @@
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_src_lib_utilities_.html#bcp_pattern" class="tsd-kind-icon">bcp_<wbr>pattern</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_src_lib_utilities_.html#durationcheck" class="tsd-kind-icon">duration<wbr>Check</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_src_lib_utilities_.html#check_direction_tag" class="tsd-kind-icon">check_<wbr>direction_<wbr>tag</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_src_lib_utilities_.html#check_duration_value" class="tsd-kind-icon">check_<wbr>duration_<wbr>value</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_src_lib_utilities_.html#check_language_tag" class="tsd-kind-icon">check_<wbr>language_<wbr>tag</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_src_lib_utilities_.html#copy_object" class="tsd-kind-icon">copy_<wbr>object</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_src_lib_utilities_.html#get_resources" class="tsd-kind-icon">get_<wbr>resources</a></li>
@@ -115,12 +117,27 @@
 					<div class="tsd-signature tsd-kind-icon">bcp_<wbr>pattern<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> =&nbsp;RegExp(&#x27;^(((en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang))|((([A-Za-z]{2,3}(-(?&lt;extlang&gt;[A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+))$&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L69">src/lib/utilities.ts:69</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9d514e1/src/lib/utilities.ts#L69">src/lib/utilities.ts:69</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Regex used to check whether a string is a valid BCP47 value</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="durationcheck" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> duration<wbr>Check</h3>
+					<div class="tsd-signature tsd-kind-icon">duration<wbr>Check<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> =&nbsp;RegExp(&#x27;P((([0-9]*\.?[0-9]*)Y)?(([0-9]*\.?[0-9]*)M)?(([0-9]*\.?[0-9]*)W)?(([0-9]*\.?[0-9]*)D)?)?(T(([0-9]*\.?[0-9]*)H)?(([0-9]*\.?[0-9]*)M)?(([0-9]*\.?[0-9]*)S)?)?&#x27;)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9d514e1/src/lib/utilities.ts#L107">src/lib/utilities.ts:107</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Regex used to check whether a string is a valid duration value</p>
 						</div>
 					</div>
 				</section>
@@ -137,12 +154,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L95">src/lib/utilities.ts:95</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9d514e1/src/lib/utilities.ts#L95">src/lib/utilities.ts:95</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Check the well-formedness of a direction tag</p>
+									<p>Check the well-formedness of a direction tag.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -168,6 +185,39 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="check_duration_value" class="tsd-anchor"></a>
+					<h3>check_<wbr>duration_<wbr>value</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">check_<wbr>duration_<wbr>value<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, logger<span class="tsd-signature-symbol">: </span><a href="../classes/_src_lib_utilities_.logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9d514e1/src/lib/utilities.ts#L113">src/lib/utilities.ts:113</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check the well-formedness of a duration string value.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>logger: <a href="../classes/_src_lib_utilities_.logger.html" class="tsd-signature-type">Logger</a></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 					<a name="check_language_tag" class="tsd-anchor"></a>
 					<h3>check_<wbr>language_<wbr>tag</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
@@ -177,12 +227,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L77">src/lib/utilities.ts:77</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9d514e1/src/lib/utilities.ts#L77">src/lib/utilities.ts:77</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Check the well-formedness, per BCP47, of a language tag</p>
+									<p>Check the well-formedness, per BCP47, of a language tag.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -215,13 +265,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L115">src/lib/utilities.ts:115</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9d514e1/src/lib/utilities.ts#L131">src/lib/utilities.ts:131</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>(Shallow) copy of the object. It seems to be necessary to do it this way to ensure that the &#39;to&#39; object
-									gets and maintains the correct Typescript type</p>
+									gets and maintains the correct Typescript type.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -256,7 +306,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L160">src/lib/utilities.ts:160</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9d514e1/src/lib/utilities.ts#L176">src/lib/utilities.ts:176</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -286,7 +336,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L134">src/lib/utilities.ts:134</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9d514e1/src/lib/utilities.ts#L150">src/lib/utilities.ts:150</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -317,7 +367,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L124">src/lib/utilities.ts:124</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9d514e1/src/lib/utilities.ts#L140">src/lib/utilities.ts:140</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -346,7 +396,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L147">src/lib/utilities.ts:147</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9d514e1/src/lib/utilities.ts#L163">src/lib/utilities.ts:163</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -374,7 +424,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L64">src/lib/utilities.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9d514e1/src/lib/utilities.ts#L64">src/lib/utilities.ts:64</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -444,8 +494,14 @@
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_src_lib_utilities_.html#bcp_pattern" class="tsd-kind-icon">bcp_<wbr>pattern</a>
 					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_src_lib_utilities_.html#durationcheck" class="tsd-kind-icon">duration<wbr>Check</a>
+					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_src_lib_utilities_.html#check_direction_tag" class="tsd-kind-icon">check_<wbr>direction_<wbr>tag</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_src_lib_utilities_.html#check_duration_value" class="tsd-kind-icon">check_<wbr>duration_<wbr>value</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_src_lib_utilities_.html#check_language_tag" class="tsd-kind-icon">check_<wbr>language_<wbr>tag</a>

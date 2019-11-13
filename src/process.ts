@@ -60,7 +60,8 @@ import {
     copy_object,
     recognized_type,
     get_terms,
-    remove_url_fragment
+    remove_url_fragment,
+    check_duration_value
 } from './lib/utilities';
 
 /**
@@ -648,10 +649,8 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
 
     /* Step: duration check */
     if (data.duration) {
-        const durationCheck = RegExp('P((([0-9]*\.?[0-9]*)Y)?(([0-9]*\.?[0-9]*)M)?(([0-9]*\.?[0-9]*)W)?(([0-9]*\.?[0-9]*)D)?)?(T(([0-9]*\.?[0-9]*)H)?(([0-9]*\.?[0-9]*)M)?(([0-9]*\.?[0-9]*)S)?)?');
-        if (!(durationCheck.test(data.duration))) {
-            global_data.logger.log_validation_error(`"${data.duration}" is an incorrect duration value`, null, true);
-            delete data.duration;
+        if (!check_duration_value(data.duration, global_data.logger)) {
+            delete data.duration
         }
     }
 
@@ -865,10 +864,9 @@ function global_data_checks(context: PublicationManifest_Impl|RecognizedTypes_Im
                         return false;
                     }
                 }
-                if (resource.length) {
-                    if (!(_.isNumber(resource.length) && resource.length >= 0)) {
-                        global_data.logger.log_validation_error(`Linked Resource length is is invalid in  "${term}"`, resource, true);
-                        return false;
+                if (resource.duration) {
+                    if (!check_duration_value(resource.duration, global_data.logger)) {
+                        delete resource.duration
                     }
                 }
                 return true;

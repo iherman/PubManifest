@@ -1,6 +1,6 @@
 /**
  * Generic module to implement publication profiles. It defines a generic interface and an 'empty' profile; the latter can be used
- * as some sort of a default profile with, essentially, empty extension function.
+ * as some sort of a default profile with, essentially, empty extension functions.
  *
  */
 
