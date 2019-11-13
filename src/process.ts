@@ -51,6 +51,7 @@ import { Profile, default_profile } from './lib/profile';
  * Various utilities
  */
 import {
+    GlobalData,
     Logger,
     OrderedSet,
     toArray,
@@ -61,11 +62,6 @@ import {
     get_terms,
     remove_url_fragment
 } from './lib/utilities';
-
-/**
- * Class definition for the global, shared data
- */
-import { GlobalData } from './lib/global';
 
 /**
  * Manifest discovery function
@@ -575,7 +571,7 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
 * [§7.4.1.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#convert-absolute-url).
  *
  * @param url - the (absolute or relative) URL
- * @returns - the absolute URL using the `base` value of [[Global]], or `undefined` in case of error (e.g., invalid URL)
+ * @returns - the absolute URL using the `base` value of [[global_data]], or `undefined` in case of error (e.g., invalid URL)
  */
 const convert_to_absolute_URL = (url: URL): URL => {
     if (!_.isString(global_data.base) || global_data.base === '' || global_data.base === null) {

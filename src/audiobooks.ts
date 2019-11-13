@@ -1,5 +1,14 @@
+/**
+ * Module implementing the audiobook profile specific extension functions.
+ *
+ */
+
+ /** The main interface defining what a Profile is for this implementation */
 import { Profile } from './lib/profile';
-import { GlobalData } from './lib/global';
+
+/** Global data class */
+import { GlobalData } from './lib/utilities';
+
 import {
     URL,
     PublicationManifest,
@@ -23,7 +32,9 @@ import {
     Terms
 } from './lib/manifest_classes';
 
-
+/**
+ * Audiobook profile file instance. See [[Profile]] for the generic specification of this class;
+ */
 export const audiobook_profile: Profile = {
     identifier: 'https://www.w3.org/TR/audiobooks/',
     generate_internal_representation(global_data: GlobalData, processed: PublicationManifest): PublicationManifest {

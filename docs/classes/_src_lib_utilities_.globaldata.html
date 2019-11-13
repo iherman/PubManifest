@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Global | Processing the Publishing Manifest</title>
+	<title>GlobalData | Processing the Publishing Manifest</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_src_process_.html">&quot;src/process&quot;</a>
+					<a href="../modules/_src_lib_utilities_.html">&quot;src/lib/utilities&quot;</a>
 				</li>
 				<li>
-					<a href="_src_process_.global.html">Global</a>
+					<a href="_src_lib_utilities_.globaldata.html">GlobalData</a>
 				</li>
 			</ul>
-			<h1>Class Global</h1>
+			<h1>Class GlobalData</h1>
 		</div>
 	</div>
 </header>
@@ -72,16 +72,18 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>&quot;Global&quot; object.</p>
+						<p>&quot;Global data&quot; object.</p>
 					</div>
-					<p>These values are, conceptually, global variables shared among functions.</p>
+					<p>These values are, conceptually, global variables shared among functions and profile extensions.</p>
+					<p>An instance of this class is set up at the beginning of the processing, is shared among functions and
+					is made available to all profile extensions.</p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Global</span>
+						<span class="target">GlobalData</span>
 					</li>
 				</ul>
 			</section>
@@ -89,28 +91,28 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-not-exported">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported"><a href="_src_process_.global.html#base" class="tsd-kind-icon">base</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported"><a href="_src_process_.global.html#dir" class="tsd-kind-icon">dir</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported"><a href="_src_process_.global.html#lang" class="tsd-kind-icon">lang</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported"><a href="_src_process_.global.html#logger" class="tsd-kind-icon">logger</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported"><a href="_src_process_.global.html#profile" class="tsd-kind-icon">profile</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_lib_utilities_.globaldata.html#base" class="tsd-kind-icon">base</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_lib_utilities_.globaldata.html#dir" class="tsd-kind-icon">dir</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_lib_utilities_.globaldata.html#lang" class="tsd-kind-icon">lang</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_lib_utilities_.globaldata.html#logger" class="tsd-kind-icon">logger</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_lib_utilities_.globaldata.html#profile" class="tsd-kind-icon">profile</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="base" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> base</h3>
+					<h3>base</h3>
 					<div class="tsd-signature tsd-kind-icon">base<span class="tsd-signature-symbol">:</span> <a href="../modules/_src_manifest_.html#url" class="tsd-signature-type">URL</a><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L131">src/process.ts:131</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L51">src/lib/utilities.ts:51</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -119,13 +121,13 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="dir" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> dir</h3>
+					<h3>dir</h3>
 					<div class="tsd-signature tsd-kind-icon">dir<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L129">src/process.ts:129</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L49">src/lib/utilities.ts:49</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -134,13 +136,13 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="lang" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> lang</h3>
+					<h3>lang</h3>
 					<div class="tsd-signature tsd-kind-icon">lang<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L127">src/process.ts:127</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L47">src/lib/utilities.ts:47</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -149,13 +151,13 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="logger" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> logger</h3>
+					<h3>logger</h3>
 					<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <a href="_src_lib_utilities_.logger.html" class="tsd-signature-type">Logger</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L125">src/process.ts:125</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L45">src/lib/utilities.ts:45</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -164,13 +166,13 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="profile" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> profile</h3>
-					<div class="tsd-signature tsd-kind-icon">profile<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></div>
+					<h3>profile</h3>
+					<div class="tsd-signature tsd-kind-icon">profile<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_src_lib_profile_.profile.html" class="tsd-signature-type">Profile</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9cadc77/src/process.ts#L133">src/process.ts:133</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/5e3d177/src/lib/utilities.ts#L53">src/lib/utilities.ts:53</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -188,18 +190,24 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="../modules/_src_audiobooks_.html">"src/audiobooks"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_src_lib_manifest_classes_.html">"src/lib/manifest_<wbr>classes"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_src_lib_manifest_discovery_.html">"src/lib/manifest_<wbr>discovery"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="../modules/_src_lib_profile_.html">"src/lib/profile"</a>
+					</li>
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_src_lib_utilities_.html">"src/lib/utilities"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_src_manifest_.html">"src/manifest"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_src_process_.html">"src/process"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -211,84 +219,60 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_src_process_.global.html" class="tsd-kind-icon">Global</a>
+					<li class="current tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_src_lib_utilities_.globaldata.html" class="tsd-kind-icon">Global<wbr>Data</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported">
-								<a href="_src_process_.global.html#base" class="tsd-kind-icon">base</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_lib_utilities_.globaldata.html#base" class="tsd-kind-icon">base</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported">
-								<a href="_src_process_.global.html#dir" class="tsd-kind-icon">dir</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_lib_utilities_.globaldata.html#dir" class="tsd-kind-icon">dir</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported">
-								<a href="_src_process_.global.html#lang" class="tsd-kind-icon">lang</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_lib_utilities_.globaldata.html#lang" class="tsd-kind-icon">lang</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported">
-								<a href="_src_process_.global.html#logger" class="tsd-kind-icon">logger</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_lib_utilities_.globaldata.html#logger" class="tsd-kind-icon">logger</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static tsd-is-not-exported">
-								<a href="_src_process_.global.html#profile" class="tsd-kind-icon">profile</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_lib_utilities_.globaldata.html#profile" class="tsd-kind-icon">profile</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_src_process_.processresult.html" class="tsd-kind-icon">Process<wbr>Result</a>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_src_lib_utilities_.logger.html" class="tsd-kind-icon">Logger</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="_src_lib_utilities_.orderedset.html" class="tsd-kind-icon">Ordered<wbr>Set</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#default_profile" class="tsd-kind-icon">default_<wbr>profile</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#known_profiles" class="tsd-kind-icon">known_<wbr>profiles</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#structural_resources" class="tsd-kind-icon">structural_<wbr>resources</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#add_default_values" class="tsd-kind-icon">add_<wbr>default_<wbr>values</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#convert_to_absolute_url" class="tsd-kind-icon">convert_<wbr>to_<wbr>absolute_<wbr>URL</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#create_entity" class="tsd-kind-icon">create_<wbr><wbr>Entity</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#create_linkedresource" class="tsd-kind-icon">create_<wbr><wbr>Linked<wbr>Resource</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#create_localizablestring" class="tsd-kind-icon">create_<wbr><wbr>Localizable<wbr>String</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#data_validation" class="tsd-kind-icon">data_<wbr>validation</a>
+						<a href="../modules/_src_lib_utilities_.html#bcp_pattern" class="tsd-kind-icon">bcp_<wbr>pattern</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_src_process_.html#generate_internal_representation" class="tsd-kind-icon">generate_<wbr>internal_<wbr>representation</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#get_unique_urls" class="tsd-kind-icon">get_<wbr>unique_<wbr>URLs</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#global_data_checks" class="tsd-kind-icon">global_<wbr>data_<wbr>checks</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#ismap" class="tsd-kind-icon">is<wbr>Map</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#normalize_data" class="tsd-kind-icon">normalize_<wbr>data</a>
+						<a href="../modules/_src_lib_utilities_.html#check_direction_tag" class="tsd-kind-icon">check_<wbr>direction_<wbr>tag</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_src_process_.html#process_manifest" class="tsd-kind-icon">process_<wbr>manifest</a>
+						<a href="../modules/_src_lib_utilities_.html#check_language_tag" class="tsd-kind-icon">check_<wbr>language_<wbr>tag</a>
 					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#process_object_keys" class="tsd-kind-icon">process_<wbr>object_<wbr>keys</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_utilities_.html#copy_object" class="tsd-kind-icon">copy_<wbr>object</a>
 					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#remove_empty_arrays" class="tsd-kind-icon">remove_<wbr>empty_<wbr>arrays</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_utilities_.html#get_resources" class="tsd-kind-icon">get_<wbr>resources</a>
 					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_process_.html#verify_value_category" class="tsd-kind-icon">verify_<wbr>value_<wbr>category</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_utilities_.html#get_terms" class="tsd-kind-icon">get_<wbr>terms</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_utilities_.html#recognized_type" class="tsd-kind-icon">recognized_<wbr>type</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_utilities_.html#remove_url_fragment" class="tsd-kind-icon">remove_<wbr>url_<wbr>fragment</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_utilities_.html#toarray" class="tsd-kind-icon">to<wbr>Array</a>
 					</li>
 				</ul>
 			</nav>

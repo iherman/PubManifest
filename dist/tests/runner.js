@@ -16,7 +16,7 @@ const process_1 = require("../src/process");
 // All calls use these two profiles in the caller
 const profile_1 = require("../src/lib/profile");
 const audiobooks_1 = require("../src/audiobooks");
-const test_profiles = [audiobooks_1.audiobook_profile, profile_1.default_profile,];
+const test_profiles = [audiobooks_1.audiobook_profile, profile_1.default_profile];
 ;
 /**
  * Generate a flattened version of the test suite, setting the URL of each test on the fly.

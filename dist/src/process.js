@@ -42,10 +42,6 @@ const profile_1 = require("./lib/profile");
  */
 const utilities_1 = require("./lib/utilities");
 /**
- * Class definition for the global, shared data
- */
-const global_1 = require("./lib/global");
-/**
  * Manifest discovery function
  */
 const manifest_discovery_1 = require("./lib/manifest_discovery");
@@ -98,7 +94,7 @@ const structural_resources = ["contents", "pagelist", "cover"];
  *
  * These values are, conceptually, global variables shared among functions and extensions
  */
-const global_data = new global_1.GlobalData();
+const global_data = new utilities_1.GlobalData();
 /**
  * Process a manifest in two steps:
  *
@@ -339,8 +335,9 @@ function generate_internal_representation(args, logger, profiles = [profile_1.de
     else {
         const conforms = utilities_1.toArray(manifest.conformsTo);
         // Gathering all profiles whose identifier is in the set of conforming profiles
-        const acceptable_profiles = conforms.map((url) => profiles.find((profile) => url === profile.identifier))
-            .filter((item) => item !== undefined);
+        const acceptable_profiles = conforms.map((url) => {
+            return profiles.find((profile) => profile.identifier === url);
+        }).filter((item) => item !== undefined);
         if (acceptable_profiles.length === 0) {
             // No acceptable values were detected for the profile
             // At this point, the UA should inspect the media types and make a best guess.
@@ -408,10 +405,8 @@ function generate_internal_representation(args, logger, profiles = [profile_1.de
             return {};
         }
     }
-    /* Profile specific processing, and return: */
+    /* Step: Profile specific processing, and return: */
     return global_data.profile.generate_internal_representation(global_data, processed);
-    // /* Step: return processed */
-    // return processed
 }
 exports.generate_internal_representation = generate_internal_representation;
 /**
@@ -497,7 +492,8 @@ function normalize_data(context, term, value) {
             }
         }
     }
-    /* Step: extension point (not implemented) */
+    /* Step: Profile specific normalization */
+    normalized = global_data.profile.normalize_data(global_data, context, term, normalized);
     /* Step: recursively normalize the values of normalize */
     // A previous step may have set an undefined value, this has to be ignored, again just to be on the safe side
     if (normalized !== undefined) {
@@ -682,16 +678,20 @@ function data_validation(data) {
             }
         });
     }
-    /* Step: profile extension point (not implemented) */
+    /* Step: profile extension point */
+    data = global_data.profile.data_validation(global_data, data);
     /* Step: run remove empty arrays */
     // Care should be taken to run this only on entries that are part of the definition of this object!
-    process_object_keys(data, (key) => {
-        if (defined_terms.includes(key)) {
-            if (!(remove_empty_arrays(data[key]))) {
-                delete data[key];
+    // The previous step may have raised a fatal error, better check
+    if (data !== undefined) {
+        process_object_keys(data, (key) => {
+            if (defined_terms.includes(key)) {
+                if (!(remove_empty_arrays(data[key]))) {
+                    delete data[key];
+                }
             }
-        }
-    });
+        });
+    }
     return data;
 }
 /**
@@ -1060,6 +1060,6 @@ function add_default_values(data, document = undefined) {
         }
     }
     /* Profile specific fallback */
-    return data;
+    return global_data.profile.add_default_values(global_data, data, document);
 }
 //# sourceMappingURL=process.js.map
