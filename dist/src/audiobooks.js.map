@@ -1,0 +1,1 @@
+{"version":3,"file":"audiobooks.js","sourceRoot":"","sources":["../../src/audiobooks.ts"],"names":[],"mappings":";;AAIA,yCAAyC;AAE5B,QAAA,iBAAiB,GAAY;IACtC,UAAU,EAAE,mCAAmC;IAC/C,gCAAgC,CAAC,WAAuB,EAAE,SAA8B;QACpF,OAAO,CAAC,GAAG,CAAC,qCAAqC,IAAI,CAAC,UAAU,GAAG,CAAC,CAAC;QACrE,OAAO,SAAS,CAAC;IACrB,CAAC;CACJ,CAAA"}

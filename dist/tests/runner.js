@@ -13,6 +13,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const yamljs_1 = __importDefault(require("yamljs"));
 const fs = require('fs');
 const process_1 = require("../src/process");
+// All calls use these two profiles in the caller
+const profile_1 = require("../src/lib/profile");
+const audiobooks_1 = require("../src/audiobooks");
+const test_profiles = [audiobooks_1.audiobook_profile, profile_1.default_profile,];
 ;
 /**
  * Generate a flattened version of the test suite, setting the URL of each test on the fly.
@@ -40,7 +44,7 @@ function get_tests(file_name) {
  */
 async function run_test(url) {
     try {
-        const results = await process_1.process_manifest(url);
+        const results = await process_1.process_manifest(url, test_profiles);
         console.log(JSON.stringify(results.manifest_object, null, 4));
         console.log(results.logger.toString());
     }
