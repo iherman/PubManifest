@@ -298,3 +298,10 @@ tests:
                 description: No name and no title to reuse
                 actions: A "no title" name should be added
                 errors: Validation error on a missing default title
+    -   section: §5. Audio Manifest
+        ref: https://www.w3.org/TR/audiobooks/#audio-manifest
+        tests:
+            -   id: 1
+                description: Minimum audio manifest
+                actions: Output the manifest
+                errors: none

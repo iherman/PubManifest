@@ -1,5 +1,5 @@
 /**
- * Module implementing the audiobook profile specific extension functions.
+ * Module implementing the audiobook profile specific extension functions. The specificities of the profile are defined in [§6 Manifest Processing][https://www.w3.org/TR/audiobooks/#audio-manifest-processing] of the Audiobooks specification.
  *
  */
 
@@ -35,21 +35,21 @@ import {
 import moment from 'moment';
 
 /** Required terms for audio books */
+// TODO add `links` if that term is indeed required; temporarily removed it.
 const required_terms = [
     'abridged',
     'accessMode',
     'accessModeSufficient',
     'accessibilityFeature',
     'accessibilityHazard',
-    'accessibilitySummmary',
-    'address',
+    'accessibilitySummary',
+    'url',
     'author',
     'dateModified',
     'datePublished',
     'duration',
     'id',
     'inLanguage',
-    'links',
     'name',
     'readBy',
     'readingProgression',
@@ -74,7 +74,7 @@ export const audiobook_profile: Profile = {
      */
     generate_internal_representation(processed: PublicationManifest): PublicationManifest {
         let toc: boolean = false;
-        if (!Global.document) {
+        if (Global.document !== undefined) {
             if (Global.document.querySelector('*[role*="doc-toc"]') !== null) {
                 toc = true;
             }
@@ -151,9 +151,10 @@ export const audiobook_profile: Profile = {
             }
         }).filter((item) => item !== undefined);
 
+
         /** Step 2, check the required terms */
         required_terms.forEach((term) => {
-            if (!data[term]) {
+            if (data[term] === undefined) {
                 Global.logger.log_validation_error(`Term ${term} is missing from the manifest`, null, false);
             }
         })
