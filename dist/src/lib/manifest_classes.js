@@ -14,7 +14,6 @@ const manifest_1 = require("../manifest");
 const a11y_properties = [
     'accessMode',
     'accessibilityFeature',
-    'accessibilityControl',
     'accessibilityHazard'
 ];
 /**
@@ -124,7 +123,7 @@ class EntityTerms extends Terms {
 class LinkedResourceTerms extends Terms {
     constructor() {
         super(...arguments);
-        this.single_literal = ['encodingFormat', 'integrity'];
+        this.single_literal = ['encodingFormat', 'integrity', 'duration'];
         this.array_of_literals = ['rel'];
         this.array_of_strings = ['name', 'description'];
         this.array_of_entities = [];
@@ -132,7 +131,7 @@ class LinkedResourceTerms extends Terms {
         this.single_url = ['url'];
         this.array_of_urls = [];
         this.single_boolean = [];
-        this.single_number = ['length'];
+        this.single_number = [];
         this.single_misc = [];
         this.array_of_miscs = [];
     }

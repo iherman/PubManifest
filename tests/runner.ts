@@ -33,7 +33,7 @@ interface Test {
 };
 
 /**
- * Interface for all tests related to a (specification) section with the title in `section` and the URL in `ref`
+ * Interface for all tests related to a (specification) _section_ with the title in `section` and the URL in `ref`
  */
 interface SectionTests {
     section: string | string[];
@@ -42,13 +42,22 @@ interface SectionTests {
 }
 
 /**
- * The full test suite.
+ * The full test suite for a document
+ */
+interface DocumentTests {
+    title: string;
+    url: URL;
+    tests: SectionTests[];
+}
+
+/**
+ * A full test suite
  */
 interface TestSuite {
     title: string;
     date: string;
-    url: URL;
-    tests: SectionTests[];
+    generic: DocumentTests;
+    audio: DocumentTests;
 }
 
 /**
@@ -64,15 +73,23 @@ interface FlattenedSuite {
  * @param file_name - name of the test manifest file
  */
 function get_tests(file_name: string): FlattenedSuite {
+    const process_doc_tests = (doc_test: DocumentTests) => {
+        const base = doc_test.url;
+        doc_test.tests.forEach((section_tests: SectionTests): void => {
+            section_tests.tests.forEach((test: Test): void => {
+                test.url = (test.format && test.format === 'html') ? `${base}test_${test.id}.html` : `${base}test_${test.id}.jsonld`;
+                flattened_suite[`${test.id}`] = test;
+            })
+        });
+    }
+
     const test_suite: TestSuite = yaml.parse(fs.readFileSync(file_name, 'utf-8'));
-    const base = test_suite.url;
+    // console.log(JSON.stringify(test_suite, null, 4)); process.exit(0)
+
+
     const flattened_suite: FlattenedSuite = {};
-    test_suite.tests.forEach((section_tests: SectionTests): void => {
-        section_tests.tests.forEach((test: Test): void => {
-            test.url = (test.format && test.format === 'html') ? `${base}test_${test.id}.html` : `${base}test_${test.id}.jsonld`;
-            flattened_suite[`${test.id}`] = test;
-        })
-    });
+    process_doc_tests(test_suite.generic);
+    process_doc_tests(test_suite.audio);
     return flattened_suite;
 }
 
@@ -97,5 +114,6 @@ async function run_test(url: URL) {
 
 // This is the local test run
 const tests = get_tests('tests/index.yaml');
-const test_index = process.argv[2] || "0";
+const test_index = process.argv[2] || "m0";
+
 run_test(tests[test_index].url);

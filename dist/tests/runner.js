@@ -24,15 +24,22 @@ const test_profiles = [audiobooks_1.audiobook_profile, profile_1.default_profile
  * @param file_name - name of the test manifest file
  */
 function get_tests(file_name) {
-    const test_suite = yamljs_1.default.parse(fs.readFileSync(file_name, 'utf-8'));
-    const base = test_suite.url;
-    const flattened_suite = {};
-    test_suite.tests.forEach((section_tests) => {
-        section_tests.tests.forEach((test) => {
-            test.url = (test.format && test.format === 'html') ? `${base}test_${test.id}.html` : `${base}test_${test.id}.jsonld`;
-            flattened_suite[`${test.id}`] = test;
+    const process_doc_tests = (doc_test) => {
+        const base = doc_test.url;
+        doc_test.tests.forEach((section_tests) => {
+            section_tests.tests.forEach((test) => {
+                test.url = (test.format && test.format === 'html') ? `${base}test_${test.id}.html` : `${base}test_${test.id}.jsonld`;
+                flattened_suite[`${test.id}`] = test;
+            });
         });
-    });
+    };
+    const test_suite = yamljs_1.default.parse(fs.readFileSync(file_name, 'utf-8'));
+    // console.log(JSON.stringify(test_suite, null, 4)); process.exit(0)
+    const flattened_suite = {};
+    console.log(test_suite.generic);
+    console.log(test_suite.audio);
+    process_doc_tests(test_suite.generic);
+    process_doc_tests(test_suite.audio);
     return flattened_suite;
 }
 /**
@@ -55,6 +62,7 @@ async function run_test(url) {
 }
 // This is the local test run
 const tests = get_tests('tests/index.yaml');
-const test_index = process.argv[2] || "0";
-run_test(tests[test_index].url);
+const test_index = process.argv[2] || "m0";
+console.log(tests);
+//run_test(tests[test_index].url);
 //# sourceMappingURL=runner.js.map
