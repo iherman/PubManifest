@@ -617,6 +617,9 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
         });
     }
 
+    /* Step: profile extension point */
+    data = Global.profile.data_validation(data);
+
     /* Step: publication type */
     if (!data.type) {
         Global.logger.log_validation_error(`Missing publication type (set default)`);
@@ -735,9 +738,6 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
             }
         });
     }
-
-    /* Step: profile extension point */
-    data = Global.profile.data_validation(data);
 
     /* Step: run remove empty arrays */
     // Care should be taken to run this only on entries that are part of the definition of this object!
