@@ -5,8 +5,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Simple test runner. It is based on the test manifest stored in [index.yaml](https://github.com/iherman/PubManifest/tests/index.yaml),
- * and uses (for the time being) a rudimentary CLI: the runner should be invoked with the test number, which executes [[process_manifest]] on that test entry,
+ * and uses (for the time being) a rudimentary CLI: the runner should be invoked with the test id, which executes [[process_manifest]] on that test entry,
  * displays the resulting processed manifest, as well as the validation and fatal errors as defined in the specification.
+ *
+ * The tests themselves are separated into two directories: a generic one for the tests running the algorithm as specified in the
+ * core [publication manifest spec](https://www.w3.org/TR/pub-manifest/), and a separate audiobooks one, for tests related to the audiobooks extension, specified
+ * by the [audiobooks profile spec](https://www.w3.org/TR/audiobooks/).
+ *
+ * The structure of the yaml is organized by separate test suites for the two categories (see [[TestSuite]], referring to [[DocumentTests]]).
+ * For each document there are some metadata and a series of section tests (see [[SectionTests]]), corresponding to some sections in the specifications. Finally,
+ * each section tests is a series of individual tests (see [[Test]]).
+ *
+ * A test is, usually, a JSON-LD file for a manifest, to make things simpler to test. Alternatively, some tests are in html (the `format` entry in [[Test]] should be set to `html` for those cases), pointing to a Primary Entry Point.
  *
  */
 /** The configuration file is in YAML, need this input */
@@ -36,8 +46,6 @@ function get_tests(file_name) {
     const test_suite = yamljs_1.default.parse(fs.readFileSync(file_name, 'utf-8'));
     // console.log(JSON.stringify(test_suite, null, 4)); process.exit(0)
     const flattened_suite = {};
-    console.log(test_suite.generic);
-    console.log(test_suite.audio);
     process_doc_tests(test_suite.generic);
     process_doc_tests(test_suite.audio);
     return flattened_suite;
@@ -63,6 +71,5 @@ async function run_test(url) {
 // This is the local test run
 const tests = get_tests('tests/index.yaml');
 const test_index = process.argv[2] || "m0";
-console.log(tests);
-//run_test(tests[test_index].url);
+run_test(tests[test_index].url);
 //# sourceMappingURL=runner.js.map

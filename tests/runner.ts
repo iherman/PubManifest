@@ -1,14 +1,24 @@
 /**
  * Simple test runner. It is based on the test manifest stored in [index.yaml](https://github.com/iherman/PubManifest/tests/index.yaml),
- * and uses (for the time being) a rudimentary CLI: the runner should be invoked with the test number, which executes [[process_manifest]] on that test entry,
+ * and uses (for the time being) a rudimentary CLI: the runner should be invoked with the test id, which executes [[process_manifest]] on that test entry,
  * displays the resulting processed manifest, as well as the validation and fatal errors as defined in the specification.
+ *
+ * The tests themselves are separated into two directories: a generic one for the tests running the algorithm as specified in the
+ * core [publication manifest spec](https://www.w3.org/TR/pub-manifest/), and a separate audiobooks one, for tests related to the audiobooks extension, specified
+ * by the [audiobooks profile spec](https://www.w3.org/TR/audiobooks/).
+ *
+ * The structure of the yaml is organized by separate test suites for the two categories (see [[TestSuite]], referring to [[DocumentTests]]).
+ * For each document there are some metadata and a series of section tests (see [[SectionTests]]), corresponding to some sections in the specifications. Finally,
+ * each section tests is a series of individual tests (see [[Test]]).
+ *
+ * A test is, usually, a JSON-LD file for a manifest, to make things simpler to test. Alternatively, some tests are in html (the `format` entry in [[Test]] should be set to `html` for those cases), pointing to a Primary Entry Point.
  *
  */
 /** The configuration file is in YAML, need this input */
 import yaml from 'yamljs';
 const fs = require('fs');
-import { process_manifest, ProcessResult } from "../src/process";
-import { URL } from "../src/manifest";
+import { process_manifest, ProcessResult } from '../src/process';
+import { URL } from '../src/manifest';
 
 // All calls use these two profiles in the caller
 import { Profile, default_profile } from '../src/lib/profile';
@@ -23,21 +33,36 @@ const test_profiles: Profile[] = [audiobook_profile, default_profile];
  * Note that the test manifest entry does not include the `url` value; this is calculated run-time.
  */
 interface Test {
+    /** Identifier to the test (is combined with the document's test URL to set the URL of the test) */
     id: Number;
+
+    /** Format of the test; default is jsonld, can be set to `html` */
     format?: string;
+
+    /** Some words about the test */
     description: string;
+
+    /** Expected effect */
     actions: string;
+
+    /** Expected validation and/or fatal errors */
     errors: string;
+
+    /** This is not used in the YAML file, only during processing; URL of the test */
     url?: URL;
-    success?: boolean;
 };
 
 /**
  * Interface for all tests related to a (specification) _section_ with the title in `section` and the URL in `ref`
  */
 interface SectionTests {
+    /** Section or sections of the document */
     section: string | string[];
+
+    /** URL(s) of the sections */
     ref: URL | URL[];
+
+    /** The tests themselves */
     tests: Test[];
 }
 
@@ -46,7 +71,10 @@ interface SectionTests {
  */
 interface DocumentTests {
     title: string;
+
+    /** Base URL; it is combined with the `id` value in [[Test]] to set the final URL of the tests */
     url: URL;
+
     tests: SectionTests[];
 }
 
@@ -56,12 +84,16 @@ interface DocumentTests {
 interface TestSuite {
     title: string;
     date: string;
+
+    /** Tests for the basic manifest algorithm */
     generic: DocumentTests;
+
+    /** Specific tests for the audiobook tests */
     audio: DocumentTests;
 }
 
 /**
- * The preprocessing creates a flattened version of the test suite, keyed by the (string version of) each test.
+ * The preprocessing creates a flattened version of the test suite, keyed by the id each test.
  */
 interface FlattenedSuite {
     [index: string]: Test
@@ -115,5 +147,4 @@ async function run_test(url: URL) {
 // This is the local test run
 const tests = get_tests('tests/index.yaml');
 const test_index = process.argv[2] || "m0";
-
 run_test(tests[test_index].url);
