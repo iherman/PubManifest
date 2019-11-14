@@ -334,8 +334,9 @@ export function generate_internal_representation(args: GenerationArguments, logg
         [propName: string] : any;
     }
 
-    Global.logger = logger;
-    Global.base   = args.base;
+    Global.logger   = logger;
+    Global.base     = args.base;
+    Global.document = args.document;
 
     /* ============ The individual processing steps, following the spec ============== */
     /* Step: create the, initially empty, processed manifest */
@@ -438,7 +439,7 @@ export function generate_internal_representation(args: GenerationArguments, logg
 
     /* Step: add the HTML defaults */
     {
-        const final = add_default_values(processed, args.document);
+        const final = add_default_values(processed);
         if (final === null) {
             // A fatal error has been raised!
             return {} as PublicationManifest;
@@ -1050,10 +1051,9 @@ function remove_empty_arrays(value: any): boolean {
  * [§7.4.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#add-html-defaults).
  *
  * @param data - the (almost) final processed manifest
- * @param document - the Document DOM node for the entry point, `undefined` if the process happens without such an entry point
  * @returns - `null` if a fatal error has been raised, the original (albeit possibly modified) data otherwise.
  */
-function add_default_values(data: PublicationManifest_Impl, document: HTMLDocument = undefined): PublicationManifest_Impl {
+function add_default_values(data: PublicationManifest_Impl): PublicationManifest_Impl {
     /*
     * Minor helper function on DOM manipulation: get the value of an attribute by also
     * going up the DOM tree to get a possible inherited value. Used to locate the language or the
@@ -1074,8 +1074,8 @@ function add_default_values(data: PublicationManifest_Impl, document: HTMLDocume
 
     if (!data.name) {
         let ls: LocalizableString;
-        if (document !== undefined) {
-            const title = document.querySelector('title');
+        if (Global.document !== undefined) {
+            const title = Global.document.querySelector('title');
             if (title) {
                 ls = create_LocalizableString(title.text);
                 const lang = get_attr(title, "lang");
@@ -1099,14 +1099,14 @@ function add_default_values(data: PublicationManifest_Impl, document: HTMLDocume
     }
 
     if (!data.readingOrder || data.readingOrder.length === 0) {
-        if (document !== undefined) {
-            if (!document.location.href) {
+        if (Global.document !== undefined) {
+            if (!Global.document.location.href) {
                 Global.logger.log_fatal_error("Empty reading order, and no URL assigned to the HTML entry point to serve as default", null, false);
                 return null;
             } else {
-                data.readingOrder = [create_LinkedResource(document.location.href)];
-                if (!data.uniqueResources.includes(document.location.href)) {
-                    data.uniqueResources.push(document.location.href);
+                data.readingOrder = [create_LinkedResource(Global.document.location.href)];
+                if (!data.uniqueResources.includes(Global.document.location.href)) {
+                    data.uniqueResources.push(Global.document.location.href);
                 }
             }
         } else {
@@ -1115,6 +1115,6 @@ function add_default_values(data: PublicationManifest_Impl, document: HTMLDocume
         }
     }
     /* Profile specific fallback */
-    return Global.profile.add_default_values(data, document);
+    return Global.profile.add_default_values(data);
 }
 
