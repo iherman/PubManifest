@@ -7,7 +7,7 @@
 import { Profile } from './lib/profile';
 
 /** Global data class */
-import { GlobalData } from './lib/utilities';
+import { Global } from './lib/utilities';
 
 import {
     URL,
@@ -37,16 +37,16 @@ import {
  */
 export const audiobook_profile: Profile = {
     identifier: 'https://www.w3.org/TR/audiobooks/',
-    generate_internal_representation(global_data: GlobalData, processed: PublicationManifest): PublicationManifest {
+    generate_internal_representation(processed: PublicationManifest): PublicationManifest {
         return processed;
     },
-    normalize_data(global_data: GlobalData, context: PublicationManifest_Impl | RecognizedTypes_Impl, term: string, value: any): any {
+    normalize_data(context: PublicationManifest_Impl | RecognizedTypes_Impl, term: string, value: any): any {
         return value;
     },
-    data_validation(global_data: GlobalData, data: PublicationManifest_Impl): PublicationManifest_Impl {
+    data_validation(data: PublicationManifest_Impl): PublicationManifest_Impl {
         return data;
     },
-    add_default_values(global_data: GlobalData, data: PublicationManifest_Impl, document: HTMLDocument): PublicationManifest_Impl {
+    add_default_values(data: PublicationManifest_Impl, document: HTMLDocument): PublicationManifest_Impl {
         return data;
     }
 }

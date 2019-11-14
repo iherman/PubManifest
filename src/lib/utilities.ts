@@ -40,7 +40,7 @@ import * as urlHandler from 'url';
  * An instance of this class is set up at the beginning of the processing, is shared among functions and
  * is made available to all profile extensions.
  */
-export class GlobalData {
+class GlobalData {
     /** A [[Logger]] instance used to store the fatal and validation errors during processing. */
     logger : Logger;
     /** Global language tag declaration */
@@ -52,6 +52,13 @@ export class GlobalData {
     /** Final profile for the User Agent (stored only for testing purpose, not really used). */
     profile: Profile;
 };
+
+/**
+ * "Global data" object.
+ *
+ * These values are, conceptually, global variables shared among functions and extensions
+ */
+export const Global: GlobalData = new GlobalData();
 
 /* **************************** General utilities **************************** */
 

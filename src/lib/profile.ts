@@ -5,7 +5,7 @@
  */
 
 /** The interface to the global data instance */
-import { GlobalData } from './utilities';
+import { Global } from './utilities';
 import {
     URL,
     PublicationManifest,
@@ -47,7 +47,7 @@ export interface Profile {
      * @param processed - the generated manifest representation
      * @returns - the same object as `processed`, with possible additions
      */
-    generate_internal_representation : (global_data: GlobalData, processed: PublicationManifest) => PublicationManifest;
+    generate_internal_representation : (processed: PublicationManifest) => PublicationManifest;
 
     /**
      * Last step of the normalization of a key/value pair in context. The only extra step in the main processing part is to
@@ -60,7 +60,7 @@ export interface Profile {
      * @param value - property value
      * @returns - the “normalized” value, or `undefined` if a fatal error occurs
     */
-    normalize_data : (global_data: GlobalData, context: PublicationManifest_Impl | RecognizedTypes_Impl, term: string, value: any) => any;
+    normalize_data : (context: PublicationManifest_Impl | RecognizedTypes_Impl, term: string, value: any) => any;
 
     /**
      * Last step of data validation, right before empty arrays are removed and the value is returned to the main processing.
@@ -71,7 +71,7 @@ export interface Profile {
      * @param data - the data to be checked
      * @return - checked data (becomes, eventually, the final value of `processed` in [[generate_internal_representation]])
      */
-    data_validation: (global_data: GlobalData, data: PublicationManifest_Impl) => PublicationManifest_Impl;
+    data_validation: (data: PublicationManifest_Impl) => PublicationManifest_Impl;
 
     /**
      * Add default values from the (possible) HTML document. This corresponds to the profile extension point in
@@ -82,7 +82,7 @@ export interface Profile {
      * @param document - the Document DOM node for the entry point, `undefined` if the process happens without such an entry point
      * @returns - `null` if a fatal error has been raised, the original (albeit possibly modified) data otherwise.
      */
-    add_default_values: (global_data: GlobalData, data: PublicationManifest_Impl, document: HTMLDocument) => PublicationManifest_Impl;
+    add_default_values: (data: PublicationManifest_Impl, document: HTMLDocument) => PublicationManifest_Impl;
 }
 
 /**
@@ -92,19 +92,19 @@ export interface Profile {
 export const default_profile: Profile = {
     identifier: 'https://www.w3.org/TR/pub-manifest/',
 
-    generate_internal_representation(global_data: GlobalData, processed: PublicationManifest): PublicationManifest {
+    generate_internal_representation(processed: PublicationManifest): PublicationManifest {
         return processed;
     },
 
-    normalize_data(global_data: GlobalData, context: PublicationManifest_Impl | RecognizedTypes_Impl, term: string, value: any): any {
+    normalize_data(context: PublicationManifest_Impl | RecognizedTypes_Impl, term: string, value: any): any {
         return value;
     },
 
-    data_validation(global_data: GlobalData, data: PublicationManifest_Impl): PublicationManifest_Impl {
+    data_validation(data: PublicationManifest_Impl): PublicationManifest_Impl {
         return data;
     },
 
-    add_default_values(global_data: GlobalData, data: PublicationManifest_Impl, document: HTMLDocument): PublicationManifest_Impl {
+    add_default_values(data: PublicationManifest_Impl, document: HTMLDocument): PublicationManifest_Impl {
         return data;
     }
 
