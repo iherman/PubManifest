@@ -436,6 +436,8 @@ export function generate_internal_representation(args: GenerationArguments, logg
 
     /* Step: Data validation */
     processed = data_validation(processed)
+    // if the data validation returned undefined, i.e., a fatal error, we should stop here...
+    if (processed === null) return {} as PublicationManifest;
 
     /* Step: add the HTML defaults */
     {
@@ -595,7 +597,7 @@ const convert_to_absolute_URL = (url: URL): URL => {
  * [§7.4.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#validate-data).
  *
  * @param data - the data to be checked
- * @return - checked data (becomes the final value of `processed` in [[generate_internal_representation]] before returned to the caller)
+ * @return - checked data (becomes the final value of `processed` in [[generate_internal_representation]] before returned to the caller). If a fatal error is raised, return null.
  */
 function data_validation(data: PublicationManifest_Impl): PublicationManifest_Impl {
     // Only those terms should be used which have a definition in the spec, others should be ignored
@@ -620,6 +622,7 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
 
     /* Step: profile extension point */
     data = Global.profile.data_validation(data);
+    if (data === null) return null;
 
     /* Step: publication type */
     if (!data.type) {
@@ -642,12 +645,12 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
     if (!data.id)
         Global.logger.log_validation_error(`No id provided`);
         // This removes the '' string, if present
-        delete data.id
+        delete data.id;
 
     /* Step: duration check */
     if (data.duration) {
         if (!check_duration_value(data.duration, Global.logger)) {
-            delete data.duration
+            delete data.duration;
         }
     }
 
