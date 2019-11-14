@@ -23,7 +23,6 @@ import {
 const a11y_properties = [
     'accessMode',
     'accessibilityFeature',
-    'accessibilityControl',
     'accessibilityHazard'
 ];
 

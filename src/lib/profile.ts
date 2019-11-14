@@ -43,7 +43,6 @@ export interface Profile {
      * "Top level" callback done as the last step of the manifest generation. This corresponds to the extension point in the main body of
      * [§7.4  Publication Manifest](https://www.w3.org/TR/pub-manifest/#processing-algorithm).
      *
-     * @param global_data - global data instance, containing data like global language and direction tag, base URL, etc.
      * @param processed - the generated manifest representation
      * @returns - the same object as `processed`, with possible additions
      */
@@ -54,7 +53,6 @@ export interface Profile {
      * (recursively) call to the global normalization on all constituents. This corresponds to the extension point in the main body of
      * [§7.4.1 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#normalize-data).
      *
-     * @param global_data - global data instance, containing data like global language and direction tag, base URL, etc.
      * @param context - 'context', i.e., the object on which the function has been invoked
      * @param term - property term
      * @param value - property value
@@ -67,7 +65,6 @@ export interface Profile {
      * This corresponds to the profile extension point in the main body of
      * [§7.4.2 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#validate-data).
      *
-     * @param global_data - global data instance, containing data like global language and direction tag, base URL, etc.
      * @param data - the data to be checked
      * @return - checked data (becomes, eventually, the final value of `processed` in [[generate_internal_representation]])
      */
@@ -79,10 +76,9 @@ export interface Profile {
      *
      * @param global_data - global data instance, containing data like global language and direction tag, base URL, etc.
      * @param data - the (almost) final processed manifest
-     * @param document - the Document DOM node for the entry point, `undefined` if the process happens without such an entry point
      * @returns - `null` if a fatal error has been raised, the original (albeit possibly modified) data otherwise.
      */
-    add_default_values: (data: PublicationManifest_Impl, document: HTMLDocument) => PublicationManifest_Impl;
+    add_default_values: (data: PublicationManifest_Impl) => PublicationManifest_Impl;
 }
 
 /**
@@ -104,7 +100,7 @@ export const default_profile: Profile = {
         return data;
     },
 
-    add_default_values(data: PublicationManifest_Impl, document: HTMLDocument): PublicationManifest_Impl {
+    add_default_values(data: PublicationManifest_Impl): PublicationManifest_Impl {
         return data;
     }
 

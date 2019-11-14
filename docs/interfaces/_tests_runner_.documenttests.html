@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>GenerationArguments | Processing the Publishing Manifest</title>
+	<title>DocumentTests | Processing the Publishing Manifest</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_src_lib_manifest_discovery_.html">&quot;src/lib/manifest_discovery&quot;</a>
+					<a href="../modules/_tests_runner_.html">&quot;tests/runner&quot;</a>
 				</li>
 				<li>
-					<a href="_src_lib_manifest_discovery_.generationarguments.html">GenerationArguments</a>
+					<a href="_tests_runner_.documenttests.html">DocumentTests</a>
 				</li>
 			</ul>
-			<h1>Interface GenerationArguments</h1>
+			<h1>Interface DocumentTests</h1>
 		</div>
 	</div>
 </header>
@@ -72,7 +72,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The arguments to be used by the <a href="_src_lib_profile_.profile.html#generate_internal_representation">generate_internal_representation</a> function.</p>
+						<p>The full test suite for a document</p>
 					</div>
 				</div>
 			</section>
@@ -80,7 +80,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">GenerationArguments</span>
+						<span class="target">DocumentTests</span>
 					</li>
 				</ul>
 			</section>
@@ -88,48 +88,53 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_lib_manifest_discovery_.generationarguments.html#base" class="tsd-kind-icon">base</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_lib_manifest_discovery_.generationarguments.html#document" class="tsd-kind-icon">document</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_lib_manifest_discovery_.generationarguments.html#text" class="tsd-kind-icon">text</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_tests_runner_.documenttests.html#tests" class="tsd-kind-icon">tests</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_tests_runner_.documenttests.html#title" class="tsd-kind-icon">title</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_tests_runner_.documenttests.html#url" class="tsd-kind-icon">url</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="base" class="tsd-anchor"></a>
-					<h3>base</h3>
-					<div class="tsd-signature tsd-kind-icon">base<span class="tsd-signature-symbol">:</span> <a href="../modules/_src_lib_manifest_discovery_.html#url" class="tsd-signature-type">URL</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="tests" class="tsd-anchor"></a>
+					<h3>tests</h3>
+					<div class="tsd-signature tsd-kind-icon">tests<span class="tsd-signature-symbol">:</span> <a href="_tests_runner_.sectiontests.html" class="tsd-signature-type">SectionTests</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/8bb10b4/src/lib/manifest_discovery.ts#L28">src/lib/manifest_discovery.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/8bb10b4/tests/runner.ts#L78">tests/runner.ts:78</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="document" class="tsd-anchor"></a>
-					<h3>document</h3>
-					<div class="tsd-signature tsd-kind-icon">document<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">HTMLDocument</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="title" class="tsd-anchor"></a>
+					<h3>title</h3>
+					<div class="tsd-signature tsd-kind-icon">title<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/8bb10b4/src/lib/manifest_discovery.ts#L29">src/lib/manifest_discovery.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/8bb10b4/tests/runner.ts#L73">tests/runner.ts:73</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="text" class="tsd-anchor"></a>
-					<h3>text</h3>
-					<div class="tsd-signature tsd-kind-icon">text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="url" class="tsd-anchor"></a>
+					<h3>url</h3>
+					<div class="tsd-signature tsd-kind-icon">url<span class="tsd-signature-symbol">:</span> <a href="../modules/_src_manifest_.html#url" class="tsd-signature-type">URL</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/8bb10b4/src/lib/manifest_discovery.ts#L27">src/lib/manifest_discovery.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/8bb10b4/tests/runner.ts#L76">tests/runner.ts:76</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Base URL; it is combined with the <code>id</code> value in <a href="_tests_runner_.test.html">Test</a> to set the final URL of the tests</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -145,7 +150,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_src_lib_manifest_classes_.html">"src/lib/manifest_<wbr>classes"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_src_lib_manifest_discovery_.html">"src/lib/manifest_<wbr>discovery"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -160,63 +165,60 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_src_process_.html">"src/process"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_tests_runner_.html">"tests/runner"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../enums/_src_lib_manifest_discovery_.contenttype.html" class="tsd-kind-icon">Content<wbr>Type</a>
-					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_lib_manifest_discovery_.generationarguments.html" class="tsd-kind-icon">Generation<wbr>Arguments</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_tests_runner_.documenttests.html" class="tsd-kind-icon">Document<wbr>Tests</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_lib_manifest_discovery_.generationarguments.html#base" class="tsd-kind-icon">base</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="_tests_runner_.documenttests.html#tests" class="tsd-kind-icon">tests</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_lib_manifest_discovery_.generationarguments.html#document" class="tsd-kind-icon">document</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="_tests_runner_.documenttests.html#title" class="tsd-kind-icon">title</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_lib_manifest_discovery_.generationarguments.html#text" class="tsd-kind-icon">text</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="_tests_runner_.documenttests.html#url" class="tsd-kind-icon">url</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/_src_lib_manifest_discovery_.html#url" class="tsd-kind-icon">URL</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_tests_runner_.flattenedsuite.html" class="tsd-kind-icon">Flattened<wbr>Suite</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_tests_runner_.sectiontests.html" class="tsd-kind-icon">Section<wbr>Tests</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_tests_runner_.test.html" class="tsd-kind-icon">Test</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_tests_runner_.testsuite.html" class="tsd-kind-icon">Test<wbr>Suite</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_lib_manifest_discovery_.html#html_content_type" class="tsd-kind-icon">html_<wbr>content_<wbr>type</a>
+						<a href="../modules/_tests_runner_.html#fs" class="tsd-kind-icon">fs</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_lib_manifest_discovery_.html#json_content_type" class="tsd-kind-icon">json_<wbr>content_<wbr>type</a>
+						<a href="../modules/_tests_runner_.html#test_index" class="tsd-kind-icon">test_<wbr>index</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_lib_manifest_discovery_.html#jsonld_content_type" class="tsd-kind-icon">jsonld_<wbr>content_<wbr>type</a>
+						<a href="../modules/_tests_runner_.html#test_profiles" class="tsd-kind-icon">test_<wbr>profiles</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_tests_runner_.html#tests" class="tsd-kind-icon">tests</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_lib_manifest_discovery_.html#check_web_url" class="tsd-kind-icon">check_<wbr><wbr>Web_<wbr>url</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_src_lib_manifest_discovery_.html#discover_manifest" class="tsd-kind-icon">discover_<wbr>manifest</a>
+						<a href="../modules/_tests_runner_.html#get_tests" class="tsd-kind-icon">get_<wbr>tests</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_lib_manifest_discovery_.html#fetch_html" class="tsd-kind-icon">fetch_<wbr>html</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_lib_manifest_discovery_.html#fetch_json" class="tsd-kind-icon">fetch_<wbr>json</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_lib_manifest_discovery_.html#fetch_resource" class="tsd-kind-icon">fetch_<wbr>resource</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_src_lib_manifest_discovery_.html#obtain_manifest" class="tsd-kind-icon">obtain_<wbr>manifest</a>
+						<a href="../modules/_tests_runner_.html#run_test" class="tsd-kind-icon">run_<wbr>test</a>
 					</li>
 				</ul>
 			</nav>

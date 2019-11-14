@@ -1,7 +1,7 @@
 "use strict";
 /**
  * Generic module to implement publication profiles. It defines a generic interface and an 'empty' profile; the latter can be used
- * as some sort of a default profile with, essentially, empty extension function.
+ * as some sort of a default profile with, essentially, empty extension functions.
  *
  */
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -11,16 +11,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 exports.default_profile = {
     identifier: 'https://www.w3.org/TR/pub-manifest/',
-    generate_internal_representation(global_data, processed) {
+    generate_internal_representation(processed) {
         return processed;
     },
-    normalize_data(global_data, context, term, value) {
+    normalize_data(context, term, value) {
         return value;
     },
-    data_validation(global_data, data) {
+    data_validation(data) {
         return data;
     },
-    add_default_values(global_data, data, document) {
+    add_default_values(data) {
         return data;
     }
 };
