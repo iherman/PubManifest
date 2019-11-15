@@ -3,10 +3,6 @@
  * Implementation classes for the Publication manifest. See 'manifest.ts' for the visible interfaces.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-/**
- * The core interfaces that are implemented in this module
- */
-const manifest_1 = require("../manifest");
 // -------------------------------------------- Convenience variables -------------------------------------
 /**
  * A11Y properties that have lists of literals as values
@@ -228,7 +224,6 @@ class PublicationManifest_Impl {
     constructor() {
         this.id = '';
         this.profile = '';
-        this.readingProgression = manifest_1.ProgressionDirection.ltr;
         this.name = [];
         this.readingOrder = [];
     }

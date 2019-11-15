@@ -31,6 +31,8 @@ class GlobalData {
         this.base = '';
         /** PEP document reference */
         this.document = undefined;
+        /** Debug mode set */
+        this.debug = false;
     }
 }
 ;

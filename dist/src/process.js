@@ -98,10 +98,12 @@ const structural_resources = ["contents", "pagelist", "cover"];
  * @async
  * @param url - The address of either the JSON file or the entry point in HTML
  * @param profiles - the sets of profiles that the caller can handle
+ * @param debug - whether to use debug mode for running the processes
  * @return - the generated manifest object and a logger
  */
-async function process_manifest(url, profiles = [profile_1.default_profile]) {
+async function process_manifest(url, profiles = [profile_1.default_profile], debug = false) {
     const logger = new utilities_1.Logger();
+    utilities_1.Global.debug = debug;
     let manifest_object = {};
     let args;
     try {
@@ -115,7 +117,9 @@ async function process_manifest(url, profiles = [profile_1.default_profile]) {
         manifest_object = await generate_internal_representation(args, logger, profiles);
     }
     catch (err) {
-        logger.log_fatal_error(`Some extra error occurred during generation (${err.message})`);
+        logger.log_fatal_error(`Some extra error occurred during generation (${err.toString()})`);
+        if (utilities_1.Global.debug)
+            console.log(err);
     }
     return { manifest_object, logger };
 }
