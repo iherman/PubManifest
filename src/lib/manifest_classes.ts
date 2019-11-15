@@ -317,7 +317,7 @@ export class PublicationManifest_Impl implements PublicationManifest {
     dateModified        : string;
     datePublished       : string;
     abridged            : boolean;
-    readingProgression  : ProgressionDirection = ProgressionDirection.ltr;
+    readingProgression  : ProgressionDirection;
     name                : LocalizableString[] = [];
     readingOrder        : LinkedResource[] = [];
     resources           : LinkedResource[];

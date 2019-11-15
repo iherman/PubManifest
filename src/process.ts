@@ -142,10 +142,12 @@ export interface ProcessResult {
  * @async
  * @param url - The address of either the JSON file or the entry point in HTML
  * @param profiles - the sets of profiles that the caller can handle
+ * @param debug - whether to use debug mode for running the processes
  * @return - the generated manifest object and a logger
  */
-export async function process_manifest(url: URL, profiles: Profile[] = [default_profile]): Promise<ProcessResult> {
+export async function process_manifest(url: URL, profiles: Profile[] = [default_profile], debug: boolean = false): Promise<ProcessResult> {
     const logger = new Logger();
+    Global.debug = debug;
     let manifest_object = {} as PublicationManifest;
 
     let args: GenerationArguments;
@@ -159,7 +161,8 @@ export async function process_manifest(url: URL, profiles: Profile[] = [default_
     try {
         manifest_object = await generate_internal_representation(args, logger, profiles);
     } catch(err) {
-        logger.log_fatal_error(`Some extra error occurred during generation (${err.message})`);
+        logger.log_fatal_error(`Some extra error occurred during generation (${err.toString()})`);
+        if (Global.debug) console.log(err);
     }
     return {manifest_object, logger}
 }

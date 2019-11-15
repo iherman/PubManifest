@@ -27,22 +27,9 @@
   "readingProgression": "ltr",
   "resources": [
     {
-      "rel": "cover",
-      "url": "http://ia800704.us.archive.org/9/items/LibrivoxCdCoverArt12/Flatland_1109.jpg",
-      "encodingFormat": "image/jpeg",
-      "name": "Cover page with title and author"
-    },{
       "rel": "contents",
       "url": "toc.html",
       "encodingFormat": "text/html"
-    },{
-        "rel": "accessibility-report",
-        "url": "a11y.html",
-        "encodingFormat": "text/html"
-    },{
-        "rel": "privacy-policy,",
-        "url": "privacy.html",
-        "encodingFormat": "text/html"
     }
   ],
   "readingOrder": [

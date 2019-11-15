@@ -80,7 +80,7 @@ export const audiobook_profile: Profile = {
             }
         }
 
-        if (!toc) {
+        if (!toc && processed.resources) {
             const result = processed.resources.find((link) => (link.rel && link.rel.includes('contents')));
             toc = (result !== undefined);
         }

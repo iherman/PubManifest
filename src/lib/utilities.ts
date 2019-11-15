@@ -43,16 +43,24 @@ import * as urlHandler from 'url';
 class GlobalData {
     /** A [[Logger]] instance used to store the fatal and validation errors during processing. */
     logger: Logger;
+
     /** Global language tag declaration */
     lang: string = '';
+
     /** Global base direction declaration */
     dir: string = '';
+
     /** Global base URL */
     base: URL = '';
+
     /** PEP document reference */
     document: HTMLDocument = undefined;
+
     /** Final profile for the User Agent (stored only for testing purpose, not really used). */
     profile: Profile;
+
+    /** Debug mode set */
+    debug: boolean = false;
 };
 
 /**

@@ -135,7 +135,7 @@ function get_tests(file_name: string): FlattenedSuite {
  */
 async function run_test(url: URL) {
     try {
-        const results: ProcessResult = await process_manifest(url, test_profiles);
+        const results: ProcessResult = await process_manifest(url, test_profiles, true);
         console.log(JSON.stringify(results.manifest_object, null, 4));
         console.log(results.logger.toString());
     } catch(e) {

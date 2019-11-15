@@ -310,7 +310,72 @@ audio:
         -   section: §5. Audio Manifest
             ref: https://www.w3.org/TR/audiobooks/#audio-manifest
             tests:
-                -   id: a1
-                    description: Minimum audio manifest
+                -   id: a0
+                    description: Correct audio manifest
                     actions: Output the manifest
                     errors: none
+                -   id: a1
+                    description: Minimal correct audio manifest
+                    actions: Output the manifest
+                    errors: none
+        -   section: §4.2 Table of content
+            ref: https://www.w3.org/TR/audiobooks/#audio-properties
+            tests:
+                -   id: a4201
+                    format: html
+                    description: Link to external manifest with TOC
+                    actions: Output the manifest
+                    errors: none
+                -   id: a4202
+                    format: html
+                    description: Link to external manifest without TOC, but with a TOC in the PEP
+                    actions: Output the manifest
+                    errors: none
+                -   id: a4203
+                    format: html
+                    description: Link to embedded manifest with TOC
+                    actions: Output the manifest
+                    errors: none
+                -   id: a4204
+                    format: html
+                    description: Link to embedded manifest without TOC, but with a TOC in the PEP
+                    actions: Output the manifest
+                    errors: none
+                -   id: a4205
+                    format: html
+                    description: Link to embedded manifest without TOC, and with no TOC in the PEP either
+                    actions: Output the manifest
+                    errors: Validation error on missing TOC
+        -   section: §5.4 Properties
+            ref: https://www.w3.org/TR/audiobooks/#audio-properties
+            tests:
+                -   id: a5401
+                    description: Missing recommended properties
+                    actions: All the recommended properties in §5.4 should be reported as missing
+                    errors: Validation errors for the list of recommended properties
+                -   id: a5402
+                    description: Inconsistent duration values
+                    actions: Output the manifest
+                    errors: Validation errors for inconsistent duration value
+                -   id: a5403
+                    description: Missing duration value in a Link Element
+                    actions: Output the manifest
+                    errors: Validation errors for the missing duration value
+        -   section: §5.5 Resource List
+            ref: https://www.w3.org/TR/audiobooks/#audio-readingorder
+            tests:
+                -   id: a5501
+                    description: No audio object in reading order
+                    actions: Empty manifest should be returned
+                    errors: Fatal errors
+                -   id: a5502
+                    description: Non-audio object in the reading order
+                    actions: The manifest should be returned with last-but-one entry removed (only audio object remain)
+                    errors: Validation error on that extra item
+        -   section: §5.6 Resource List
+            ref: https://www.w3.org/TR/audiobooks/#audio-resourcelist
+            tests:
+                -   id: a5601
+                    description: Missing resource types
+                    actions: Links with rel including cover, accessibility report, or privacy policy should be reported as missing
+                    errors: Validation errors for the these values

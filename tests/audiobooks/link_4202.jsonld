@@ -32,10 +32,6 @@
       "encodingFormat": "image/jpeg",
       "name": "Cover page with title and author"
     },{
-      "rel": "contents",
-      "url": "toc.html",
-      "encodingFormat": "text/html"
-    },{
         "rel": "accessibility-report",
         "url": "a11y.html",
         "encodingFormat": "text/html"
