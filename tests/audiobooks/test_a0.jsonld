@@ -1,8 +1,7 @@
 {
   "@context": [
       "https://schema.org",
-      "https://www.w3.org/ns/pub-context",
-      {"language": "en"}
+      "https://www.w3.org/ns/pub-context"
   ],
   "conformsTo": "https://www.w3.org/TR/audiobooks/",
   "type": "Audiobook",
@@ -16,7 +15,6 @@
   "dateModified": "2019-11-14",
   "datePublished": "2008-10-12",
   "duration": "PT13774S",
-  "license": "https://creativecommons.org/publicdomain/zero/1.0/",
   "abridged": false,
   "accessMode": "audio",
   "accessModeSufficient": [{
@@ -38,14 +36,6 @@
       "rel": "contents",
       "url": "toc.html",
       "encodingFormat": "text/html"
-    },{
-        "rel": "accessibility-report",
-        "url": "a11y.html",
-        "encodingFormat": "text/html"
-    },{
-        "rel": "privacy-policy,",
-        "url": "privacy.html",
-        "encodingFormat": "text/html"
     }
   ],
 

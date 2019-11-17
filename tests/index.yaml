@@ -346,36 +346,43 @@ audio:
                     description: Link to embedded manifest without TOC, and with no TOC in the PEP either
                     actions: Output the manifest
                     errors: Validation error on missing TOC
-        -   section: §5.4 Properties
-            ref: https://www.w3.org/TR/audiobooks/#audio-properties
+        -   section: §5.4 Publication types
+            ref: https://www.w3.org/TR/audiobooks/#audio-type
             tests:
                 -   id: a5401
+                    description: No type set
+                    actions: The Audiobook type should be added
+                    errors: Validation error (no type)
+        -   section: §5.5 Properties
+            ref: https://www.w3.org/TR/audiobooks/#audio-properties
+            tests:
+                -   id: a5501
                     description: Missing recommended properties
                     actions: All the recommended properties in §5.4 should be reported as missing
                     errors: Validation errors for the list of recommended properties
-                -   id: a5402
+                -   id: a5502
                     description: Inconsistent duration values
                     actions: Output the manifest
                     errors: Validation errors for inconsistent duration value
-                -   id: a5403
+                -   id: a5503
                     description: Missing duration value in a Link Element
                     actions: Output the manifest
                     errors: Validation errors for the missing duration value
-        -   section: §5.5 Resource List
+        -   section: §5.6 Default reading order
             ref: https://www.w3.org/TR/audiobooks/#audio-readingorder
             tests:
-                -   id: a5501
+                -   id: a5601
                     description: No audio object in reading order
                     actions: Empty manifest should be returned
                     errors: Fatal errors
-                -   id: a5502
+                -   id: a5602
                     description: Non-audio object in the reading order
                     actions: The manifest should be returned with last-but-one entry removed (only audio object remain)
                     errors: Validation error on that extra item
-        -   section: §5.6 Resource List
+        -   section: §5.7 Resource List
             ref: https://www.w3.org/TR/audiobooks/#audio-resourcelist
             tests:
-                -   id: a5601
-                    description: Missing resource types
-                    actions: Links with rel including cover, accessibility report, or privacy policy should be reported as missing
-                    errors: Validation errors for the these values
+                -   id: a5701
+                    description: Missing cover page
+                    actions: Links with rel including cover should be reported as missing
+                    errors: Validation errors for missing cover

@@ -7,7 +7,7 @@
 import { Profile } from './lib/profile';
 
 /** Global data class */
-import { Global } from './lib/utilities';
+import { Global, check_duration_value } from './lib/utilities';
 
 import {
     URL,
@@ -43,17 +43,16 @@ const required_terms = [
     'accessibilityFeature',
     'accessibilityHazard',
     'accessibilitySummary',
-    'url',
     'author',
     'dateModified',
     'datePublished',
-    'duration',
     'id',
     'inLanguage',
     'name',
     'readBy',
     'readingProgression',
-    'resources'
+    'resources',
+    'url',
 ]
 
 /**
@@ -151,8 +150,13 @@ export const audiobook_profile: Profile = {
             }
         }).filter((item) => item !== undefined);
 
+        /** Step 2, set the default type, if necessary */
+        if (!data.type) {
+            Global.logger.log_validation_error(`Missing publication type for Audiobooks (set default)`);
+            data.type = ["Audiobook"]
+        }
 
-        /** Step 2, check the required terms */
+        /** Step 3, check the required terms */
         required_terms.forEach((term) => {
             if (data[term] === undefined) {
                 Global.logger.log_validation_error(`Term ${term} is missing from the manifest`, null, false);
@@ -163,26 +167,11 @@ export const audiobook_profile: Profile = {
         {
             const res1 = (data.readingOrder) ? data.readingOrder : [];
             const res2 = (data.resources) ? data.resources : [];
-            const res3 = (data.links) ? data.links: [];
-            const resources = [...res1, ...res2, ...res3];
-            let cover = false, a11y = false, privacy = false;
-            for (let index = 0; index < resources.length; index++) {
-                const rel = resources[index].rel;
-                if (rel !== undefined) {
-                    if (rel.includes('cover')) cover = true;
-                    if (rel.includes('accessibility-report')) a11y = true;
-                    if (rel.includes('privacy-policy')) privacy = true;
-                }
-                if (cover && a11y && privacy) break;
-            }
-            if (!cover) {
+            const cover = [...res1, ...res2].find((item: LinkedResource): boolean => {
+                return item.rel && item.rel.includes('cover');
+            });
+            if (cover === undefined) {
                 Global.logger.log_validation_error('No cover resource', null, false);
-            }
-            if (!a11y) {
-                Global.logger.log_validation_error('No accessibility report', null, false);
-            }
-            if (!cover) {
-                Global.logger.log_validation_error('No privacy policy', null, false);
             }
         }
 
@@ -190,11 +179,15 @@ export const audiobook_profile: Profile = {
         {
             // This is the duration in milliseconds!
             let resourceDuration: number = 0;
-            data.readingOrder.forEach((link: LinkedResource) => {
-                if (link.duration) {
-                    resourceDuration += moment.duration(link.duration).asMilliseconds();;
+            data.readingOrder.forEach((resource: LinkedResource) => {
+                if (resource.duration) {
+                    if (!check_duration_value(resource.duration, Global.logger)) {
+                        delete resource.duration
+                    } else {
+                        resourceDuration += moment.duration(resource.duration).asMilliseconds();;
+                    }
                 } else {
-                    Global.logger.log_validation_error('No duration set in resource', link, false);
+                    Global.logger.log_validation_error('No duration set in resource', resource, false);
                 }
             });
             if (data.duration) {

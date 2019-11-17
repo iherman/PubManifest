@@ -1,8 +1,7 @@
 {
   "@context": [
       "https://schema.org",
-      "https://www.w3.org/ns/pub-context",
-      {"language": "en"}
+      "https://www.w3.org/ns/pub-context"
   ],
   "conformsTo": "https://www.w3.org/TR/audiobooks/",
   "type": "Audiobook",
@@ -38,14 +37,6 @@
       "rel": "contents",
       "url": "toc.html",
       "encodingFormat": "text/html"
-    },{
-        "rel": "accessibility-report",
-        "url": "a11y.html",
-        "encodingFormat": "text/html"
-    },{
-        "rel": "privacy-policy,",
-        "url": "privacy.html",
-        "encodingFormat": "text/html"
     }
   ],
 
@@ -65,6 +56,40 @@
       "encodingFormat": "audio/mpeg",
       "duration": "PT1506S",
       "name": "Part 1, Sections 6 - 7"
+    },{
+      "url": "http://www.archive.org/download/flatland_rg_librivox/flatland_4_abbott.mp3",
+      "encodingFormat": "audio/mpeg",
+      "duration": "PT1669S",
+      "name": "Part 1, Sections 8 - 10"
+    },{
+      "url": "http://www.archive.org/download/flatland_rg_librivox/flatland_5_abbott.mp3",
+      "encodingFormat": "audio/mpeg",
+      "duration": "PT1506S",
+      "name": "Part 1, Sections 11 - 12"
+    },{
+      "url": "http://www.archive.org/download/flatland_rg_librivox/flatland_6_abbott.mp3",
+      "encodingFormat": "audio/mpeg",
+      "duration": "PT1798S",
+      "name": "Part 2, Sections 13 - 14"
+    },{
+      "url": "http://www.archive.org/download/flatland_rg_librivox/flatland_7_abbott.mp3",
+      "encodingFormat": "audio/mpeg",
+      "duration": "PT1225S",
+      "name": "Part 2, Sections 15 - 17"
+    },{
+      "url": "http://www.archive.org/download/flatland_rg_librivox/flatland_8_abbott.mp3",
+      "encodingFormat": "audio/mpeg",
+      "duration": "PT1371S",
+      "name": "Part 2, Sections 18 - 20"
+    },{
+        "url": "example.html",
+        "encodingFormat": "text/html",
+        "name": "Part 2, supplemental"
+    },{
+      "url": "http://www.archive.org/download/flatland_rg_librivox/flatland_9_abbott.mp3",
+      "encodingFormat": "audio/mpeg",
+      "duration": "PT1659S",
+      "name": "Part 2, Sections 21 - 22"
     }
   ]
 }

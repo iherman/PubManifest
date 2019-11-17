@@ -38,14 +38,6 @@
       "rel": "contents",
       "url": "toc.html",
       "encodingFormat": "text/html"
-    },{
-        "rel": "accessibility-report",
-        "url": "a11y.html",
-        "encodingFormat": "text/html"
-    },{
-        "rel": "privacy-policy,",
-        "url": "privacy.html",
-        "encodingFormat": "text/html"
     }
   ],
 
