@@ -70,7 +70,7 @@ function check_language_tag(value, logger) {
         return value;
     }
     else {
-        logger.log_validation_error(`Invalid BCP47 format for language tag ${value}`, null, true);
+        logger.log_strong_validation_error(`Invalid BCP47 format for language tag ${value}`);
         return undefined;
     }
 }
@@ -90,7 +90,7 @@ function check_direction_tag(value, logger) {
         return value;
     }
     else {
-        logger.log_validation_error(`Invalid base direction tag (${value})`, null, true);
+        logger.log_strong_validation_error(`Invalid base direction tag (${value})`);
         return undefined;
     }
 }
@@ -104,7 +104,7 @@ const durationCheck = RegExp('P((([0-9]*\.?[0-9]*)Y)?(([0-9]*\.?[0-9]*)M)?(([0-9
  */
 function check_duration_value(value, logger) {
     if (!(durationCheck.test(value))) {
-        logger.log_validation_error(`"${value}" is an incorrect duration value`, null, true);
+        logger.log_strong_validation_error(`"${value}" is an incorrect duration value`);
         return false;
     }
     else {
@@ -179,10 +179,12 @@ exports.get_resources = get_resources;
  */
 class Logger {
     constructor() {
-        this._validation_errors = [];
+        this._light_validation_errors = [];
+        this._strong_validation_errors = [];
         this._fatal_errors = [];
     }
-    get validation_errors() { return this._validation_errors; }
+    get light_validation_errors() { return this._light_validation_errors; }
+    get strong_validation_errors() { return this._strong_validation_errors; }
     get fatal_errors() { return this._fatal_errors; }
     /**
      * Log an error
@@ -190,23 +192,35 @@ class Logger {
      * @param level
      * @param message - the message that should be logged, possibly, in case the condition is false
      * @param obj - an optional object that should be added to the message in JSON
-     * @param required - an optional flag whether a final remark should be added on removing faulty data (i.e., whether the feature is required or not)
      */
-    log(target, message, obj, required) {
-        let final_message = obj === null ? `${message}` : `${message} (${JSON.stringify(obj)})`;
-        if (required)
-            final_message = `${final_message}; [Removing data]`;
+    log(target, message, obj) {
+        let final_message;
+        if (obj === null) {
+            final_message = `${message}`;
+        }
+        else {
+            const obj_dump = JSON.stringify(obj, null, 4).split('\n').map((str) => `>> ${str}`).join('\n');
+            final_message = `${message}. Problematic object:\n${obj_dump}`;
+        }
         target.push(final_message);
     }
     /**
-     * Log a validation error
+     * Log a light validation error
      *
      * @param message - the message that should be logged, possibly, in case the condition is false
      * @param obj - an optional object that should be added to the message in JSON
-     * @param required - an optional flag whether a final remark should be added on removing faulty data (i.e., whether the feature is required or not)
      */
-    log_validation_error(message, obj = null, required = false) {
-        this.log(this._validation_errors, message, obj, required);
+    log_light_validation_error(message, obj = null) {
+        this.log(this._light_validation_errors, message, obj);
+    }
+    /**
+     * Log strong validation error
+     *
+     * @param message - the message that should be logged, possibly, in case the condition is false
+     * @param obj - an optional object that should be added to the message in JSON
+     */
+    log_strong_validation_error(message, obj = null) {
+        this.log(this._strong_validation_errors, message, obj);
     }
     /**
      * Log a fatal error
@@ -215,8 +229,8 @@ class Logger {
      * @param obj - an optional object that should be added to the message in JSON
      * @param required - an optional flag whether a final remark should be added on removing faulty data (i.e., whether the feature is required or not)
      */
-    log_fatal_error(message, obj = null, required = false) {
-        this.log(this._fatal_errors, message, obj, required);
+    log_fatal_error(message, obj = null) {
+        this.log(this._fatal_errors, message, obj);
     }
     /**
      * Display all fatal errors as one string.
@@ -227,14 +241,20 @@ class Logger {
     /**
      * Display all validation errors as one string.
      */
-    validation_errors_toString() {
-        return this._display(this.validation_errors, 'Validation Errors:');
+    light_validation_errors_toString() {
+        return this._display(this.light_validation_errors, 'Validation Errors:');
+    }
+    /**
+     * Display all validation errors as one string.
+     */
+    strong_validation_errors_toString() {
+        return this._display(this.strong_validation_errors, 'Validation Errors, with data removed:');
     }
     /**
      * Display all the messages as one string.
      */
     toString() {
-        return `${this.validation_errors_toString()}\n${this.fatal_errors_toString()}`;
+        return `${this.fatal_errors_toString()}\n\n${this.strong_validation_errors_toString()}\n\n${this.light_validation_errors_toString()}\n`;
     }
     /**
      * Generate a string for a category of messages.
@@ -250,7 +270,7 @@ class Logger {
         }
         else {
             messages.forEach((element) => {
-                retval += `\n    - ${element}`;
+                retval += `\n- ${element}`;
             });
         }
         return retval;

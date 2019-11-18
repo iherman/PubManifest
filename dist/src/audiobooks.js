@@ -19,17 +19,16 @@ const required_terms = [
     'accessibilityFeature',
     'accessibilityHazard',
     'accessibilitySummary',
-    'url',
     'author',
     'dateModified',
     'datePublished',
-    'duration',
     'id',
     'inLanguage',
     'name',
     'readBy',
     'readingProgression',
-    'resources'
+    'resources',
+    'url',
 ];
 /**
  * Audiobook profile file instance. See [[Profile]] for the generic specification of this class;
@@ -59,7 +58,7 @@ exports.audiobook_profile = {
             toc = (result !== undefined);
         }
         if (!toc) {
-            utilities_1.Global.logger.log_validation_error('No table of content found', null, false);
+            utilities_1.Global.logger.log_light_validation_error('No table of content found');
         }
         return processed;
     },
@@ -104,11 +103,11 @@ exports.audiobook_profile = {
         /* Step 1.1, check if the reading order is not empty and contains at least one audio file */
         if (!data.readingOrder || data.readingOrder.length === 0) {
             // For an audiobook this is a fatal error
-            utilities_1.Global.logger.log_fatal_error('No reading order for an audiobook', null, true);
+            utilities_1.Global.logger.log_fatal_error('No reading order for an audiobook');
             return null;
         }
         else if (data.readingOrder.find(isAudio) === undefined) {
-            utilities_1.Global.logger.log_fatal_error('No audio file in reading order', null, true);
+            utilities_1.Global.logger.log_fatal_error('No audio file in reading order');
             return null;
         }
         /* Step 1.2, Remove non audio files from the reading order */
@@ -117,62 +116,53 @@ exports.audiobook_profile = {
                 return item;
             }
             else {
-                utilities_1.Global.logger.log_validation_error('Link in reading order is not an audio file', item, true);
+                utilities_1.Global.logger.log_strong_validation_error('Link in reading order is not an audio file', item);
                 return undefined;
             }
         }).filter((item) => item !== undefined);
-        /** Step 2, check the required terms */
+        /** Step 2, set the default type, if necessary */
+        if (!data.type) {
+            utilities_1.Global.logger.log_light_validation_error(`Missing publication type for Audiobooks (set default)`);
+            data.type = ["Audiobook"];
+        }
+        /** Step 3, check the required terms */
         required_terms.forEach((term) => {
             if (data[term] === undefined) {
-                utilities_1.Global.logger.log_validation_error(`Term ${term} is missing from the manifest`, null, false);
+                utilities_1.Global.logger.log_light_validation_error(`Term ${term} is missing from the manifest`);
             }
         });
         /** Step 3, check the recommended resources */
         {
             const res1 = (data.readingOrder) ? data.readingOrder : [];
             const res2 = (data.resources) ? data.resources : [];
-            const res3 = (data.links) ? data.links : [];
-            const resources = [...res1, ...res2, ...res3];
-            let cover = false, a11y = false, privacy = false;
-            for (let index = 0; index < resources.length; index++) {
-                const rel = resources[index].rel;
-                if (rel !== undefined) {
-                    if (rel.includes('cover'))
-                        cover = true;
-                    if (rel.includes('accessibility-report'))
-                        a11y = true;
-                    if (rel.includes('privacy-policy'))
-                        privacy = true;
-                }
-                if (cover && a11y && privacy)
-                    break;
-            }
-            if (!cover) {
-                utilities_1.Global.logger.log_validation_error('No cover resource', null, false);
-            }
-            if (!a11y) {
-                utilities_1.Global.logger.log_validation_error('No accessibility report', null, false);
-            }
-            if (!cover) {
-                utilities_1.Global.logger.log_validation_error('No privacy policy', null, false);
+            const cover = [...res1, ...res2].find((item) => {
+                return item.rel && item.rel.includes('cover');
+            });
+            if (cover === undefined) {
+                utilities_1.Global.logger.log_light_validation_error('No cover resource');
             }
         }
         /** Step 4, check the duration values */
         {
             // This is the duration in milliseconds!
             let resourceDuration = 0;
-            data.readingOrder.forEach((link) => {
-                if (link.duration) {
-                    resourceDuration += moment_1.default.duration(link.duration).asMilliseconds();
-                    ;
+            data.readingOrder.forEach((resource) => {
+                if (resource.duration) {
+                    if (!utilities_1.check_duration_value(resource.duration, utilities_1.Global.logger)) {
+                        delete resource.duration;
+                    }
+                    else {
+                        resourceDuration += moment_1.default.duration(resource.duration).asMilliseconds();
+                        ;
+                    }
                 }
                 else {
-                    utilities_1.Global.logger.log_validation_error('No duration set in resource', link, false);
+                    utilities_1.Global.logger.log_light_validation_error('No duration set in resource', resource);
                 }
             });
             if (data.duration) {
                 if (moment_1.default.duration(data.duration).asMilliseconds() !== resourceDuration) {
-                    utilities_1.Global.logger.log_validation_error(`Inconsistent global duration value (${data.duration})`, null, false);
+                    utilities_1.Global.logger.log_light_validation_error(`Inconsistent global duration value (${data.duration})`);
                 }
             }
         }

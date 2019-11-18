@@ -506,37 +506,37 @@ function normalize_data(context: PublicationManifest_Impl|RecognizedTypes_Impl, 
         // In theory, any other objects can be added to the manifest and that should not be forbidden, just copied.
 
         /* Step: if necessary, normalization should turn single value to an array with that value */
-        if (terms.array_terms.includes(term) && !_.isArray(value)) {
+        if (terms.is_array_term(term) && !_.isArray(value)) {
             // The 'toArray' utility checks and, if necessary, converts to array
             normalized = [value];
         }
 
         /* Step: converting entities into real ones, even if the information we have is a simple string. */
         /* This step also includes some tests, which is the reason there is a filter in the expression below */
-        if (terms.array_of_entities.includes(term)) {
+        if (terms.is_entities_term(term)) {
             normalized = normalized.map(create_Entity).filter((entity: Entity): boolean => entity !== undefined);
         }
 
         /* Step: converting strings into localizable strings, even if the information is a simple string. */
         /* This step also includes some tests, which is the reason there is a filter in the expression below */
-        if (terms.array_of_strings.includes(term)) {
+        if (terms.is_strings_term(term)) {
             normalized = normalized.map(create_LocalizableString).filter((entity: LocalizableString): boolean => entity !== undefined);
         }
 
         /* Step: converting strings into Linked Resources, even if the information is a simple string. */
         /* This step also includes some tests, which is the reason there is a filter in the expression below */
-        if (terms.array_of_links.includes(term)) {
+        if (terms.is_links_term(term)) {
             normalized = normalized.map(create_LinkedResource).filter((entity: LinkedResource): boolean => entity !== undefined);
         }
 
         /* Step a: create an absolute URL from a string */
-        if (terms.single_url.includes(term)) {
+        if (terms.is_single_url_term(term)) {
             // Note that the conversion function may return undefined, which is then forwarded back to the caller. Ie,
             // errors are handled.
             normalized = convert_to_absolute_URL(value);
         }
         /* Step b: create an array of absolute URLs from a strings */
-        if (terms.array_of_urls.includes(term)) {
+        if (terms.is_urls_term(term)) {
             if (_.isArray(normalized)) {
                 normalized = normalized.map(convert_to_absolute_URL).filter((entity: URL): boolean => entity !== undefined);
             } else {
@@ -604,23 +604,17 @@ const convert_to_absolute_URL = (url: URL): URL => {
 function data_validation(data: PublicationManifest_Impl): PublicationManifest_Impl {
     // Only those terms should be used which have a definition in the spec, others should be ignored
     const terms = get_terms(data);
-    const defined_terms = terms.all_terms;
 
     /* ============ The individual processing steps, following the spec ============== */
     /* Step: perform global data check. (That also includes value type checks.) */
-    {
-        // The misc terms should be ignored for the global data checks, they deserve
-        // special treatment. That is why they are "misc"-s :-)
-        const regular_terms = _.difference(defined_terms, terms.array_of_miscs)
-        process_object_keys(data, (key:string): void => {
-            if (regular_terms.includes(key)) {
-                data[key] = global_data_checks(data, key, data[key]);
-                if (data[key] === undefined) {
-                    delete data[key];
-                }
+    process_object_keys(data, (key:string): void => {
+        if (terms.is_regular_term(key)) {
+            data[key] = global_data_checks(data, key, data[key]);
+            if (data[key] === undefined) {
+                delete data[key];
             }
-        });
-    }
+        }
+    });
 
     /* Step: profile extension point */
     data = Global.profile.data_validation(data);
@@ -750,7 +744,7 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
     // The previous step may have raised a fatal error, better check
     if (data !== undefined) {
         process_object_keys(data, (key:string): void => {
-            if (defined_terms.includes(key)) {
+            if (terms.is_valid_term(key)) {
                 if (!(remove_empty_arrays(data[key]))) {
                     delete data[key];
                 }
@@ -781,7 +775,7 @@ function global_data_checks(context: PublicationManifest_Impl|RecognizedTypes_Im
         // "known value category" means, in this case, that the term is known for the specific context
         // the "misc" entries should be excluded, though; they have to go through an explicit check,
         // that is whey they are "misc"-s...
-        if (terms.all_terms.includes(term)) {
+        if (terms.is_regular_term(term)) {
             if (verify_value_category(context, term, value) === false) {
                 return undefined;
             }
@@ -816,7 +810,7 @@ function global_data_checks(context: PublicationManifest_Impl|RecognizedTypes_Im
         }
 
         /* Step: check the value of language and direction, possibly removing the value */
-        if (terms.array_of_strings.includes(term)) {
+        if (terms.is_strings_term(term)) {
             value = value.filter( (item: LocalizableString_Impl): boolean => {
                 if (!item.value) {
                     Global.logger.log_strong_validation_error(`Missing value for a Localizable String`, item);
@@ -839,7 +833,7 @@ function global_data_checks(context: PublicationManifest_Impl|RecognizedTypes_Im
         }
 
         /* Step: an entity must have a name */
-        if (terms.array_of_entities.includes(term)) {
+        if (terms.is_entities_term(term)) {
             value = value.filter((item: Entity): boolean => {
                 if (!item.name) {
                     Global.logger.log_strong_validation_error(`Missing name for a Person or Organization in "${term}"`, item);
@@ -852,7 +846,7 @@ function global_data_checks(context: PublicationManifest_Impl|RecognizedTypes_Im
         }
 
         /* Step: check linked resources; it must have a url, and the value of length and alternate must be checked, too */
-        if (terms.array_of_links.includes(term)) {
+        if (terms.is_links_term(term)) {
             value = value.filter((resource: LinkedResource): boolean => {
                 if (!resource.url) {
                     Global.logger.log_strong_validation_error(`URL is missing from a linked resource in "${term}"`, resource);
@@ -894,19 +888,19 @@ function verify_value_category(context: PublicationManifest_Impl|RecognizedTypes
      * @param val - the value for the key
      */
     const check_expected_type = (keys: Terms, key: string, val: any): boolean => {
-        if (keys.array_or_single_literals.includes(key)) {
+        if (keys.is_literal_or_literals_term(key)) {
             return _.isString(val);
-        } else if (keys.array_of_strings.includes(key)) {
+        } else if (keys.is_strings_term(key)) {
             return val instanceof LocalizableString_Impl;
-        } else if (keys.array_of_entities.includes(key)) {
+        } else if (keys.is_entities_term(key)) {
             return val instanceof Entity_Impl;
-        } else if (keys.array_of_links.includes(key)) {
+        } else if (keys.is_links_term(key)) {
             return val instanceof LinkedResource_Impl;
-        } else if (keys.array_or_single_urls.includes(key)) {
+        } else if (keys.is_url_or_urls_term(key)) {
             return _.isString(val);
-        } else if (keys.single_number.includes(key)) {
+        } else if (keys.is_single_number_term(key)) {
             return _.isNumber(val);
-        } else if (keys.single_boolean.includes(key)) {
+        } else if (keys.is_single_boolean_term(key)) {
             return _.isBoolean(val);
         } else {
             // No constraint defined
@@ -937,9 +931,8 @@ function verify_value_category(context: PublicationManifest_Impl|RecognizedTypes
      */
     const verify_map = (obj: PublicationManifest_Impl|RecognizedTypes_Impl|LocalizableString_Impl): boolean => {
         const keys = get_terms(obj);
-        const defined_terms = keys.all_terms;
         process_object_keys(obj, (key: string): void => {
-            if (defined_terms.includes(key)) {
+            if (keys.is_valid_term(key)) {
                 const check_result = verify_value_category(obj, key, obj[key])
                 if (!(check_result)) {
                     delete obj[key];
@@ -948,7 +941,7 @@ function verify_value_category(context: PublicationManifest_Impl|RecognizedTypes
         });
 
         // Check if there is any meaningful term left!
-        if (defined_terms.find((key: string): boolean => Object.getOwnPropertyNames(obj).includes(key))) {
+        if (keys.all_terms.find((key: string): boolean => Object.getOwnPropertyNames(obj).includes(key))) {
             return true;
         } else {
             return false;
@@ -956,7 +949,7 @@ function verify_value_category(context: PublicationManifest_Impl|RecognizedTypes
     };
 
     const terms = get_terms(context);
-    if (terms.array_terms.includes(term)) {
+    if (terms.is_array_term(term)) {
         if (!(_.isArray(value))) {
             Global.logger.log_light_validation_error(`Value should be an array for "${term}"`, value);
             return false;
@@ -985,7 +978,7 @@ function verify_value_category(context: PublicationManifest_Impl|RecognizedTypes
                 return true;
             }
         }
-    } else if (terms.maps.includes(term)) {
+    } else if (terms.is_map_term(term)) {
         if (!(isMap(value))) {
             Global.logger.log_light_validation_error(`Value should be a map for "${term}"`, value);
             return false;

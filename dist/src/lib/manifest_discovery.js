@@ -32,10 +32,6 @@ const jsdom = __importStar(require("jsdom"));
 *    characters used, for example;
 * 3. Check that the port (if specified) is in the allowed range, ie, > 1024;
 *
-* The function can be used in two modes.
-* 1. If a logger is defined, it is used to issue an error. This may be used to check the various URL-s in the manifest
-* 2. If a logger is not defined (that is the default), an exception is raised. That should be used when the URL is dereferenced.
-*
 * @param address - the URL to be checked.
 * @returns  - the URL itself (which might be slightly improved by the valid-url method) or null if this is, in fact, not a URL
 * @throws  if it pretends to be a URL, but it is not acceptable for some reasons.

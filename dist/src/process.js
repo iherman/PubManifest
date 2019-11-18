@@ -141,7 +141,7 @@ exports.process_manifest = process_manifest;
 const create_Entity = (resource) => {
     if (resource === null) {
         // This should not happen, but better check, just to be on the safe side
-        utilities_1.Global.logger.log_validation_error(`Invalid entity`, resource, true);
+        utilities_1.Global.logger.log_strong_validation_error(`Invalid entity`, resource);
         return undefined;
     }
     else if (_.isString(resource)) {
@@ -175,7 +175,7 @@ const create_Entity = (resource) => {
         return new_entity;
     }
     else {
-        utilities_1.Global.logger.log_validation_error(`Invalid entity`, resource, true);
+        utilities_1.Global.logger.log_strong_validation_error(`Invalid entity`, resource);
         return undefined;
         // Actually, returning undefined is a default action when no 'return' is present
         // but it is cleaner to make this explicit
@@ -193,7 +193,7 @@ const create_Entity = (resource) => {
 const create_LocalizableString = (resource) => {
     if (resource === null) {
         // This should not happen, but better check, just to be on the safe side
-        utilities_1.Global.logger.log_validation_error(`Invalid localizable string`, resource, true);
+        utilities_1.Global.logger.log_strong_validation_error(`Invalid localizable string`, resource);
         return undefined;
     }
     else if (_.isString(resource)) {
@@ -227,7 +227,7 @@ const create_LocalizableString = (resource) => {
         return new_ls;
     }
     else {
-        utilities_1.Global.logger.log_validation_error(`Invalid localizable string`, resource, true);
+        utilities_1.Global.logger.log_strong_validation_error(`Invalid localizable string`, resource);
         return undefined;
         // Actually, returning undefined is a default action when no 'return' is present
         // but it is cleaner to make this explicit
@@ -245,7 +245,7 @@ const create_LocalizableString = (resource) => {
 const create_LinkedResource = (resource) => {
     if (resource === null) {
         // This should not happen, but better check, just to be on the safe side
-        utilities_1.Global.logger.log_validation_error(`Invalid Linked Resource`, resource, true);
+        utilities_1.Global.logger.log_strong_validation_error(`Invalid Linked Resource`, resource);
         return undefined;
     }
     else if (_.isString(resource)) {
@@ -269,7 +269,7 @@ const create_LinkedResource = (resource) => {
     }
     else {
         // I am not sure this would occur at all but, just to be on the safe side...
-        utilities_1.Global.logger.log_validation_error(`Invalid Linked Resource`, resource, true);
+        utilities_1.Global.logger.log_strong_validation_error(`Invalid Linked Resource`, resource);
         return undefined;
         // Actually, returning undefined is a default action when no 'return' is present
         // but it is cleaner to make this explicit
@@ -293,7 +293,6 @@ const create_LinkedResource = (resource) => {
  * @param profiles - the sets of profiles that the caller can handle
  * @return - the processed manifest
  */
-//export async function generate_internal_representation(url: URL, base: URL, logger: Logger): Promise<PublicationManifest> {
 function generate_internal_representation(args, logger, profiles = [profile_1.default_profile]) {
     utilities_1.Global.logger = logger;
     utilities_1.Global.base = args.base;
@@ -308,7 +307,7 @@ function generate_internal_representation(args, logger, profiles = [profile_1.de
     }
     catch (err) {
         // we ran into a JSON parsing issue...
-        logger.log_fatal_error(`JSON parsing error: ${err.message}`, null, true);
+        logger.log_fatal_error(`JSON parsing error: ${err.message}`);
         return {};
     }
     /* Step: extract and check the context */
@@ -328,7 +327,7 @@ function generate_internal_representation(args, logger, profiles = [profile_1.de
     /* Step: profile conformance */
     if (!(manifest.conformsTo)) {
         // No conformance has been provided. That is, in this case, a validation error
-        logger.log_validation_error(`No conformance was set (falling back to default)`);
+        logger.log_light_validation_error(`No conformance was set (falling back to default)`);
         utilities_1.Global.profile = profile_1.default_profile;
     }
     else {
@@ -341,7 +340,7 @@ function generate_internal_representation(args, logger, profiles = [profile_1.de
             // No acceptable values were detected for the profile
             // At this point, the UA should inspect the media types and make a best guess.
             // This is not implemented, and the result of this test is supposed to be true...
-            logger.log_validation_error(`No known conformance was set (falling back to default)`);
+            logger.log_light_validation_error(`No known conformance was set (falling back to default)`);
             utilities_1.Global.profile = profile_1.default_profile;
             // If the non implemented test resulted in false, a Fatal Error should be added here:
             // logger.log_fatal_error(`Couldn't establish any acceptable profile`);
@@ -458,38 +457,38 @@ function normalize_data(context, term, value) {
         // This is one of those objects that have assigned terms.
         // In theory, any other objects can be added to the manifest and that should not be forbidden, just copied.
         /* Step: if necessary, normalization should turn single value to an array with that value */
-        if (terms.array_terms.includes(term) && !_.isArray(value)) {
+        if (terms.is_array_term(term) && !_.isArray(value)) {
             // The 'toArray' utility checks and, if necessary, converts to array
             normalized = [value];
         }
         /* Step: converting entities into real ones, even if the information we have is a simple string. */
         /* This step also includes some tests, which is the reason there is a filter in the expression below */
-        if (terms.array_of_entities.includes(term)) {
+        if (terms.is_entities_term(term)) {
             normalized = normalized.map(create_Entity).filter((entity) => entity !== undefined);
         }
         /* Step: converting strings into localizable strings, even if the information is a simple string. */
         /* This step also includes some tests, which is the reason there is a filter in the expression below */
-        if (terms.array_of_strings.includes(term)) {
+        if (terms.is_strings_term(term)) {
             normalized = normalized.map(create_LocalizableString).filter((entity) => entity !== undefined);
         }
         /* Step: converting strings into Linked Resources, even if the information is a simple string. */
         /* This step also includes some tests, which is the reason there is a filter in the expression below */
-        if (terms.array_of_links.includes(term)) {
+        if (terms.is_links_term(term)) {
             normalized = normalized.map(create_LinkedResource).filter((entity) => entity !== undefined);
         }
         /* Step a: create an absolute URL from a string */
-        if (terms.single_url.includes(term)) {
+        if (terms.is_single_url_term(term)) {
             // Note that the conversion function may return undefined, which is then forwarded back to the caller. Ie,
             // errors are handled.
             normalized = convert_to_absolute_URL(value);
         }
         /* Step b: create an array of absolute URLs from a strings */
-        if (terms.array_of_urls.includes(term)) {
+        if (terms.is_urls_term(term)) {
             if (_.isArray(normalized)) {
                 normalized = normalized.map(convert_to_absolute_URL).filter((entity) => entity !== undefined);
             }
             else {
-                utilities_1.Global.logger.log_validation_error(`Invalid URL value for "${term}"`, normalized, true);
+                utilities_1.Global.logger.log_strong_validation_error(`Invalid URL value for "${term}"`, normalized);
                 return undefined;
             }
         }
@@ -520,18 +519,18 @@ function normalize_data(context, term, value) {
  */
 const convert_to_absolute_URL = (url) => {
     if (!_.isString(utilities_1.Global.base) || utilities_1.Global.base === '' || utilities_1.Global.base === null) {
-        utilities_1.Global.logger.log_validation_error(`Invalid base ${utilities_1.Global.base}`, null, true);
+        utilities_1.Global.logger.log_strong_validation_error(`Invalid base ${utilities_1.Global.base}`);
         return undefined;
     }
     if (!_.isString(url) || url === '' || url === null) {
-        utilities_1.Global.logger.log_validation_error(`Invalid relative URL ${url}`, null, true);
+        utilities_1.Global.logger.log_strong_validation_error(`Invalid relative URL ${url}`);
         return undefined;
     }
     else {
         const new_url = urlHandler.resolve(utilities_1.Global.base, url);
         // The check URL function checks the validity of the URL and whether it is a valid URL
         if (validUrl.isUri(new_url) === undefined) {
-            utilities_1.Global.logger.log_validation_error(`${new_url} is an invalid URL`);
+            utilities_1.Global.logger.log_strong_validation_error(`${new_url} is an invalid URL`);
             return undefined;
         }
         else {
@@ -550,29 +549,23 @@ const convert_to_absolute_URL = (url) => {
 function data_validation(data) {
     // Only those terms should be used which have a definition in the spec, others should be ignored
     const terms = utilities_1.get_terms(data);
-    const defined_terms = terms.all_terms;
     /* ============ The individual processing steps, following the spec ============== */
     /* Step: perform global data check. (That also includes value type checks.) */
-    {
-        // The misc terms should be ignored for the global data checks, they deserve
-        // special treatment. That is why they are "misc"-s :-)
-        const regular_terms = _.difference(defined_terms, terms.array_of_miscs);
-        process_object_keys(data, (key) => {
-            if (regular_terms.includes(key)) {
-                data[key] = global_data_checks(data, key, data[key]);
-                if (data[key] === undefined) {
-                    delete data[key];
-                }
+    process_object_keys(data, (key) => {
+        if (terms.is_regular_term(key)) {
+            data[key] = global_data_checks(data, key, data[key]);
+            if (data[key] === undefined) {
+                delete data[key];
             }
-        });
-    }
+        }
+    });
     /* Step: profile extension point */
     data = utilities_1.Global.profile.data_validation(data);
     if (data === null)
         return null;
     /* Step: publication type */
     if (!data.type) {
-        utilities_1.Global.logger.log_validation_error(`Missing publication type (set default)`);
+        utilities_1.Global.logger.log_light_validation_error(`Missing publication type (set default)`);
         data.type = ["CreativeWork"];
     }
     /* Step: accessibility */
@@ -580,14 +573,14 @@ function data_validation(data) {
         data.accessModeSufficient = data.accessModeSufficient.filter((ams) => {
             const check_value = isMap(ams) && ams.type && ams.type === 'ItemList';
             if (!check_value) {
-                utilities_1.Global.logger.log_validation_error(`Value of "accessModeSufficient" is invalid`, ams, true);
+                utilities_1.Global.logger.log_strong_validation_error(`Value of "accessModeSufficient" is invalid`, ams);
             }
             return check_value;
         });
     }
     /* Step: identifier check; has been mostly done by virtue of checking the URL */
     if (!data.id)
-        utilities_1.Global.logger.log_validation_error(`No id provided`);
+        utilities_1.Global.logger.log_light_validation_error(`No id provided`);
     // This removes the '' string, if present
     delete data.id;
     /* Step: duration check */
@@ -599,14 +592,14 @@ function data_validation(data) {
     /* Step: last modification date */
     if (data.dateModified) {
         if (!moment_1.default(data.dateModified, moment_1.default.ISO_8601).isValid()) {
-            utilities_1.Global.logger.log_validation_error(`"${data.dateModified}" is an incorrect date string`, null, true);
+            utilities_1.Global.logger.log_strong_validation_error(`"${data.dateModified}" is an incorrect date string`);
             delete data.dateModified;
         }
     }
     /* Step: Publication date */
     if (data.datePublished) {
         if (!moment_1.default(data.datePublished, moment_1.default.ISO_8601).isValid()) {
-            utilities_1.Global.logger.log_validation_error(`"${data.datePublished}" is an incorrect date string`, null, true);
+            utilities_1.Global.logger.log_strong_validation_error(`"${data.datePublished}" is an incorrect date string`);
             delete data.datePublished;
         }
     }
@@ -637,17 +630,17 @@ function data_validation(data) {
         data.links = data.links.filter((link) => {
             const check_result = data.uniqueResources.includes(utilities_1.remove_url_fragment(link.url));
             if (check_result) {
-                utilities_1.Global.logger.log_validation_error(`${link.url} appears in "links" but is within the bounds of the publication`, null, true);
+                utilities_1.Global.logger.log_strong_validation_error(`${link.url} appears in "links" but is within the bounds of the publication`);
                 return false;
             }
             else {
                 if (!link["rel"] || link["rel"].length === 0) {
-                    utilities_1.Global.logger.log_validation_error(`Rel value in "links" not set`, link, false);
+                    utilities_1.Global.logger.log_light_validation_error(`Rel value in "links" not set`, link);
                 }
                 else {
                     const intersection = _.intersection(link["rel"], structural_resources);
                     if (intersection.length > 0) {
-                        utilities_1.Global.logger.log_validation_error(`Linked Resource in "links" includes "${intersection}"`, link, true);
+                        utilities_1.Global.logger.log_strong_validation_error(`Linked Resource in "links" includes "${intersection}"`, link);
                         return false;
                     }
                 }
@@ -668,13 +661,13 @@ function data_validation(data) {
                         // we found a possible structural resource
                         if (flags[str] === true) {
                             // Duplicate, should not be used
-                            utilities_1.Global.logger.log_validation_error(`Multiple definition for the structural resource "${str}"`, resource, false);
+                            utilities_1.Global.logger.log_light_validation_error(`Multiple definition for the structural resource "${str}"`, resource);
                         }
                         else {
                             flags[str] = true;
                             // For the 'cover' case, there is an extra check for an image
                             if (str === 'cover' && resource.encodingFormat && resource.encodingFormat.startsWith('image/') && !resource.name) {
-                                utilities_1.Global.logger.log_validation_error(`No name provided for a cover page image`, resource, false);
+                                utilities_1.Global.logger.log_light_validation_error(`No name provided for a cover page image`, resource);
                             }
                         }
                     }
@@ -687,7 +680,7 @@ function data_validation(data) {
     // The previous step may have raised a fatal error, better check
     if (data !== undefined) {
         process_object_keys(data, (key) => {
-            if (defined_terms.includes(key)) {
+            if (terms.is_valid_term(key)) {
                 if (!(remove_empty_arrays(data[key]))) {
                     delete data[key];
                 }
@@ -715,7 +708,7 @@ function global_data_checks(context, term, value) {
         // "known value category" means, in this case, that the term is known for the specific context
         // the "misc" entries should be excluded, though; they have to go through an explicit check,
         // that is whey they are "misc"-s...
-        if (terms.all_terms.includes(term)) {
+        if (terms.is_regular_term(term)) {
             if (verify_value_category(context, term, value) === false) {
                 return undefined;
             }
@@ -749,10 +742,10 @@ function global_data_checks(context, term, value) {
             }
         }
         /* Step: check the value of language and direction, possibly removing the value */
-        if (terms.array_of_strings.includes(term)) {
+        if (terms.is_strings_term(term)) {
             value = value.filter((item) => {
                 if (!item.value) {
-                    utilities_1.Global.logger.log_validation_error(`Missing value for a Localizable String`, item, true);
+                    utilities_1.Global.logger.log_strong_validation_error(`Missing value for a Localizable String`, item);
                     return false;
                 }
                 if (item.language) {
@@ -771,10 +764,10 @@ function global_data_checks(context, term, value) {
             });
         }
         /* Step: an entity must have a name */
-        if (terms.array_of_entities.includes(term)) {
+        if (terms.is_entities_term(term)) {
             value = value.filter((item) => {
                 if (!item.name) {
-                    utilities_1.Global.logger.log_validation_error(`Missing name for a Person or Organization in "${term}"`, item, true);
+                    utilities_1.Global.logger.log_strong_validation_error(`Missing name for a Person or Organization in "${term}"`, item);
                     return false;
                 }
                 else {
@@ -784,15 +777,15 @@ function global_data_checks(context, term, value) {
             });
         }
         /* Step: check linked resources; it must have a url, and the value of length and alternate must be checked, too */
-        if (terms.array_of_links.includes(term)) {
+        if (terms.is_links_term(term)) {
             value = value.filter((resource) => {
                 if (!resource.url) {
-                    utilities_1.Global.logger.log_validation_error(`URL is missing from a linked resource in "${term}"`, resource, true);
+                    utilities_1.Global.logger.log_strong_validation_error(`URL is missing from a linked resource in "${term}"`, resource);
                     return false;
                 }
                 else {
                     if (validUrl.isUri(resource.url) === undefined) {
-                        utilities_1.Global.logger.log_validation_error(`"${resource.url}" is is not a valid URL`, null, true);
+                        utilities_1.Global.logger.log_strong_validation_error(`"${resource.url}" is not a valid URL`);
                         return false;
                     }
                 }
@@ -825,25 +818,25 @@ function verify_value_category(context, term, value) {
      * @param val - the value for the key
      */
     const check_expected_type = (keys, key, val) => {
-        if (keys.array_or_single_literals.includes(key)) {
+        if (keys.is_literal_or_literals_term(key)) {
             return _.isString(val);
         }
-        else if (keys.array_of_strings.includes(key)) {
+        else if (keys.is_strings_term(key)) {
             return val instanceof manifest_classes_1.LocalizableString_Impl;
         }
-        else if (keys.array_of_entities.includes(key)) {
+        else if (keys.is_entities_term(key)) {
             return val instanceof manifest_classes_1.Entity_Impl;
         }
-        else if (keys.array_of_links.includes(key)) {
+        else if (keys.is_links_term(key)) {
             return val instanceof manifest_classes_1.LinkedResource_Impl;
         }
-        else if (keys.array_or_single_urls.includes(key)) {
+        else if (keys.is_url_or_urls_term(key)) {
             return _.isString(val);
         }
-        else if (keys.single_number.includes(key)) {
+        else if (keys.is_single_number_term(key)) {
             return _.isNumber(val);
         }
-        else if (keys.single_boolean.includes(key)) {
+        else if (keys.is_single_boolean_term(key)) {
             return _.isBoolean(val);
         }
         else {
@@ -861,7 +854,7 @@ function verify_value_category(context, term, value) {
     const check_expected_type_and_report = (keys, key, val) => {
         const check_result = check_expected_type(keys, key, val);
         if (!check_result) {
-            utilities_1.Global.logger.log_validation_error(`Type validation error for "${key}":`, value, true);
+            utilities_1.Global.logger.log_strong_validation_error(`Type validation error for "${key}":`, value);
         }
         return check_result;
     };
@@ -873,9 +866,8 @@ function verify_value_category(context, term, value) {
      */
     const verify_map = (obj) => {
         const keys = utilities_1.get_terms(obj);
-        const defined_terms = keys.all_terms;
         process_object_keys(obj, (key) => {
-            if (defined_terms.includes(key)) {
+            if (keys.is_valid_term(key)) {
                 const check_result = verify_value_category(obj, key, obj[key]);
                 if (!(check_result)) {
                     delete obj[key];
@@ -883,7 +875,7 @@ function verify_value_category(context, term, value) {
             }
         });
         // Check if there is any meaningful term left!
-        if (defined_terms.find((key) => Object.getOwnPropertyNames(obj).includes(key))) {
+        if (keys.all_terms.find((key) => Object.getOwnPropertyNames(obj).includes(key))) {
             return true;
         }
         else {
@@ -891,9 +883,9 @@ function verify_value_category(context, term, value) {
         }
     };
     const terms = utilities_1.get_terms(context);
-    if (terms.array_terms.includes(term)) {
+    if (terms.is_array_term(term)) {
         if (!(_.isArray(value))) {
-            utilities_1.Global.logger.log_validation_error(`Value should be an array for "${term}"`, value);
+            utilities_1.Global.logger.log_light_validation_error(`Value should be an array for "${term}"`, value);
             return false;
         }
         else {
@@ -913,7 +905,7 @@ function verify_value_category(context, term, value) {
                     }
                 }).filter((item) => item !== undefined);
                 if (value.length === 0) {
-                    utilities_1.Global.logger.log_validation_error(`Empty array after value type check for "${term}"`, null, true);
+                    utilities_1.Global.logger.log_strong_validation_error(`Empty array after value type check for "${term}"`);
                     return false;
                 }
                 else {
@@ -925,9 +917,9 @@ function verify_value_category(context, term, value) {
             }
         }
     }
-    else if (terms.maps.includes(term)) {
+    else if (terms.is_map_term(term)) {
         if (!(isMap(value))) {
-            utilities_1.Global.logger.log_validation_error(`Value should be a map for "${term}"`, value);
+            utilities_1.Global.logger.log_light_validation_error(`Value should be a map for "${term}"`, value);
             return false;
         }
         else {
@@ -951,7 +943,7 @@ function get_unique_URLs(resources) {
     const get_url_from_link = (link) => {
         const check_result = uniqueResources.push(utilities_1.remove_url_fragment(link.url));
         if (!check_result) {
-            utilities_1.Global.logger.log_validation_error(`Duplicate value for ${link.url}`);
+            utilities_1.Global.logger.log_light_validation_error(`Duplicate value for ${link.url}`);
         }
     };
     const get_all_urls_from_link = (link) => {
@@ -1032,19 +1024,19 @@ function add_default_values(data) {
             }
             else {
                 ls = create_LocalizableString('*No Title*');
-                utilities_1.Global.logger.log_validation_error('No title element to set as a default "name"', null, false);
+                utilities_1.Global.logger.log_light_validation_error('No title element to set as a default "name"');
             }
         }
         else {
             ls = create_LocalizableString('*No Title*');
-            utilities_1.Global.logger.log_validation_error('No "name" set and no default value', null, false);
+            utilities_1.Global.logger.log_light_validation_error('No "name" set and no default value');
         }
         data.name = [ls];
     }
     if (!data.readingOrder || data.readingOrder.length === 0) {
         if (utilities_1.Global.document !== undefined) {
             if (!utilities_1.Global.document.location.href) {
-                utilities_1.Global.logger.log_fatal_error("Empty reading order, and no URL assigned to the HTML entry point to serve as default", null, false);
+                utilities_1.Global.logger.log_fatal_error("Empty reading order, and no URL assigned to the HTML entry point to serve as default");
                 return null;
             }
             else {
@@ -1055,7 +1047,7 @@ function add_default_values(data) {
             }
         }
         else {
-            utilities_1.Global.logger.log_fatal_error("Empty reading order", null, false);
+            utilities_1.Global.logger.log_fatal_error("Empty reading order");
             return null;
         }
     }

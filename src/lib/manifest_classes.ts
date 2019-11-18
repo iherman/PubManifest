@@ -64,32 +64,43 @@ const creator_properties = [
  */
 export abstract class Terms {
     /** Terms referring to a single literal (e.g., `id`) */
-    single_literal   : string[];
+    protected single_literal   : string[];
+
     /** Terms referring to an array (list) of literals (e.g., the terms in [[a11y_properties]]) */
-    array_of_literals: string[];
+    protected array_of_literals: string[];
+
     /** Terms referring to an array of (localizable) strings (e.g., `name`) */
-    array_of_strings : string[];
+    protected array_of_strings : string[];
+
     /** Terms referring to an array of entities (e.g., the terms in [[creator_properties]]) */
-    array_of_entities: string[];
+    protected array_of_entities: string[];
+
     /** Terms referring to an array of linked resources (e.g., `readingOrder`) */
-    array_of_links   : string[];
+    protected array_of_links   : string[];
+
     /** Terms referring to a single URL (not used at present, added as a placeholder) */
-    single_url       : string[];
+    protected single_url       : string[];
+
     /** Terms referring to an array of URLs (e.g., `url`) */
-    array_of_urls    : string[];
+    protected array_of_urls    : string[];
+
     /** Terms referring to a single boolean (e.g., `abridged`) */
-    single_boolean   : string[];
+    protected single_boolean   : string[];
+
     /** Terms referring to a single number (e.g., `length`) */
-    single_number    : string[];
+    protected single_number    : string[];
+
     /** Terms referring to a single value not listed above (not used at present, added as a placeholder) */
-    single_misc      : string[];
+
+    protected single_misc      : string[];
+
     /** Terms referring to an array of values not listed above (e.g., `accessModeSufficient`) */
-    array_of_miscs   : string[];
+    protected array_of_miscs   : string[];
 
     /**
-     * Terms that expect arrays as values
+     * Is this term's value supposed to be an array?
      */
-    get array_terms(): string[] {
+    is_array_term(term: string): boolean {
         return [
             ...this.array_of_literals,
             ...this.array_of_strings,
@@ -97,28 +108,98 @@ export abstract class Terms {
             ...this.array_of_entities,
             ...this.array_of_links,
             ...this.array_of_miscs
-        ]
+        ].includes(term);
     }
 
     /**
-     * Terms referring to literals, either as individual values or arrays
+     * Is this term's value supposed to be an array of Entities?
      */
-    get array_or_single_literals(): string[] {
-        return [...this.single_literal, ...this.array_of_literals];
+    is_entities_term(term: string): boolean {
+        return this.array_of_entities.includes(term);
     }
 
     /**
-     * Terms referring to URLs, either as individual values or arrays
+     * Is this term's value supposed to be an array of localizable strings?
      */
-    get array_or_single_urls(): string[] {
-        return [...this.single_url, ...this.array_of_urls];
+    is_strings_term(term: string): boolean {
+        return this.array_of_strings.includes(term);
     }
 
     /**
-     * Terms referring to a single map (not used at present, added as a placeholder))
+     * Is this term's value supposed to be an array of linked resources?
      */
-    get maps(): string[] {
-        return [];
+    is_links_term(term: string): boolean {
+        return this.array_of_links.includes(term);
+    }
+
+    /**
+     * Is this term's value supposed to be a single URL?
+     */
+    is_single_url_term(term: string): boolean {
+        return this.single_url.includes(term);
+    }
+
+    /**
+     * Is this term's value supposed to be a single boolean?
+     */
+    is_single_boolean_term(term: string): boolean {
+        return this.single_boolean.includes(term);
+    }
+
+    /**
+     * Is this term's value supposed to be a single number?
+     */
+    is_single_number_term(term: string): boolean {
+        return this.single_number.includes(term);
+    }
+
+    /**
+     * Is this term's value a single or a string of literal(s)?
+     */
+    is_literal_or_literals_term(term: string): boolean {
+        return [...this.single_literal, ...this.array_of_literals].includes(term);
+    }
+
+    /**
+     * Is this term's value a single or a string of literal(s)?
+     */
+    is_url_or_urls_term(term: string): boolean {
+        return [...this.single_url, ...this.array_of_urls].includes(term)
+    }
+
+    /**
+     * Is this term's value supposed to be an array of URLs?
+     */
+    is_urls_term(term: string): boolean {
+        return this.array_of_urls.includes(term);
+    }
+
+    /**
+     * Is this term's value a regular term, ie, which does not require special handling
+     */
+    is_regular_term(term: string): boolean {
+        return [
+            ...this.single_literal, ...this.array_of_literals,
+            ...this.array_of_strings,
+            ...this.array_of_entities, ...this.array_of_links,
+            ...this.single_url, ...this.array_of_urls,
+            ...this.single_boolean
+        ].includes(term);
+    }
+
+    /**
+     * Is this a valid term, ie, defined by the specification
+     */
+    is_valid_term(term: string): boolean {
+        return this.all_terms.includes(term);
+    }
+
+    /**
+     * Is this term's value supposed to be map?
+     * (Not used at present, added as a placeholder))
+     */
+    is_map_term(term: string): boolean {
+        return false;
     }
 
     /**
@@ -140,68 +221,68 @@ export abstract class Terms {
  * Terms defined for [[Entity]] implementations.
  */
 class EntityTerms extends Terms {
-    single_literal   : string[] = [];
-    array_of_literals: string[] = ['type', 'identifier'];
-    array_of_strings : string[] = ['name'];
-    array_of_entities: string[] = [];
-    array_of_links   : string[] = [];
-    single_url       : string[] = ['id'];
-    array_of_urls    : string[] = [];
-    single_boolean   : string[] = [];
-    single_number    : string[] = [];
-    single_misc      : string[] = [];
-    array_of_miscs   : string[] = [];
+    protected single_literal   : string[] = [];
+    protected array_of_literals: string[] = ['type', 'identifier'];
+    protected array_of_strings : string[] = ['name'];
+    protected array_of_entities: string[] = [];
+    protected array_of_links   : string[] = [];
+    protected single_url       : string[] = ['id'];
+    protected array_of_urls    : string[] = [];
+    protected single_boolean   : string[] = [];
+    protected single_number    : string[] = [];
+    protected single_misc      : string[] = [];
+    protected array_of_miscs   : string[] = [];
 }
 
 /**
  * Terms defined for [[LinkedResource]] implementations
  */
 class LinkedResourceTerms extends Terms {
-    single_literal   : string[] = ['encodingFormat', 'integrity', 'duration'];
-    array_of_literals: string[] = ['rel'];
-    array_of_strings : string[] = ['name', 'description'];
-    array_of_entities: string[] = [];
-    array_of_links   : string[] = ['alternate'];
-    single_url       : string[] = ['url'];
-    array_of_urls    : string[] = [];
-    single_boolean   : string[] = [];
-    single_number    : string[] = [];
-    single_misc      : string[] = [];
-    array_of_miscs   : string[] = [];
+    protected single_literal   : string[] = ['encodingFormat', 'integrity', 'duration'];
+    protected array_of_literals: string[] = ['rel'];
+    protected array_of_strings : string[] = ['name', 'description'];
+    protected array_of_entities: string[] = [];
+    protected array_of_links   : string[] = ['alternate'];
+    protected single_url       : string[] = ['url'];
+    protected array_of_urls    : string[] = [];
+    protected single_boolean   : string[] = [];
+    protected single_number    : string[] = [];
+    protected single_misc      : string[] = [];
+    protected array_of_miscs   : string[] = [];
 }
 
 /**
  * Terms defined for [[LocalizableString]] implementations
  */
 class LocalizableStringTerms extends Terms {
-    single_literal   : string[] = ['value', 'language', 'direction'];
-    array_of_literals: string[] = [];
-    array_of_strings : string[] = [];
-    array_of_entities: string[] = [];
-    array_of_links   : string[] = [];
-    single_url       : string[] = [];
-    array_of_urls    : string[] = [];
-    single_boolean   : string[] = [];
-    single_number    : string[] = [];
-    single_misc      : string[] = [];
-    array_of_miscs   : string[] = [];
+    protected single_literal   : string[] = ['value', 'language', 'direction'];
+    protected array_of_literals: string[] = [];
+    protected array_of_strings : string[] = [];
+    protected array_of_entities: string[] = [];
+    protected array_of_links   : string[] = [];
+    protected single_url       : string[] = [];
+    protected array_of_urls    : string[] = [];
+    protected single_boolean   : string[] = [];
+    protected single_number    : string[] = [];
+    protected single_misc      : string[] = [];
+    protected array_of_miscs   : string[] = [];
 }
 
 /**
  * Terms defined for the [[PublicationManifest]] implementations
  */
 class PublicationManifestTerms extends Terms {
-    single_literal   : string[] = ['dateModified', 'datePublished', 'readingProgression'];
-    array_of_literals: string[] = [...a11y_properties, 'inLanguage', 'type', 'conformsTo'];
-    array_of_strings : string[] = ['name', 'accessibilitySummary'];
-    array_of_entities: string[] = [...creator_properties];
-    array_of_links   : string[] = ['readingOrder', 'resources', 'links'];
-    single_url       : string[] = ['id'];
-    array_of_urls    : string[] = ['url'];
-    single_boolean   : string[] = ['abridged'];
-    single_number    : string[] = [];
-    single_misc      : string[] = [];
-    array_of_miscs   : string[] = ['accessModeSufficient'];
+    protected single_literal   : string[] = ['dateModified', 'datePublished', 'readingProgression'];
+    protected array_of_literals: string[] = [...a11y_properties, 'inLanguage', 'type', 'conformsTo'];
+    protected array_of_strings : string[] = ['name', 'accessibilitySummary'];
+    protected array_of_entities: string[] = [...creator_properties];
+    protected array_of_links   : string[] = ['readingOrder', 'resources', 'links'];
+    protected single_url       : string[] = ['id'];
+    protected array_of_urls    : string[] = ['url'];
+    protected single_boolean   : string[] = ['abridged'];
+    protected single_number    : string[] = [];
+    protected single_misc      : string[] = [];
+    protected array_of_miscs   : string[] = ['accessModeSufficient'];
 }
 
 // -------------------------------- Type aliases for URL (which are strings, in fact) -------------

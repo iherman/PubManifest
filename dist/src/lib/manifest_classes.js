@@ -49,9 +49,9 @@ const creator_properties = [
  */
 class Terms {
     /**
-     * Terms that expect arrays as values
+     * Is this term's value supposed to be an array?
      */
-    get array_terms() {
+    is_array_term(term) {
         return [
             ...this.array_of_literals,
             ...this.array_of_strings,
@@ -59,25 +59,86 @@ class Terms {
             ...this.array_of_entities,
             ...this.array_of_links,
             ...this.array_of_miscs
-        ];
+        ].includes(term);
     }
     /**
-     * Terms referring to literals, either as individual values or arrays
+     * Is this term's value supposed to be an array of Entities?
      */
-    get array_or_single_literals() {
-        return [...this.single_literal, ...this.array_of_literals];
+    is_entities_term(term) {
+        return this.array_of_entities.includes(term);
     }
     /**
-     * Terms referring to URLs, either as individual values or arrays
+     * Is this term's value supposed to be an array of localizable strings?
      */
-    get array_or_single_urls() {
-        return [...this.single_url, ...this.array_of_urls];
+    is_strings_term(term) {
+        return this.array_of_strings.includes(term);
     }
     /**
-     * Terms referring to a single map (not used at present, added as a placeholder))
+     * Is this term's value supposed to be an array of linked resources?
      */
-    get maps() {
-        return [];
+    is_links_term(term) {
+        return this.array_of_links.includes(term);
+    }
+    /**
+     * Is this term's value supposed to be a single URL?
+     */
+    is_single_url_term(term) {
+        return this.single_url.includes(term);
+    }
+    /**
+     * Is this term's value supposed to be a single boolean?
+     */
+    is_single_boolean_term(term) {
+        return this.single_boolean.includes(term);
+    }
+    /**
+     * Is this term's value supposed to be a single number?
+     */
+    is_single_number_term(term) {
+        return this.single_number.includes(term);
+    }
+    /**
+     * Is this term's value a single or a string of literal(s)?
+     */
+    is_literal_or_literals_term(term) {
+        return [...this.single_literal, ...this.array_of_literals].includes(term);
+    }
+    /**
+     * Is this term's value a single or a string of literal(s)?
+     */
+    is_url_or_urls_term(term) {
+        return [...this.single_url, ...this.array_of_urls].includes(term);
+    }
+    /**
+     * Is this term's value supposed to be an array of URLs?
+     */
+    is_urls_term(term) {
+        return this.array_of_urls.includes(term);
+    }
+    /**
+     * Is this term's value a regular term, ie, which does not require special handling
+     */
+    is_regular_term(term) {
+        return [
+            ...this.single_literal, ...this.array_of_literals,
+            ...this.array_of_strings,
+            ...this.array_of_entities, ...this.array_of_links,
+            ...this.single_url, ...this.array_of_urls,
+            ...this.single_boolean
+        ].includes(term);
+    }
+    /**
+     * Is this a valid term, ie, defined by the specification
+     */
+    is_valid_term(term) {
+        return this.all_terms.includes(term);
+    }
+    /**
+     * Is this term's value supposed to be map?
+     * (Not used at present, added as a placeholder))
+     */
+    is_map_term(term) {
+        return false;
     }
     /**
      * All terms defined for this type
