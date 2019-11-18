@@ -85,7 +85,7 @@ export const audiobook_profile: Profile = {
         }
 
         if (!toc) {
-            Global.logger.log_validation_error('No table of content found', null, false)
+            Global.logger.log_light_validation_error('No table of content found')
         }
 
         return processed;
@@ -133,10 +133,10 @@ export const audiobook_profile: Profile = {
         /* Step 1.1, check if the reading order is not empty and contains at least one audio file */
         if (!data.readingOrder || data.readingOrder.length === 0) {
             // For an audiobook this is a fatal error
-            Global.logger.log_fatal_error('No reading order for an audiobook', null, true);
+            Global.logger.log_fatal_error('No reading order for an audiobook');
             return null;
         } else if (data.readingOrder.find(isAudio) === undefined) {
-            Global.logger.log_fatal_error('No audio file in reading order', null, true)
+            Global.logger.log_fatal_error('No audio file in reading order')
             return null;
         }
 
@@ -145,21 +145,21 @@ export const audiobook_profile: Profile = {
             if (isAudio(item)) {
                 return item;
             } else {
-                Global.logger.log_validation_error('Link in reading order is not an audio file', item, true);
+                Global.logger.log_strong_validation_error('Link in reading order is not an audio file', item);
                 return undefined;
             }
         }).filter((item) => item !== undefined);
 
         /** Step 2, set the default type, if necessary */
         if (!data.type) {
-            Global.logger.log_validation_error(`Missing publication type for Audiobooks (set default)`);
+            Global.logger.log_light_validation_error(`Missing publication type for Audiobooks (set default)`);
             data.type = ["Audiobook"]
         }
 
         /** Step 3, check the required terms */
         required_terms.forEach((term) => {
             if (data[term] === undefined) {
-                Global.logger.log_validation_error(`Term ${term} is missing from the manifest`, null, false);
+                Global.logger.log_light_validation_error(`Term ${term} is missing from the manifest`);
             }
         })
 
@@ -171,7 +171,7 @@ export const audiobook_profile: Profile = {
                 return item.rel && item.rel.includes('cover');
             });
             if (cover === undefined) {
-                Global.logger.log_validation_error('No cover resource', null, false);
+                Global.logger.log_light_validation_error('No cover resource');
             }
         }
 
@@ -187,12 +187,12 @@ export const audiobook_profile: Profile = {
                         resourceDuration += moment.duration(resource.duration).asMilliseconds();;
                     }
                 } else {
-                    Global.logger.log_validation_error('No duration set in resource', resource, false);
+                    Global.logger.log_light_validation_error('No duration set in resource', resource);
                 }
             });
             if (data.duration) {
                 if (moment.duration(data.duration).asMilliseconds() !== resourceDuration) {
-                    Global.logger.log_validation_error(`Inconsistent global duration value (${data.duration})`, null, false);
+                    Global.logger.log_light_validation_error(`Inconsistent global duration value (${data.duration})`);
                 }
             }
         }
