@@ -175,8 +175,24 @@ generic:
                     description: Correct date formats
                     actions: datePublished and dateModified values should be present in the output
                     errors: none
-#        -   section: §4.7.1.9 Publication Language
-#        -   section: §4.7.1.10 Reading Progression Direction
+        -   section: §4.7.1.9 Publication Language
+            ref: https://www.w3.org/TR/pub-manifest/#inLanguage
+            tests:
+                -   id: m471901
+                    description: Language value must be valid BCP47
+                    action: Value of inLanguage must be checked, and removed (as invalid)
+                    error: validation error on incorrect BCP47 value
+                -   id: m471902
+                    description: Language value may be an array of valid BCP47
+                    action: Incorrect value must be removed from the array
+                    error: validation error on incorrect BCP47 value
+        -   section: §4.7.1.10 Reading Progression Direction
+            ref: https://www.w3.org/TR/pub-manifest/#reading-progression-direction
+            tests:
+                -   id: m4711001
+                    description: readingProgression value must ltr or rtl
+                    action: Value of readingProgression must be checked, and set to the default 'ltr'
+                    error: validation error on incorrect direction
 #        -   section: §4.7.1.11 Title
         -   section: §4.7.2.1 Default Reading Order
             ref: https://www.w3.org/TR/pub-manifest/#default-reading-order
