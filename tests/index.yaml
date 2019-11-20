@@ -13,15 +13,17 @@ generic:
                     description: Basic, correct manifest, usable to test the local setup
                     actions: Output the manifest
                     errors: none
+
         -   section: §4.3 Manifest contexts
             ref: https://www.w3.org/TR/pub-manifest/#manifest-context
             tests:
                 -   id: m4301
-                    description: Missing Context
+                    description: The manifest must have a '@context'
                     actions: Return empty
                     errors: Fatal error on missing context
+
                 -   id: m4302
-                    description: context incomplete
+                    description: The manifest '@context' must contain the schema.org and the publication manifest context references.
                     actions: Return empty
                     errors: Fatal error on missing context
 
@@ -29,99 +31,118 @@ generic:
             ref: https://www.w3.org/TR/pub-manifest/#manifest-lang-dir
             tests:
                 -   id: m4401
-                    description: Set valid global language value
+                    description: The global language value can be set as part of the '@context' array
                     actions: Language en set for all strings
                     errors:  none
+
                 -   id: m4402
-                    description: Set invalid global language value
+                    description: The global language value must be valid BCP47
                     actions: No effect on output (value ignored)
                     errors: Validation error on incorrect BCP47 value
+
                 -   id: m4403
-                    description: Set valid global direction value
+                    description: The global base direction value can be set as part of the '@context' array
                     actions: Direction ltr set for all strings
                     errors: none
+
                 -   id: m4404
-                    description: Set invalid global direction value
+                    description: The global base direction value must 'ltr' or 'rtl'
                     actions: No effect on output (value ignored)
                     errors: Validation error on incorrect base direction value
+
                 -   id: m4405
-                    description: Out of several (valid) language and direction setting, pick the last one
+                    description: If several global language, resp. base direction values are set, the last one wins in both cases
                     actions: Strings should be set with language:en and direction:ltr
                     errors: none
+
         -   section: §4.5 Publication types
             ref: https://www.w3.org/TR/pub-manifest/#profile-types
             tests:
                 -   id: m4501
-                    description: No type set
+                    description: The 'type' of the manifest should be set; if missing, 'CreativeWork' is added by default
                     actions: The CreativeWork type should be added
                     errors: Validation error (no type)
+
                 -   id: m4502
-                    description: CreativeWork type is not set, only Book
+                    description: The 'type' value can be set to other values
                     actions: no change on the document
                     errors: None
+
         -   section: §4.6 Profile Conformance
             ref: https://www.w3.org/TR/pub-manifest/#profile-conformance
             tests:
                 -   id: m4601
-                    description: No conformance at all
-                    actions: Set profile to user agents default
+                    description: There should be a 'conformsTo' value in the manifest; a default is set if missing
+                    actions: Set 'profile' to user agents default
                     errors: Validation error on missing conformance
+
                 -   id: m4602
-                    description: No known conformance value
-                    actions: Set profile to user agents default
+                    description: The user agent has a set of profile references it understands, other values are ignored
+                    actions: Set 'profile' to user agents default
                     errors: Validation error on no known conformance
+
                 -   id: m4603
-                    description: Non-default conformance value
-                    actions: Set profile to the audiobooks profile value
+                    description: Non-default conformance value can be set that the user agent understands
+                    actions: Set 'profile' to the audiobooks profile value
                     errors: none
+
         -   section: §4.7.1.1 Abridged
             ref: https://www.w3.org/TR/pub-manifest/#abridged
             tests:
                 -   id: m471101
-                    description: Check invalid value for abridged
+                    description: The value of 'abridged' must be a boolean
                     actions: The value of abridged should be removed from the result
                     error: Validation error on abridged
+
         -   section: §4.7.1.2. Accessibility
             ref: https://www.w3.org/TR/pub-manifest/#accessibility
             tests:
                 -   id: m471201
-                    description: Check the simple a11y terms
+                    description: Simple a11y terms can also be set as single literals
                     actions: All values should be turned into arrays of literals
                     error: none
+
                 -   id: m471202
-                    description: Invalid accessModeSufficient value
+                    description: The value of 'accessModeSufficient' has a strict structure per schema.org
                     actions: The illegal value (visual) should be removed
                     error: Validation error on the incorrect data
+
                 -   id: m471203
-                    description: All values of accessModeSufficient are invalid
+                    description: The value of 'accessModeSufficient' has a strict structure per schema.org
                     actions: Both values being invalid, the key should be removed altogether
                     error: Validation error on the incorrect data
+
         -   section: §4.7.1.3 Address
             description: https://www.w3.org/TR/pub-manifest/#address
             tests:
                 -   id: m471301
-                    description: Turn relative URL into absolute
+                    description: All URL values can be relative, expanded via base
                     actions: Value of URL should be absolute
                     error: none
+
                 -   id: m471302
-                    description: Turn all relative URLs into absolute
-                    actions: Value of all URLs should be absolute
+                    description: All URL values can be relative, expanded via basee
+                    actions: Value of all URLs in the array should be absolute
                     error: none
+
                 -   id: m471303
-                    description: Invalid URL
+                    description: The values of the 'url' term must be a valid URL
                     actions: The invalid URL should be removed
                     error: Validation error on the URL
+
         -   section: §4.7.1.4 Canonical Identifier
             ref: https://www.w3.org/TR/pub-manifest/#canonical-identifier
             tests:
                 -   id: m471401
-                    description: Invalid URL for ID
+                    description: The value of 'id' must be a valid URL
                     actions: Value of invalid URL should be removed
                     error: Validation error on the URL
+
                 -   id: m471402
-                    description: Missing ID
+                    description: The manifest should contain a value for 'id'
                     actions: Output unchanged
                     error: Validation error on the missing ID
+
         -   section: §4.7.1.5 Creators
             ref: https://www.w3.org/TR/pub-manifest/#creators
             tests:
@@ -129,37 +150,45 @@ generic:
                     description: Persons can be provided as single strings
                     action: Array of names turned into an array of Persons
                     error: none
+
                 -   id: m471502
                     description: A single person is not required to be in an array
                     action: The single term is turned into a one-element Array of Persons
                     error: none
+
                 -   id: m471503
                     description: An entity should have a name
                     action: The entry without a name is removed from the array
                     error: validation error on missing name
+
                 -   id: m471504
-                    description: All creators, and only those, should have the same behaviors (copy of m47502)
+                    description: All creators defined in the specification, and only those, should have the same behaviors (copy of m47502)
                     action: All the defined creator values should be turned into array; this does not apply to extra term ("auteur")
                     error: validation error on missing name
+
         -   section: §4.7.1.6 Duration
             ref: https://www.w3.org/TR/pub-manifest/#duration
             tests:
                 -   id: m471601
-                    description: Incorrect duration format
+                    description: Duration should have the right ISO format
                     actions: Duration should be removed from output
                     errors: Validation error on incorrect duration format
+
                 -   id: m471602
-                    description: Correct duration
+                    description: Duration should have the right ISO format
                     actions: Duration value should be present in the output
                     errors: none
+
                 -   id: m471603
-                    description: Incorrect duration format in a linked resource
+                    description: Duration should have the right ISO format (also in a linked resource)
                     actions: Duration should be removed from output
                     errors: Validation error on incorrect duration format
+
                 -   id: m471604
-                    description: Correct duration format in a linked resource
+                    description: Duration should have the right ISO format (also in a linked resource)
                     actions: Duration value should be present in the output
                     errors: none
+
         -   section:
                 - §4.7.1.7 Last Modification Date
                 - §4.7.1.7 Publication Date
@@ -168,118 +197,141 @@ generic:
                 - https://www.w3.org/TR/pub-manifest/#publication-date
             tests:
                 -   id: m471701
-                    description: Incorrect date format
-                    actions: datePublished and dateModified should be removed from output
+                    description: Both 'datePublished' and 'dateModified' must be in ISO format
+                    actions: Both 'datePublished' and 'dateModified' are incorrect, and should be removed from output
                     errors: incorrect publication dates
+
                 -   id: m471702
-                    description: Correct date formats
-                    actions: datePublished and dateModified values should be present in the output
+                    description: Both 'datePublished' and 'dateModified' must be in ISO format
+                    actions: Both 'datePublished' and 'dateModified' are correct, and  should be present in the output
                     errors: none
+
         -   section: §4.7.1.9 Publication Language
             ref: https://www.w3.org/TR/pub-manifest/#inLanguage
             tests:
                 -   id: m471901
-                    description: Language value must be valid BCP47
-                    action: Value of inLanguage must be checked, and removed (as invalid)
+                    description: The value of 'inLanguage' must be valid BCP47
+                    action: Value of 'inLanguage' must be checked, and removed (as invalid)
                     error: validation error on incorrect BCP47 value
+
                 -   id: m471902
-                    description: Language value may be an array of valid BCP47
-                    action: Incorrect value must be removed from the array
+                    description: The value of 'inLanguage' value may be an array, each element a valid BCP47
+                    action: Incorrect values must be removed from the array
                     error: validation error on incorrect BCP47 value
+
         -   section: §4.7.1.10 Reading Progression Direction
             ref: https://www.w3.org/TR/pub-manifest/#reading-progression-direction
             tests:
                 -   id: m4711001
-                    description: readingProgression value must ltr or rtl
+                    description: The value of 'readingProgression' value must ltr or rtl
                     action: Value of readingProgression must be checked, and set to the default 'ltr'
                     error: validation error on incorrect direction
+
         -   section: §4.7.1.11 Title
             ref: https://www.w3.org/TR/pub-manifest/#pub-title
             tests:
                 -   id: m4711101
-                    description: title (ie, name) can be set as a simple string, as an abbreviation for localizable texts
-                    action: convert the simple string into an array of Localizable string
+                    description: The title (ie, 'name') can be set as a simple string, as an abbreviation for localizable texts
+                    action: Convert the simple string into an array of Localizable string
                     error: none
+
                 -   id: m4711102
-                    description: title (ie, name) is a natural language text, the global language and direction must be set
-                    action: convert the simple string into a text labeled as English, and direction ltr
+                    description: The title (ie, 'name') is a natural language text, the global language and direction must be set
+                    action: Convert the simple string into a text labeled as English, and direction ltr
                     error: none
+
                 -   id: m4711103
-                    description: title (ie, name) is an array of natural language texts, each can have its language and direction set individually
-                    action: convert the two items into arabic and direction rtl for the first, and english and ltr for the second
+                    description: The title (ie, 'name') is an array of natural language texts, each can have its language and direction set individually
+                    action: Convert the two items into arabic and direction rtl for the first, and english and ltr for the second
                     error: none
+
         -   section: §4.7.2.1 Default Reading Order
             ref: https://www.w3.org/TR/pub-manifest/#default-reading-order
             tests:
                 -   id: m472101
-                    description: A single resource is turned into an array of Linked Resources
-                    actions: readingOrder is an array of a single object, with the URL turned into absolute
+                    description: The 'readingOrder' can be expressed as a single relative URL
+                    actions: The input is converted into an array of a single object, with the 'url' set to the absolute URL
                     errors: none
+
                 -   id: m472102
-                    description: Invalid URL is removed from reading order list
-                    actions: The second entry in readingOrder is removed from the final list
+                    description: All URL-s must be valid; invalid values are removed
+                    actions: The second entry in 'readingOrder' is removed from the final list
                     errors: Validation error on invalid URL, and a validation error on removing the corresponding Linked Resource
+
                 -   id: m472103
-                    description: missing readingOrder is replaced by a default
-                    actions: A readingOrder is added with a single link set to the HTML Nodes Document.URL. If none provided, validation error
+                    description: A missing 'readingOrder' is replaced by a default
+                    actions: A 'readingOrder' is added with a single link set to the HTML Nodes Document.URL. If none provided, validation error
                     errors: Validation error on invalid URL, and a validation error on removing the corresponding Linked Resource
+
                 -   id: m472104
-                    description: Repeated URLs generate warning but stay in the list
+                    description: Duplicate URLs generate warning but stay in the list
                     actions: The output does not change
                     errors: Validation error on repeated URLs
+
         -   section: §4.7.2.2 Resource List
             ref: https://www.w3.org/TR/pub-manifest/#resource-list
             tests:
                 -   id: m472201
-                    description: A single resource is turned into an array of Linked Resources
-                    actions: Resources is an array of a single object, with the URL turned into absolute
+                    description: The 'resources' can be expressed as a single relative URL
+                    actions: The input is converted into an array of a single object, with the 'url' set to the absolute URL
                     errors: none
+
                 -   id: m472202
-                    description: Invalid URL is removed from resources
-                    actions: The second entry in resources is removed from the final list
+                    description: All URL-s in 'resources' must be valid; invalid values are removed
+                    actions: The second entry in 'resources' is removed from the final list
                     errors: Validation error on invalid URL
+
                 -   id: m472203
-                    description: duplicate URL-s removed from resources
-                    actions: The third entry in resources is removed from the final list
+                    description: Duplicate URL-s removed from 'resources'
+                    actions: The third entry in 'resources' is removed from the final list
                     errors: Validation error on repeated resources
+
         -   section: §4.7.2.3 Links
             ref: https://www.w3.org/TR/pub-manifest/#links
             tests:
                 -   id: m472301
-                    description: A single resource is turned into an array of Linked Resources
-                    actions: Links is an array of a single object, with the URL turned into absolute
+                    description: The 'links' can be expressed as a single relative URL
+                    actions: The input is converted into an array of a single object, with the 'url' set to the absolute URL
                     errors: none
+
                 -   id: m472302
-                    description: Invalid URL is removed from reading order list
-                    actions: The second entry in links is removed from the final list
+                    description: All URL-s in 'links' must be valid; invalid values are removed
+                    actions: The second entry in 'links' is removed from the final list
                     errors: Validation error on invalid URL
+
                 -   id: m472303
-                    description: entry in links appears in reading order
-                    actions: chapter1.html is removed from  links
+                    description: Entries in 'links' must not appear in 'readingOrder'
+                    actions: The 'chapter1.html' entry is removed from  'links'
                     errors: Validation error on a link appearing in bounds
+
                 -   id: m472304
-                    description: Entries in links appear in resources and in reading order, the latter with a fragment id. One of the entry in links is with a fragment, but should yield an error nevertheless
+                    description: All URL-s (ignoring fragment id-s) in 'links' must be disjoint from the ones in 'readingOrder' or 'resources'.
                     actions: The chapter1.html, link1.html, and link3.html are removed from  links
                     errors: Validation error on a link appearing in bounds
+
                 -   id: m472305
-                    description: Cover page, toc reference, or pagelist reference should not appear in links
+                    description: Cover page, toc reference, or pagelist reference should not appear in 'links'
                     actions: The links2.html, links4.html, and links6.html entries should be removed from the final links; others should be listed.
                     errors: Validation error on all three faulty links.
+
                 -   id: m472306
-                    description: No rel value set in a resource in links
+                    description: Each entry in 'links' should have its 'rel' value set
                     actions: Output should be unchanged
                     errors: Validation error on missing rel.
+
         -   section: §4.7.3.2 Additional Manifest Properties
             ref: https://www.w3.org/TR/pub-manifest/#extensibility-manifest-properties
             tests:
                 -   id: m473201
-                    description: Extra term values with, possibly, extra namespace declaration is accepted
+                    description: Extra term values with, possibly, extra namespace declaration must be accepted and added to the output
                     actions: The manifest should leave the extra values in the output
                     errors: none
+
                 -   id: m473202
-                    description: Extra term values in entities and in linked resources should be accepted in the output
+                    description: Extra term values in entities and in linked resources must be accepted and added to the output
                     actions: The manifest should leave the extra values in the output
                     errors: none
+
         -   section: §4.8.1.1 Cover
             ref: https://www.w3.org/TR/pub-manifest/#cover
             tests:
@@ -287,70 +339,82 @@ generic:
                     description: There should not be a repeated definition of cover
                     actions: The second occurrence of cover should be flagged
                     errors: Validation error on cover
+
                 -   id: m481102
-                    description: A cover referring to an image should have a name
+                    description: A cover referring to an image should have a 'name'
                     actions: Validation error generation
                     errors: Validation error on missing name
+
                 -   id: m481103
-                    description: A cover referring to a non-image without a name is fine
+                    description: A cover referring to a non-image without a 'name' is fine
                     actions: No change on the output
                     errors: None
+
         -   section: §4.8.1.2 Page List
             ref: https://www.w3.org/TR/pub-manifest/#page-list
             tests:
                 -   id: m481201
-                    description: There should not be a repeated definition of page list
+                    description: There should be only one page list
                     actions: The second occurrence of page list should be flagged
                     errors: Validation error on page list
+
         -   section: §4.8.1.3 Table of contents
             ref: https://www.w3.org/TR/pub-manifest/#pub-table-of-contents
             tests:
                 -   id: m481301
-                    description: There should not be a repeated definition of TOC
+                    description: There should be only one TOC reference
                     actions: The second occurrence of TOC should be flagged
                     errors: Validation error on TOC
+
         -   section: §5 Publication resources
             ref: https://www.w3.org/TR/pub-manifest/#publication-resources
             tests:
                 -   id: m501
-                    description: Calculation of bounds removes fragment identifiers
-                    actions: The uniqueResources array contains URL-s without fragments
+                    description: Calculation of bounds should include only the URL-s without fragment identifiers
+                    actions: The 'uniqueResources' array contains URL-s without fragments
                     errors: none
+
                 -   id: m502
-                    description: Calculation of bounds removes duplicate entries
-                    actions: The uniqueResources array contains unique URL-s only
+                    description: Each value on bounds should be different
+                    actions: The 'uniqueResources' array contains unique URL-s only
                     errors: none
+
         -   section: §6 Manifest Discovery
             ref: https://www.w3.org/TR/pub-manifest/#manifest-discovery
             tests:
                 -   id: m601
                     format: html
-                    description: Retrieve a manifest linked from the primary entry point
+                    description: The manifest may be linked via a 'link' element in the primary entry page
                     actions: The separate manifest file (link_601.jsonld) should be processed and generated
                     errors: none
+
                 -   id: m602
                     format: html
-                    description: Retrieve the manifest from the primary entry point's script element
+                    description: The manifest may embedded, via a 'script' element, into the primary entry page
                     actions: The embedded manifest should be processed and generated
                     errors: none
+
                 -   id: m603
                     format: html
-                    description: Reuse the title for the (missing) name entry
+                    description: If the 'name' entry is not present, the 'title' element of the primary entry page may be used instead
                     actions: The embedded manifest should be processed and generated with an additional name
                     errors: none
+
                 -   id: m604
                     format: html
-                    description: Reuse the title for the (missing) name entry, with language and direction set
+                    description: When reusing the title for 'name', the language and direction set in HTML is valid
                     actions: The embedded manifest should be processed and generated with an additional name
                     errors: none
+
                 -   id: m605
                     format: html
-                    description: Reuse the document URL to set the reading order
-                    actions: The embedded manifest should be processed and generated with the reading order set to the HTML's URL. The value should also be present in the uniqueResources array.
+                    description: If the 'readingOrder' is empty, the URL of the Primary Entry Page is used as a default
+                    actions: The embedded manifest should be processed and generated with the reading order set to the HTML's URL. The value should also be present in the 'uniqueResources' array.
                     errors: none
+
                 -   id: m606
                     format: html
-                    description: No name and no title to reuse
+                    description: There should be either a 'name' or a usable 'title' in the Primary Entry Page.
                     actions: A "no title" name should be added
                     errors: Validation error on a missing default title
 # Audiobooks
@@ -363,11 +427,11 @@ audio:
             ref: https://www.w3.org/TR/audiobooks/#audio-manifest
             tests:
                 -   id: a501
-                    description: Correct audio manifest
+                    description: Correct audio manifest, usable for testing overall setup
                     actions: Output the manifest
                     errors: none
                 -   id: a502
-                    description: Minimal correct audio manifest
+                    description: Minimally correct audio manifest, usable for testing overall setup
                     actions: Output the manifest
                     errors: none
         -   section: §4.2 Table of content
@@ -375,66 +439,77 @@ audio:
             tests:
                 -   id: a4201
                     format: html
-                    description: Link to external manifest with TOC
+                    description: A manifest may be linked via a 'link' element in the primary entry page, with the TOC reference in the manifest
                     actions: Output the manifest
                     errors: none
+
                 -   id: a4202
                     format: html
-                    description: Link to external manifest without TOC, but with a TOC in the PEP
+                    description: A manifest without a TOC may be linked via a 'link' element in the primary entry page but with a TOC within the HTML file
                     actions: Output the manifest
                     errors: none
+
                 -   id: a4203
                     format: html
-                    description: Link to embedded manifest with TOC
+                    description: A manifest may be embedded via a 'script' element in the primary entry page, with the TOC reference in the manifest
                     actions: Output the manifest
                     errors: none
+
                 -   id: a4204
                     format: html
-                    description: Link to embedded manifest without TOC, but with a TOC in the PEP
+                    description: A manifest without a TOC embedded via a 'script' element in the primary entry page but with a TOC within the HTML file
                     actions: Output the manifest
                     errors: none
+
                 -   id: a4205
                     format: html
-                    description: Link to embedded manifest without TOC, and with no TOC in the PEP either
+                    description: There must be a TOC, either in the manifest (linked or embedded) or in the Primary Entry Page
                     actions: Output the manifest
                     errors: Validation error on missing TOC
+
         -   section: §5.4 Publication types
             ref: https://www.w3.org/TR/audiobooks/#audio-type
             tests:
                 -   id: a5401
-                    description: No type set
+                    description: If no 'type' is set, the term 'Audiobook' is used
                     actions: The Audiobook type should be added
                     errors: Validation error (no type)
+
         -   section: §5.5 Properties
             ref: https://www.w3.org/TR/audiobooks/#audio-properties
             tests:
                 -   id: a5501
-                    description: Missing recommended properties
-                    actions: All the recommended properties in §5.4 should be reported as missing
+                    description: The audiobook defines a number of recommended properties (see §5.5)
+                    actions: All the recommended properties in §5.5 should be reported as missing
                     errors: Validation errors for the list of recommended properties
+
                 -   id: a5502
-                    description: Inconsistent duration values
+                    description: The global duration value, if present, should be the sum of the durations in the reading order
                     actions: Output the manifest
                     errors: Validation errors for inconsistent duration value
+
                 -   id: a5503
-                    description: Missing duration value in a Link Element
+                    description: All entries in `readingOrder` should have their duration values set
                     actions: Output the manifest
                     errors: Validation errors for the missing duration value
+
         -   section: §5.6 Default reading order
             ref: https://www.w3.org/TR/audiobooks/#audio-readingorder
             tests:
                 -   id: a5601
-                    description: No audio object in reading order
+                    description: The 'readingOrder' must have at least one audio object
                     actions: Empty manifest should be returned
-                    errors: Fatal errors
+                    errors: Fatal error on missing audio file
+
                 -   id: a5602
-                    description: Non-audio object in the reading order
+                    description: All 'readingOrder' values must be an audio object
                     actions: The manifest should be returned with last-but-one entry removed (only audio object remain)
                     errors: Validation error on that extra item
+
         -   section: §5.7 Resource List
             ref: https://www.w3.org/TR/audiobooks/#audio-resourcelist
             tests:
                 -   id: a5701
-                    description: Missing cover page
-                    actions: Links with rel including cover should be reported as missing
+                    description: A cover page should be set
+                    actions: Links with 'rel' including cover should be reported as missing
                     errors: Validation errors for missing cover
