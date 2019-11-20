@@ -80,49 +80,67 @@ generic:
                 -   id: m471101
                     description: Check invalid value for abridged
                     actions: The value of abridged should be removed from the result
-                    Expected error: Validation error on abridged
+                    error: Validation error on abridged
         -   section: §4.7.1.2. Accessibility
             ref: https://www.w3.org/TR/pub-manifest/#accessibility
             tests:
                 -   id: m471201
                     description: Check the simple a11y terms
                     actions: All values should be turned into arrays of literals
-                    Expected error: none
+                    error: none
                 -   id: m471202
                     description: Invalid accessModeSufficient value
                     actions: The illegal value (visual) should be removed
-                    Expected error: Validation error on the incorrect data
+                    error: Validation error on the incorrect data
                 -   id: m471203
                     description: All values of accessModeSufficient are invalid
                     actions: Both values being invalid, the key should be removed altogether
-                    Expected error: Validation error on the incorrect data
+                    error: Validation error on the incorrect data
         -   section: §4.7.1.3 Address
             description: https://www.w3.org/TR/pub-manifest/#address
             tests:
                 -   id: m471301
                     description: Turn relative URL into absolute
                     actions: Value of URL should be absolute
-                    Expected error: none
+                    error: none
                 -   id: m471302
                     description: Turn all relative URLs into absolute
                     actions: Value of all URLs should be absolute
-                    Expected error: none
+                    error: none
                 -   id: m471303
                     description: Invalid URL
                     actions: The invalid URL should be removed
-                    Expected error: Validation error on the URL
+                    error: Validation error on the URL
         -   section: §4.7.1.4 Canonical Identifier
             ref: https://www.w3.org/TR/pub-manifest/#canonical-identifier
             tests:
                 -   id: m471401
                     description: Invalid URL for ID
                     actions: Value of invalid URL should be removed
-                    Expected error: Validation error on the URL
+                    error: Validation error on the URL
                 -   id: m471402
                     description: Missing ID
                     actions: Output unchanged
-                    Expected error: Validation error on the missing ID
+                    error: Validation error on the missing ID
         -   section: §4.7.1.5 Creators
+            ref: https://www.w3.org/TR/pub-manifest/#creators
+            tests:
+                -   id: m471501
+                    description: Persons can be provided as single strings
+                    action: Array of names turned into an array of Persons
+                    error: none
+                -   id: m471502
+                    description: A single person is not required to be in an array
+                    action: The single term is turned into a one-element Array of Persons
+                    error: none
+                -   id: m471503
+                    description: An entity should have a name
+                    action: The entry without a name is removed from the array
+                    error: validation error on missing name
+                -   id: m471504
+                    description: All creators, and only those, should have the same behaviors (copy of m47502)
+                    action: All the defined creator values should be turned into array; this does not apply to extra term ("auteur")
+                    error: validation error on missing name
         -   section: §4.7.1.6 Duration
             ref: https://www.w3.org/TR/pub-manifest/#duration
             tests:
@@ -157,9 +175,9 @@ generic:
                     description: Correct date formats
                     actions: datePublished and dateModified values should be present in the output
                     errors: none
-        -   section: §4.7.1.9 Publication Language
-        -   section: §4.7.1.10 Reading Progression Direction
-        -   section: §4.7.1.11 Title
+#        -   section: §4.7.1.9 Publication Language
+#        -   section: §4.7.1.10 Reading Progression Direction
+#        -   section: §4.7.1.11 Title
         -   section: §4.7.2.1 Default Reading Order
             ref: https://www.w3.org/TR/pub-manifest/#default-reading-order
             tests:
