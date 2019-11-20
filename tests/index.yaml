@@ -193,7 +193,21 @@ generic:
                     description: readingProgression value must ltr or rtl
                     action: Value of readingProgression must be checked, and set to the default 'ltr'
                     error: validation error on incorrect direction
-#        -   section: §4.7.1.11 Title
+        -   section: §4.7.1.11 Title
+            ref: https://www.w3.org/TR/pub-manifest/#pub-title
+            tests:
+                -   id: m4711101
+                    description: title (ie, name) can be set as a simple string, as an abbreviation for localizable texts
+                    action: convert the simple string into an array of Localizable string
+                    error: none
+                -   id: m4711102
+                    description: title (ie, name) is a natural language text, the global language and direction must be set
+                    action: convert the simple string into a text labeled as English, and direction ltr
+                    error: none
+                -   id: m4711103
+                    description: title (ie, name) is an array of natural language texts, each can have its language and direction set individually
+                    action: convert the two items into arabic and direction rtl for the first, and english and ltr for the second
+                    error: none
         -   section: §4.7.2.1 Default Reading Order
             ref: https://www.w3.org/TR/pub-manifest/#default-reading-order
             tests:
