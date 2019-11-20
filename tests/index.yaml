@@ -6,297 +6,349 @@ generic:
     # This entry should be changed to the URL referring to this directory; will be used to generate the final URL-s for each test
     url: http://localhost:8001/LocalData/github/Publishing/PubManifest/tests/generic/
     tests:
-        -   section: §2. Publication Manifest
+        -   section: §4. Publication Manifest
             ref: 'https://www.w3.org/TR/pub-manifest/#manifest'
             tests:
-                -   id: m0
+                -   id: m401
                     description: Basic, correct manifest, usable to test the local setup
                     actions: Output the manifest
                     errors: none
-        -   section: §2.4 Manifest contexts
+        -   section: §4.3 Manifest contexts
             ref: https://www.w3.org/TR/pub-manifest/#manifest-context
             tests:
-                -   id: m2401
+                -   id: m4301
                     description: Missing Context
                     actions: Return empty
                     errors: Fatal error on missing context
-                -   id: m2402
+                -   id: m4302
                     description: context incomplete
                     actions: Return empty
                     errors: Fatal error on missing context
 
-        -   section: §2.5 Manifest Language and Direction
+        -   section: §4.4 Manifest Language and Direction
             ref: https://www.w3.org/TR/pub-manifest/#manifest-lang-dir
             tests:
-                -   id: m2501
+                -   id: m4401
                     description: Set valid global language value
                     actions: Language en set for all strings
                     errors:  none
-                -   id: m2502
+                -   id: m4402
                     description: Set invalid global language value
                     actions: No effect on output (value ignored)
                     errors: Validation error on incorrect BCP47 value
-                -   id: m2503
+                -   id: m4403
                     description: Set valid global direction value
                     actions: Direction ltr set for all strings
                     errors: none
-                -   id: m2504
+                -   id: m4404
                     description: Set invalid global direction value
                     actions: No effect on output (value ignored)
                     errors: Validation error on incorrect base direction value
-                -   id: m2505
+                -   id: m4405
                     description: Out of several (valid) language and direction setting, pick the last one
                     actions: Strings should be set with language:en and direction:ltr
                     errors: none
-        -   section: §2.6 Publication types
+        -   section: §4.5 Publication types
             ref: https://www.w3.org/TR/pub-manifest/#profile-types
             tests:
-                -   id: m2601
+                -   id: m4501
                     description: No type set
                     actions: The CreativeWork type should be added
                     errors: Validation error (no type)
-                -   id: m2602
+                -   id: m4502
                     description: CreativeWork type is not set, only Book
                     actions: no change on the document
                     errors: None
-        -   section: §2.7 Profile Conformance
+        -   section: §4.6 Profile Conformance
             ref: https://www.w3.org/TR/pub-manifest/#profile-conformance
             tests:
-                -   id: m2701
+                -   id: m4601
                     description: No conformance at all
                     actions: Set profile to user agents default
                     errors: Validation error on missing conformance
-                -   id: m2702
+                -   id: m4602
                     description: No known conformance value
                     actions: Set profile to user agents default
                     errors: Validation error on no known conformance
-                -   id: m2703
+                -   id: m4603
                     description: Non-default conformance value
                     actions: Set profile to the audiobooks profile value
                     errors: none
-        -   section: §2.8.1.1 Abridged
+        -   section: §4.7.1.1 Abridged
             ref: https://www.w3.org/TR/pub-manifest/#abridged
             tests:
-                -   id: m281101
+                -   id: m471101
                     description: Check invalid value for abridged
                     actions: The value of abridged should be removed from the result
-                    Expected error: Validation error on abridged
-        -   section: §2.8.1.2. Accessibility
+                    error: Validation error on abridged
+        -   section: §4.7.1.2. Accessibility
             ref: https://www.w3.org/TR/pub-manifest/#accessibility
             tests:
-                -   id: m281201
+                -   id: m471201
                     description: Check the simple a11y terms
                     actions: All values should be turned into arrays of literals
-                    Expected error: none
-                -   id: m281202
+                    error: none
+                -   id: m471202
                     description: Invalid accessModeSufficient value
                     actions: The illegal value (visual) should be removed
-                    Expected error: Validation error on the incorrect data
-                -   id: m281203
+                    error: Validation error on the incorrect data
+                -   id: m471203
                     description: All values of accessModeSufficient are invalid
                     actions: Both values being invalid, the key should be removed altogether
-                    Expected error: Validation error on the incorrect data
-        -   section: §2.8.1.3 Address
+                    error: Validation error on the incorrect data
+        -   section: §4.7.1.3 Address
             description: https://www.w3.org/TR/pub-manifest/#address
             tests:
-                -   id: m281301
+                -   id: m471301
                     description: Turn relative URL into absolute
                     actions: Value of URL should be absolute
-                    Expected error: none
-                -   id: m281302
+                    error: none
+                -   id: m471302
                     description: Turn all relative URLs into absolute
                     actions: Value of all URLs should be absolute
-                    Expected error: none
-                -   id: m281303
+                    error: none
+                -   id: m471303
                     description: Invalid URL
                     actions: The invalid URL should be removed
-                    Expected error: Validation error on the URL
-        -   section: §2.8.1.4 Canonical Identifier
+                    error: Validation error on the URL
+        -   section: §4.7.1.4 Canonical Identifier
             ref: https://www.w3.org/TR/pub-manifest/#canonical-identifier
             tests:
-                -   id: m281401
+                -   id: m471401
                     description: Invalid URL for ID
                     actions: Value of invalid URL should be removed
-                    Expected error: Validation error on the URL
-                -   id: m281402
+                    error: Validation error on the URL
+                -   id: m471402
                     description: Missing ID
                     actions: Output unchanged
-                    Expected error: Validation error on the missing ID
-        -   section: §2.8.1.6 Duration
+                    error: Validation error on the missing ID
+        -   section: §4.7.1.5 Creators
+            ref: https://www.w3.org/TR/pub-manifest/#creators
+            tests:
+                -   id: m471501
+                    description: Persons can be provided as single strings
+                    action: Array of names turned into an array of Persons
+                    error: none
+                -   id: m471502
+                    description: A single person is not required to be in an array
+                    action: The single term is turned into a one-element Array of Persons
+                    error: none
+                -   id: m471503
+                    description: An entity should have a name
+                    action: The entry without a name is removed from the array
+                    error: validation error on missing name
+                -   id: m471504
+                    description: All creators, and only those, should have the same behaviors (copy of m47502)
+                    action: All the defined creator values should be turned into array; this does not apply to extra term ("auteur")
+                    error: validation error on missing name
+        -   section: §4.7.1.6 Duration
             ref: https://www.w3.org/TR/pub-manifest/#duration
             tests:
-                -   id: m281601
+                -   id: m471601
                     description: Incorrect duration format
                     actions: Duration should be removed from output
                     errors: Validation error on incorrect duration format
-                -   id: m281602
+                -   id: m471602
                     description: Correct duration
                     actions: Duration value should be present in the output
                     errors: none
-                -   id: m281603
+                -   id: m471603
                     description: Incorrect duration format in a linked resource
                     actions: Duration should be removed from output
                     errors: Validation error on incorrect duration format
-                -   id: m281604
+                -   id: m471604
                     description: Correct duration format in a linked resource
                     actions: Duration value should be present in the output
                     errors: none
         -   section:
-                - §2.8.1.7 Last Modification Date
-                - §2.8.1.7 Publication Date
+                - §4.7.1.7 Last Modification Date
+                - §4.7.1.7 Publication Date
             ref:
                 - https://www.w3.org/TR/pub-manifest/#last-modification-date
                 - https://www.w3.org/TR/pub-manifest/#publication-date
             tests:
-                -   id: m281701
+                -   id: m471701
                     description: Incorrect date format
                     actions: datePublished and dateModified should be removed from output
                     errors: incorrect publication dates
-                -   id: m281702
+                -   id: m471702
                     description: Correct date formats
                     actions: datePublished and dateModified values should be present in the output
                     errors: none
-        -   section: §2.8.2.1 Default Reading Order
+        -   section: §4.7.1.9 Publication Language
+            ref: https://www.w3.org/TR/pub-manifest/#inLanguage
+            tests:
+                -   id: m471901
+                    description: Language value must be valid BCP47
+                    action: Value of inLanguage must be checked, and removed (as invalid)
+                    error: validation error on incorrect BCP47 value
+                -   id: m471902
+                    description: Language value may be an array of valid BCP47
+                    action: Incorrect value must be removed from the array
+                    error: validation error on incorrect BCP47 value
+        -   section: §4.7.1.10 Reading Progression Direction
+            ref: https://www.w3.org/TR/pub-manifest/#reading-progression-direction
+            tests:
+                -   id: m4711001
+                    description: readingProgression value must ltr or rtl
+                    action: Value of readingProgression must be checked, and set to the default 'ltr'
+                    error: validation error on incorrect direction
+        -   section: §4.7.1.11 Title
+            ref: https://www.w3.org/TR/pub-manifest/#pub-title
+            tests:
+                -   id: m4711101
+                    description: title (ie, name) can be set as a simple string, as an abbreviation for localizable texts
+                    action: convert the simple string into an array of Localizable string
+                    error: none
+                -   id: m4711102
+                    description: title (ie, name) is a natural language text, the global language and direction must be set
+                    action: convert the simple string into a text labeled as English, and direction ltr
+                    error: none
+                -   id: m4711103
+                    description: title (ie, name) is an array of natural language texts, each can have its language and direction set individually
+                    action: convert the two items into arabic and direction rtl for the first, and english and ltr for the second
+                    error: none
+        -   section: §4.7.2.1 Default Reading Order
             ref: https://www.w3.org/TR/pub-manifest/#default-reading-order
             tests:
-                -   id: m282101
+                -   id: m472101
                     description: A single resource is turned into an array of Linked Resources
                     actions: readingOrder is an array of a single object, with the URL turned into absolute
                     errors: none
-                -   id: m282102
+                -   id: m472102
                     description: Invalid URL is removed from reading order list
                     actions: The second entry in readingOrder is removed from the final list
                     errors: Validation error on invalid URL, and a validation error on removing the corresponding Linked Resource
-                -   id: m282103
+                -   id: m472103
                     description: missing readingOrder is replaced by a default
                     actions: A readingOrder is added with a single link set to the HTML Nodes Document.URL. If none provided, validation error
                     errors: Validation error on invalid URL, and a validation error on removing the corresponding Linked Resource
-                -   id: m282104
+                -   id: m472104
                     description: Repeated URLs generate warning but stay in the list
                     actions: The output does not change
                     errors: Validation error on repeated URLs
-        -   section: §2.8.2.2 Resource List
+        -   section: §4.7.2.2 Resource List
             ref: https://www.w3.org/TR/pub-manifest/#resource-list
             tests:
-                -   id: m282201
+                -   id: m472201
                     description: A single resource is turned into an array of Linked Resources
                     actions: Resources is an array of a single object, with the URL turned into absolute
                     errors: none
-                -   id: m282202
+                -   id: m472202
                     description: Invalid URL is removed from resources
                     actions: The second entry in resources is removed from the final list
                     errors: Validation error on invalid URL
-                -   id: m282203
+                -   id: m472203
                     description: duplicate URL-s removed from resources
                     actions: The third entry in resources is removed from the final list
-                    errors: Validation error on invalid URL
-        -   section: §2.8.2.3 Links
+                    errors: Validation error on repeated resources
+        -   section: §4.7.2.3 Links
             ref: https://www.w3.org/TR/pub-manifest/#links
             tests:
-                -   id: m282301
+                -   id: m472301
                     description: A single resource is turned into an array of Linked Resources
                     actions: Links is an array of a single object, with the URL turned into absolute
                     errors: none
-                -   id: m282302
+                -   id: m472302
                     description: Invalid URL is removed from reading order list
                     actions: The second entry in links is removed from the final list
                     errors: Validation error on invalid URL
-                -   id: m282303
+                -   id: m472303
                     description: entry in links appears in reading order
                     actions: chapter1.html is removed from  links
                     errors: Validation error on a link appearing in bounds
-                -   id: m282304
+                -   id: m472304
                     description: Entries in links appear in resources and in reading order, the latter with a fragment id. One of the entry in links is with a fragment, but should yield an error nevertheless
                     actions: The chapter1.html, link1.html, and link3.html are removed from  links
                     errors: Validation error on a link appearing in bounds
-                -   id: m282305
+                -   id: m472305
                     description: Cover page, toc reference, or pagelist reference should not appear in links
                     actions: The links2.html, links4.html, and links6.html entries should be removed from the final links; others should be listed.
                     errors: Validation error on all three faulty links.
-                -   id: m282306
+                -   id: m472306
                     description: No rel value set in a resource in links
                     actions: Output should be unchanged
-                    errors: Validation error on missing link.
-        -   section: §2.8.3.2 Additional Manifest Properties
+                    errors: Validation error on missing rel.
+        -   section: §4.7.3.2 Additional Manifest Properties
             ref: https://www.w3.org/TR/pub-manifest/#extensibility-manifest-properties
             tests:
-                -   id: m283201
+                -   id: m473201
                     description: Extra term values with, possibly, extra namespace declaration is accepted
                     actions: The manifest should leave the extra values in the output
                     errors: none
-                -   id: m283202
+                -   id: m473202
                     description: Extra term values in entities and in linked resources should be accepted in the output
                     actions: The manifest should leave the extra values in the output
                     errors: none
-        -   section: §2.9.1.1 Cover
+        -   section: §4.8.1.1 Cover
             ref: https://www.w3.org/TR/pub-manifest/#cover
             tests:
-                -   id: m291101
+                -   id: m481101
                     description: There should not be a repeated definition of cover
                     actions: The second occurrence of cover should be flagged
                     errors: Validation error on cover
-                -   id: m291102
+                -   id: m481102
                     description: A cover referring to an image should have a name
                     actions: Validation error generation
                     errors: Validation error on missing name
-                -   id: m291103
+                -   id: m481103
                     description: A cover referring to a non-image without a name is fine
                     actions: No change on the output
                     errors: None
-        -   section: §2.9.1.2 Page List
+        -   section: §4.8.1.2 Page List
             ref: https://www.w3.org/TR/pub-manifest/#page-list
             tests:
-                -   id: m291201
+                -   id: m481201
                     description: There should not be a repeated definition of page list
                     actions: The second occurrence of page list should be flagged
                     errors: Validation error on page list
-        -   section: §2.9.1.3 Page List
+        -   section: §4.8.1.3 Table of contents
             ref: https://www.w3.org/TR/pub-manifest/#pub-table-of-contents
             tests:
-                -   id: m291301
+                -   id: m481301
                     description: There should not be a repeated definition of TOC
                     actions: The second occurrence of TOC should be flagged
                     errors: Validation error on TOC
-        -   section: §3 Publication resources
+        -   section: §5 Publication resources
             ref: https://www.w3.org/TR/pub-manifest/#publication-resources
             tests:
-                -   id: m301
+                -   id: m501
                     description: Calculation of bounds removes fragment identifiers
                     actions: The uniqueResources array contains URL-s without fragments
                     errors: none
-                -   id: m302
+                -   id: m502
                     description: Calculation of bounds removes duplicate entries
                     actions: The uniqueResources array contains unique URL-s only
                     errors: none
-        -   section: §4 Manifest Discovery
+        -   section: §6 Manifest Discovery
             ref: https://www.w3.org/TR/pub-manifest/#manifest-discovery
             tests:
-                -   id: m401
+                -   id: m601
                     format: html
                     description: Retrieve a manifest linked from the primary entry point
-                    actions: The separate manifest file (link_401.jsonld) should be processed and generated
+                    actions: The separate manifest file (link_601.jsonld) should be processed and generated
                     errors: none
-                -   id: m402
+                -   id: m602
                     format: html
                     description: Retrieve the manifest from the primary entry point's script element
                     actions: The embedded manifest should be processed and generated
                     errors: none
-                -   id: m403
+                -   id: m603
                     format: html
                     description: Reuse the title for the (missing) name entry
                     actions: The embedded manifest should be processed and generated with an additional name
                     errors: none
-                -   id: m404
+                -   id: m604
                     format: html
                     description: Reuse the title for the (missing) name entry, with language and direction set
                     actions: The embedded manifest should be processed and generated with an additional name
                     errors: none
-                -   id: m405
+                -   id: m605
                     format: html
                     description: Reuse the document URL to set the reading order
                     actions: The embedded manifest should be processed and generated with the reading order set to the HTML's URL. The value should also be present in the uniqueResources array.
                     errors: none
-                -   id: m406
+                -   id: m606
                     format: html
                     description: No name and no title to reuse
                     actions: A "no title" name should be added
@@ -310,11 +362,11 @@ audio:
         -   section: §5. Audio Manifest
             ref: https://www.w3.org/TR/audiobooks/#audio-manifest
             tests:
-                -   id: a0
+                -   id: a501
                     description: Correct audio manifest
                     actions: Output the manifest
                     errors: none
-                -   id: a1
+                -   id: a502
                     description: Minimal correct audio manifest
                     actions: Output the manifest
                     errors: none

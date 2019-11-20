@@ -97,7 +97,7 @@ export function check_language_tag(value: string, logger: Logger): string {
     } else if (_.isString(value) && bcp_pattern.test(value)) {
         return value;
     } else {
-        logger.log_strong_validation_error(`Invalid BCP47 format for language tag ${value}`);
+        logger.log_strong_validation_error(`Invalid BCP47 format for language tag: "${value}"`);
         return undefined;
     }
 }
@@ -115,7 +115,7 @@ export function check_direction_tag(value: string, logger: Logger): string {
     } else if (_.isString(value) && (value === 'ltr' || value === 'rtl')) {
         return value;
     } else {
-        logger.log_strong_validation_error(`Invalid base direction tag (${value})`);
+        logger.log_strong_validation_error(`Invalid base direction tag: "${value}"`);
         return undefined;
     }
 }
