@@ -23,6 +23,7 @@ import { URL } from '../src/manifest';
 // All calls use these two profiles in the caller
 import { Profile, default_profile } from '../src/lib/profile';
 import { audiobook_profile } from '../src/audiobooks';
+import * as _ from 'underscore';
 
 const test_profiles: Profile[] = [audiobook_profile, default_profile];
 
@@ -144,7 +145,33 @@ async function run_test(url: URL) {
     }
 }
 
+
+interface Scores {
+    [index: string]: boolean
+}
+
+function generate_scores(all_tests: FlattenedSuite): Scores {
+    let retval: Scores = {};
+    const keys = _.allKeys(all_tests);
+    keys.forEach((key: string): void => {
+        retval[key] = true;
+    })
+    return retval;
+}
+
+
+
 // This is the local test run
-const tests = get_tests('tests/index.yaml');
-const test_index = process.argv[2] || "m0";
-run_test(tests[test_index].url);
+const tests: FlattenedSuite = get_tests('tests/index.yaml');
+
+if (process.argv && process.argv.length >= 2) {
+    if (process.argv[2] === '-s') {
+        // print scores
+        const scores = generate_scores(tests);
+        console.log(yaml.stringify(scores, 2, 4));
+    } else {
+        run_test(tests[process.argv[2]].url);
+    }
+} else {
+    run_test(tests['m4.01'].url);
+}
