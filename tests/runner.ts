@@ -61,7 +61,7 @@ interface SectionTests {
     section: string | string[];
 
     /** URL(s) of the sections */
-    ref: URL | URL[];
+    href: URL | URL[];
 
     /** The tests themselves */
     tests: Test[];
@@ -74,7 +74,7 @@ interface DocumentTests {
     title: string;
 
     /** Base URL; it is combined with the `id` value in [[Test]] to set the final URL of the tests */
-    url: URL;
+    href: URL;
 
     tests: SectionTests[];
 }
@@ -90,7 +90,7 @@ interface TestSuite {
     generic: DocumentTests;
 
     /** Specific tests for the audiobook tests */
-    audio: DocumentTests;
+    audiobooks: DocumentTests;
 }
 
 /**
@@ -107,7 +107,14 @@ interface FlattenedSuite {
  */
 function get_tests(file_name: string): FlattenedSuite {
     const process_doc_tests = (doc_test: DocumentTests) => {
-        const base = doc_test.url;
+        let base: string;
+        // For local use, the base should be set to localhost...
+        if (doc_test.href === 'https://www.w3.org/TR/pub-manifest/') {
+            base = 'http://localhost:8001/LocalData/github/Publishing/PubManifest/tests/generic/';
+        } else {
+            base = 'http://localhost:8001/LocalData/github/Publishing/PubManifest/tests/audiobooks/'
+        }
+
         doc_test.tests.forEach((section_tests: SectionTests): void => {
             section_tests.tests.forEach((test: Test): void => {
                 test.url = (test.format && test.format === 'html') ? `${base}test_${test.id}.html` : `${base}test_${test.id}.jsonld`;
@@ -116,13 +123,13 @@ function get_tests(file_name: string): FlattenedSuite {
         });
     }
 
-    const test_suite: TestSuite = yaml.parse(fs.readFileSync(file_name, 'utf-8'));
+    const test_suite: TestSuite = JSON.parse(fs.readFileSync(file_name, 'utf-8'));
     // console.log(JSON.stringify(test_suite, null, 4)); process.exit(0)
 
 
     const flattened_suite: FlattenedSuite = {};
     process_doc_tests(test_suite.generic);
-    process_doc_tests(test_suite.audio);
+    process_doc_tests(test_suite.audiobooks);
     return flattened_suite;
 }
 
@@ -146,12 +153,11 @@ async function run_test(url: URL) {
 }
 
 
-interface Scores {
-    [index: string]: boolean
-}
-
-function generate_scores(all_tests: FlattenedSuite): Scores {
-    let retval: Scores = {};
+function generate_scores(all_tests: FlattenedSuite): any {
+    let retval = {} as any;
+    retval.$name        = "PubManifest";
+    retval.$description = "Test implementation of the algorithm in Typescript.";
+    retval.$href        = "https://github.com/iherman/PubManifest/";
     const keys = _.allKeys(all_tests);
     keys.forEach((key: string): void => {
         retval[key] = true;
@@ -159,16 +165,14 @@ function generate_scores(all_tests: FlattenedSuite): Scores {
     return retval;
 }
 
-
-
 // This is the local test run
-const tests: FlattenedSuite = get_tests('tests/index.yaml');
+const tests: FlattenedSuite = get_tests('tests/index.json');
 
 if (process.argv && process.argv.length >= 2) {
     if (process.argv[2] === '-s') {
         // print scores
         const scores = generate_scores(tests);
-        console.log(yaml.stringify(scores, 2, 4));
+        console.log(JSON.stringify(scores, null, 4));
     } else {
         run_test(tests[process.argv[2]].url);
     }
