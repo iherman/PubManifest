@@ -131,17 +131,14 @@ export const audiobook_profile: Profile = {
         };
 
         /* Step 1.1, check if the reading order is not empty and contains at least one audio file */
-        if (!data.readingOrder || data.readingOrder.length === 0) {
+        if (data.readingOrder === undefined) {
             // For an audiobook this is a fatal error
             Global.logger.log_fatal_error('No reading order for an audiobook');
-            return null;
-        } else if (data.readingOrder.find(isAudio) === undefined) {
-            Global.logger.log_fatal_error('No audio file in reading order')
             return null;
         }
 
         /* Step 1.2, Remove non audio files from the reading order */
-        data.readingOrder = data.readingOrder.map( (item: LinkedResource) => {
+        data.readingOrder = data.readingOrder.map((item: LinkedResource) => {
             if (isAudio(item)) {
                 return item;
             } else {
@@ -149,6 +146,12 @@ export const audiobook_profile: Profile = {
                 return undefined;
             }
         }).filter((item) => item !== undefined);
+
+        /* Step 1.3, if reading order becomes empty after the previous step, this is a fatal error */
+        if (data.readingOrder.length === 0) {
+            Global.logger.log_fatal_error('Empty reading order for an audiobook');
+            return null;
+        }
 
         /** Step 2, set the default type, if necessary */
         if (!data.type) {
@@ -163,7 +166,7 @@ export const audiobook_profile: Profile = {
             }
         })
 
-        /** Step 3, check the recommended resources */
+        /** Step 4, check the recommended resources */
         {
             const res1 = (data.readingOrder) ? data.readingOrder : [];
             const res2 = (data.resources) ? data.resources : [];
@@ -175,7 +178,7 @@ export const audiobook_profile: Profile = {
             }
         }
 
-        /** Step 4, check the duration values */
+        /** Step 5, check the duration values */
         {
             // This is the duration in milliseconds!
             let resourceDuration: number = 0;
