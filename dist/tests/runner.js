@@ -1,10 +1,14 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
- * Simple test runner. It is based on the test manifest stored in [index.yaml](https://github.com/iherman/PubManifest/tests/index.yaml),
+ * Simple test runner. It is based on the test manifest stored in [index.json](https://github.com/iherman/PubManifest/tests/index.json),
  * and uses (for the time being) a rudimentary CLI: the runner should be invoked with the test id, which executes [[process_manifest]] on that test entry,
  * displays the resulting processed manifest, as well as the validation and fatal errors as defined in the specification.
  *
@@ -12,7 +16,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * core [publication manifest spec](https://www.w3.org/TR/pub-manifest/), and a separate audiobooks one, for tests related to the audiobooks extension, specified
  * by the [audiobooks profile spec](https://www.w3.org/TR/audiobooks/).
  *
- * The structure of the yaml is organized by separate test suites for the two categories (see [[TestSuite]], referring to [[DocumentTests]]).
+ * The structure of the JSON is organized by separate test suites for the two categories (see [[TestSuite]], referring to [[DocumentTests]]).
  * For each document there are some metadata and a series of section tests (see [[SectionTests]]), corresponding to some sections in the specifications. Finally,
  * each section tests is a series of individual tests (see [[Test]]).
  *
@@ -20,12 +24,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *
  */
 /** The configuration file is in YAML, need this input */
-const yamljs_1 = __importDefault(require("yamljs"));
 const fs = require('fs');
 const process_1 = require("../src/process");
 // All calls use these two profiles in the caller
 const profile_1 = require("../src/lib/profile");
 const audiobooks_1 = require("../src/audiobooks");
+const _ = __importStar(require("underscore"));
 const test_profiles = [audiobooks_1.audiobook_profile, profile_1.default_profile];
 ;
 /**
@@ -35,7 +39,14 @@ const test_profiles = [audiobooks_1.audiobook_profile, profile_1.default_profile
  */
 function get_tests(file_name) {
     const process_doc_tests = (doc_test) => {
-        const base = doc_test.url;
+        let base;
+        // For local use, the base should be set to localhost...
+        if (doc_test.href === 'https://www.w3.org/TR/pub-manifest/') {
+            base = 'http://localhost:8001/LocalData/github/Publishing/PubManifest/tests/generic/';
+        }
+        else {
+            base = 'http://localhost:8001/LocalData/github/Publishing/PubManifest/tests/audiobooks/';
+        }
         doc_test.tests.forEach((section_tests) => {
             section_tests.tests.forEach((test) => {
                 test.url = (test.format && test.format === 'html') ? `${base}test_${test.id}.html` : `${base}test_${test.id}.jsonld`;
@@ -43,11 +54,11 @@ function get_tests(file_name) {
             });
         });
     };
-    const test_suite = yamljs_1.default.parse(fs.readFileSync(file_name, 'utf-8'));
+    const test_suite = JSON.parse(fs.readFileSync(file_name, 'utf-8'));
     // console.log(JSON.stringify(test_suite, null, 4)); process.exit(0)
     const flattened_suite = {};
     process_doc_tests(test_suite.generic);
-    process_doc_tests(test_suite.audio);
+    process_doc_tests(test_suite.audiobooks);
     return flattened_suite;
 }
 /**
@@ -68,8 +79,30 @@ async function run_test(url) {
         process.exit(1);
     }
 }
+function generate_scores(all_tests) {
+    let retval = {};
+    retval.$name = "PubManifest";
+    retval.$description = "Test implementation of the algorithm in Typescript.";
+    retval.$href = "https://github.com/iherman/PubManifest/";
+    const keys = _.allKeys(all_tests);
+    keys.forEach((key) => {
+        retval[key] = true;
+    });
+    return retval;
+}
 // This is the local test run
-const tests = get_tests('tests/index.yaml');
-const test_index = process.argv[2] || "m0";
-run_test(tests[test_index].url);
+const tests = get_tests('tests/index.json');
+if (process.argv && process.argv.length >= 2) {
+    if (process.argv[2] === '-s') {
+        // print scores
+        const scores = generate_scores(tests);
+        console.log(JSON.stringify(scores, null, 4));
+    }
+    else {
+        run_test(tests[process.argv[2]].url);
+    }
+}
+else {
+    run_test(tests['m4.01'].url);
+}
 //# sourceMappingURL=runner.js.map

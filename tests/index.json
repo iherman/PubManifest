@@ -238,14 +238,8 @@
                 ]
             },
             {
-                "section": [
-                    "§4.7.1.7 Last Modification Date",
-                    "§4.7.1.8 Publication Date"
-                ],
-                "href": [
-                    "https://www.w3.org/TR/pub-manifest/#last-modification-date",
-                    "https://www.w3.org/TR/pub-manifest/#publication-date"
-                ],
+                "section": "§4.7.1.7 Last Modification Date and §4.7.1.8 Publication Date",
+                "href": "https://www.w3.org/TR/pub-manifest/#last-modification-date",
                 "tests": [{
                         "id": "m4.7.1.7.01",
                         "description": "Both 'datePublished' and 'dateModified' must be in ISO format",

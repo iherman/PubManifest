@@ -101,13 +101,9 @@ exports.audiobook_profile = {
             }
         };
         /* Step 1.1, check if the reading order is not empty and contains at least one audio file */
-        if (!data.readingOrder || data.readingOrder.length === 0) {
+        if (data.readingOrder === undefined) {
             // For an audiobook this is a fatal error
             utilities_1.Global.logger.log_fatal_error('No reading order for an audiobook');
-            return null;
-        }
-        else if (data.readingOrder.find(isAudio) === undefined) {
-            utilities_1.Global.logger.log_fatal_error('No audio file in reading order');
             return null;
         }
         /* Step 1.2, Remove non audio files from the reading order */
@@ -120,6 +116,11 @@ exports.audiobook_profile = {
                 return undefined;
             }
         }).filter((item) => item !== undefined);
+        /* Step 1.3, if reading order becomes empty after the previous step, this is a fatal error */
+        if (data.readingOrder.length === 0) {
+            utilities_1.Global.logger.log_fatal_error('Empty reading order for an audiobook');
+            return null;
+        }
         /** Step 2, set the default type, if necessary */
         if (!data.type) {
             utilities_1.Global.logger.log_light_validation_error(`Missing publication type for Audiobooks (set default)`);
@@ -131,7 +132,7 @@ exports.audiobook_profile = {
                 utilities_1.Global.logger.log_light_validation_error(`Term ${term} is missing from the manifest`);
             }
         });
-        /** Step 3, check the recommended resources */
+        /** Step 4, check the recommended resources */
         {
             const res1 = (data.readingOrder) ? data.readingOrder : [];
             const res2 = (data.resources) ? data.resources : [];
@@ -142,7 +143,7 @@ exports.audiobook_profile = {
                 utilities_1.Global.logger.log_light_validation_error('No cover resource');
             }
         }
-        /** Step 4, check the duration values */
+        /** Step 5, check the duration values */
         {
             // This is the duration in milliseconds!
             let resourceDuration = 0;
