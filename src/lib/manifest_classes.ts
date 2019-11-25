@@ -58,7 +58,7 @@ const creator_properties = [
  * - define a number of static variables for each implementation class, listing the relevant terms
  * - define an instance of the [[Terms]] class for each implementation class using this terms.
  *
- * The reason for this pattern is that end user, who gets an instance of, say, the [[Entity_Impl]] class implementing the [[Entity]] interface,
+ * The reason for this pattern is that end user, who gets an instance of, say, an object implementing [[Entity_Impl]],
  * can use generic methods to check, normalize, validate, etc., term values.
  *
  */
@@ -91,7 +91,6 @@ export abstract class Terms {
     protected single_number    : string[];
 
     /** Terms referring to a single value not listed above (not used at present, added as a placeholder) */
-
     protected single_misc      : string[];
 
     /** Terms referring to an array of values not listed above (e.g., `accessModeSufficient`) */
@@ -285,8 +284,10 @@ class PublicationManifestTerms extends Terms {
     protected array_of_miscs   : string[] = ['accessModeSufficient'];
 }
 
-// -------------------------------- Type aliases for URL (which are strings, in fact) -------------
-
+interface Impl {
+    /** A [[Terms]] instance referring to the terms defined for [[Entity]] */
+    terms: Terms;
+}
 
 /**
  * The notion of "recognizable types" appears in the processing algorithm section, although not
@@ -295,115 +296,95 @@ class PublicationManifestTerms extends Terms {
 export type RecognizedTypes_Impl = Person_Impl | Organization_Impl | LinkedResource_Impl;
 
 /**
- * Implementation of [[Entity]], superclass for [[Person_Impl]] or [[Organization_Impl]]
+ * Extension of [[Entity]] adding a reference to entity specific terms. aliased by [[Person_Impl]] or [[Organization_Impl]]
  */
-export class Entity_Impl implements Entity {
-    /** A [[Terms]] instance referring to the terms defined for [[Entity]] */
-    get terms(): Terms {
-        return new EntityTerms();
-    }
-
-    type      : string[];
-    name      : LocalizableString[];
-    id        : string;
-    url       : string;
-    identifier: string[];
-
-    [propName : string]: any;
-};
+export interface Entity_Impl extends Entity, Impl {
+}
 
 /**
- * Implementation for a [[Person]]
+ * Creation of a new [[Entity_Impl]]
  */
-export class Person_Impl extends Entity_Impl  implements Person {};
+export function new_Entity_Impl(): Entity_Impl {
+    const retval = {} as Entity_Impl;
+    retval.terms = new EntityTerms();
+    return retval;
+}
 
 /**
- * Implementation for a [[Organization]]
+ * Check whether an object is of type [[Entity_Impl]]
  */
-export class Organization_Impl extends Entity_Impl  implements Organization {};
+export function isEntity_Impl(obj: any): boolean {
+    return obj.terms !== undefined && obj.terms instanceof EntityTerms;
+}
 
 /**
- * Implementation for [[LocalizableString]]
+ * An alias to [[Entity_Impl]]
  */
-export class LocalizableString_Impl implements LocalizableString {
-    /** A [[Terms]] instance referring to the terms defined for [[LocalizableString]] */
-    get terms(): Terms {
-        return new LocalizableStringTerms();
-    }
-
-    value    : string;
-    language : string;
-    direction: string;
-
-    [propName: string]: any;
-};
+export type Person_Impl = Entity_Impl;
 
 /**
- * Implementation for [[LinkedResource]]
+ * An alias to [[Entity_Impl]]
  */
-export class LinkedResource_Impl implements LinkedResource {
-    /** A [[Terms]] instance referring to the terms defined for [[LinkedResource]] */
-    get terms(): Terms {
-        return new LinkedResourceTerms();
-    }
+export type Organization_Impl = Entity_Impl;
 
-    url           : URL;
-    encodingFormat: string;
-    name          : LocalizableString[];
-    description   : LocalizableString;
-    rel           : string[];
-    integrity     : string;
-    duration      : string;
-    alternate     : LinkedResource[];
-
-    [propName: string]: any;
-};
 
 /**
- * Implementation for [[PublicationManifest]]
+ * Extension of [[LocalizableString]] adding a reference to entity specific terms.
  */
-export class PublicationManifest_Impl implements PublicationManifest {
-    /** A [[Terms]] instance referring to the terms defined for [[PublicationManifest]] */
-    get terms(): PublicationManifestTerms {
-        return new PublicationManifestTerms();
-    }
+export interface LocalizableString_Impl extends LocalizableString, Impl {
+    [index: string] : any;
+}
 
-    type                : string[];
-    id                  : URL = '';
-    profile             : string = '';
-    conformsTo          : string[];
+/**
+ * Creation of a new [[LocalizableString_Impl]]
+ */
+export function new_LocalizableString_Impl(): LocalizableString_Impl {
+    const retval = {} as LocalizableString_Impl;
+    retval.terms = new LocalizableStringTerms();
+    return retval;
+}
 
-    accessMode          : string[];
-    accessModeSufficient: string[];
-    accessibilityFeature: string[];
-    accessibilityHazard : string[];
-    accessibilitySummary: LocalizableString[];
-    artist              : Entity[];
-    author              : Entity[];
-    colorist            : Entity[];
-    contributor         : Entity[];
-    creator             : Entity[];
-    editor              : Entity[];
-    illustrator         : Entity[];
-    inker               : Entity[];
-    letterer            : Entity[];
-    penciler            : Entity[];
-    publisher           : Entity[];
-    readBy              : Entity[];
-    translator          : Entity[];
+/**
+ * Check whether an object is of type [[Entity_Impl]]
+ */
+export function isLocalizableString_Impl(obj: any): boolean {
+    return obj.terms !== undefined && obj.terms instanceof LocalizableStringTerms;
+}
 
-    url                 : URL[];
-    duration            : string;
-    inLanguage          : string[];
-    dateModified        : string;
-    datePublished       : string;
-    abridged            : boolean;
-    readingProgression  : ProgressionDirection;
-    name                : LocalizableString[] = [];
-    readingOrder        : LinkedResource[] = [];
-    resources           : LinkedResource[];
-    links               : LinkedResource[];
-    uniqueResources     : URL[];
+/**
+ * Extension of [[LinkedResource]] adding a reference to entity specific terms.
+ */
+export interface LinkedResource_Impl extends LinkedResource, Impl {
+}
 
-    [propName: string]: any;
-};
+/**
+ * Creation of a new [[LinkedResource_Impl]]
+ */
+export function new_LinkedResource_Impl(): LinkedResource_Impl {
+    const retval = {} as LinkedResource_Impl;
+    retval.terms = new LinkedResourceTerms();
+    return retval;
+}
+
+/**
+ * Check whether an object is of type [[Entity_Impl]]
+ */
+export function isLinkedResource_Impl(obj: any): boolean {
+    return obj.terms !== undefined && obj.terms instanceof LinkedResourceTerms;
+}
+
+/**
+ * Extension of [[PublicationManifest]] adding a reference to entity specific terms.
+ */
+export interface PublicationManifest_Impl extends PublicationManifest, Impl {
+}
+
+/**
+ * Creation of a new [[PublicationManifest_Impl]]
+ */
+export function new_PublicationManifest_Impl(): PublicationManifest_Impl {
+    const retval = {} as PublicationManifest_Impl;
+    retval.terms = new PublicationManifestTerms();
+    retval.$type = 'PublicationManifest_Impl';
+    return retval;
+}

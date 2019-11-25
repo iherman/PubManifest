@@ -103,6 +103,4 @@ export const default_profile: Profile = {
     add_default_values(data: PublicationManifest_Impl): PublicationManifest_Impl {
         return data;
     }
-
-
 }
