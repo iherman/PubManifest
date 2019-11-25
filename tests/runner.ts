@@ -143,7 +143,7 @@ function get_tests(file_name: string): FlattenedSuite {
 async function run_test(url: URL) {
     try {
         const results: ProcessResult = await process_manifest(url, test_profiles, true);
-        console.log(JSON.stringify(results.manifest_object, (key, value) =>  key === 'terms' ? undefined : value, 4));
+        console.log(JSON.stringify(results.manifest_object, (key, value) =>  key === '$terms' ? undefined : value, 4));
         console.log(results.logger.toString());
     } catch(e) {
         console.log(`Something went wrong: ${e.message}`);

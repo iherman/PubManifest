@@ -81,7 +81,7 @@
 				<p>The implementation is in Typescript and on top of <code>node.js</code>.</p>
 				<ul>
 					<li>When the document says &#39;failure is returned&#39;, this appears in the code as returning the Javascript value <code>undefined</code> or, when the function returns a boolean, <code>false</code>.</li>
-					<li>The notion of a &#39;context&#39; in the algorithm is implemented via one of the <code>*_Impl</code> class instances corresponding to the TS Interface definitions for the internal representations (see <a href="modules/_manifest_.html">manifest</a> and <a href="modules/_manifest_classes_.html">manifest_classes</a> for details). All these classes have a reference to a <a href="classes/_src_lib_manifest_classes_.terms.html">Terms</a> instance that classifies the terms defined for that class (type).</li>
+					<li>The notion of a &#39;context&#39; in the algorithm is implemented via one of the <code>*_Impl</code> class instances corresponding to the TS Interface definitions for the internal representations (see <a href="modules/_manifest_.html">manifest</a> and <a href="modules/_manifest_classes_.html">manifest_classes</a> for details). All these classes have a reference to a <a href="classes/_src_lib_terms_.terms.html">Terms</a> instance that classifies the terms defined for that class (type).</li>
 				</ul>
 				<p>Also, the implementation is a bit more complicated than it would be in Javascript, mainly due to the requirements of Typescript.
 					For example, the original object, parsed from JSON, cannot be directly modified and returned as <code>processed</code>; instead, Typescript classes, duly defined as
@@ -102,13 +102,13 @@
 						<a href="modules/_src_audiobooks_.html">"src/audiobooks"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_lib_manifest_classes_.html">"src/lib/manifest_<wbr>classes"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_lib_manifest_discovery_.html">"src/lib/manifest_<wbr>discovery"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_lib_profile_.html">"src/lib/profile"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_lib_terms_.html">"src/lib/terms"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_lib_utilities_.html">"src/lib/utilities"</a>

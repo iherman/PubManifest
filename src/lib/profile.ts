@@ -27,7 +27,7 @@ import {
     RecognizedTypes_Impl,
     PublicationManifest_Impl,
     Terms
-} from './manifest_classes';
+} from './terms';
 
 
 /**

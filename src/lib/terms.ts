@@ -1,5 +1,11 @@
 /**
- * Implementation classes for the Publication manifest. See 'manifest.ts' for the visible interfaces.
+ * Adding generic term managements to the core manifest interfaces.
+ *
+ * Each (visible) manifest interface (ie, [[PublicationManifest]], [[LinkedResource]], [[Entity]], and [[LocalizableString]]) are _extended_ to add a `$terms` key with
+ * the value a [[Terms]] instance. These instances categorize the keys (terms) defined by the specification for that specific interface, and this information is used
+ * in the general algorithm for normalization and checks. Also, simple creation functions are defined to create object instances that implement those interfaces, whereby  `$terms` is
+ * initialized to the respective [[Terms]] subclass instances (i.e., [[PublicationManifestTerms]], [[LinkedResourceTerms]], [[EntityTerms]], and [[LocalizableStringTerms]]).
+ *
  */
 
 /**
@@ -217,7 +223,7 @@ export abstract class Terms {
 }
 
 /**
- * Terms defined for [[Entity]] implementations.
+ * Terms defined for [[Entity]] instances.
  */
 class EntityTerms extends Terms {
     protected single_literal   : string[] = [];
@@ -234,7 +240,7 @@ class EntityTerms extends Terms {
 }
 
 /**
- * Terms defined for [[LinkedResource]] implementations
+ * Terms defined for [[LinkedResource]] instances
  */
 class LinkedResourceTerms extends Terms {
     protected single_literal   : string[] = ['encodingFormat', 'integrity', 'duration'];
@@ -251,7 +257,7 @@ class LinkedResourceTerms extends Terms {
 }
 
 /**
- * Terms defined for [[LocalizableString]] implementations
+ * Terms defined for [[LocalizableString]] instances
  */
 class LocalizableStringTerms extends Terms {
     protected single_literal   : string[] = ['value', 'language', 'direction'];
@@ -268,7 +274,7 @@ class LocalizableStringTerms extends Terms {
 }
 
 /**
- * Terms defined for the [[PublicationManifest]] implementations
+ * Terms defined for the [[PublicationManifest]] instances
  */
 class PublicationManifestTerms extends Terms {
     protected single_literal   : string[] = ['dateModified', 'datePublished', 'readingProgression'];
@@ -284,46 +290,48 @@ class PublicationManifestTerms extends Terms {
     protected array_of_miscs   : string[] = ['accessModeSufficient'];
 }
 
-interface Impl {
-    /** A [[Terms]] instance referring to the terms defined for [[Entity]] */
-    terms: Terms;
-}
-
 /**
- * The notion of "recognizable types" appears in the processing algorithm section, although not
- * in the main core
+ * The notion of "recognizable types" appears in the processing algorithm section, and is a good shorthand in the code...
  */
 export type RecognizedTypes_Impl = Person_Impl | Organization_Impl | LinkedResource_Impl;
+
+
+/**
+ * Adding the extra [[Terms]] reference; this is a common interface type for all manifest subtypes.
+ */
+interface Impl {
+    /** A [[Terms]] instance referring to the terms defined for a respective interface of interest */
+    $terms: Terms;
+}
 
 /**
  * Extension of [[Entity]] adding a reference to entity specific terms. aliased by [[Person_Impl]] or [[Organization_Impl]]
  */
-export interface Entity_Impl extends Entity, Impl {
-}
+export interface Entity_Impl extends Entity, Impl {}
 
 /**
- * Creation of a new [[Entity_Impl]]
+ * Creation of a new [[Entity_Impl]] instance, adding an instance of [[EntityTerms]].
  */
 export function new_Entity_Impl(): Entity_Impl {
     const retval = {} as Entity_Impl;
-    retval.terms = new EntityTerms();
+    retval.$terms = new EntityTerms();
     return retval;
 }
 
 /**
- * Check whether an object is of type [[Entity_Impl]]
+ * Check whether an object is of type [[Entity_Impl]].
  */
 export function isEntity_Impl(obj: any): boolean {
-    return obj.terms !== undefined && obj.terms instanceof EntityTerms;
+    return obj.$terms !== undefined && obj.$terms instanceof EntityTerms;
 }
 
 /**
- * An alias to [[Entity_Impl]]
+ * An alias to [[Entity_Impl]].
  */
 export type Person_Impl = Entity_Impl;
 
 /**
- * An alias to [[Entity_Impl]]
+ * An alias to [[Entity_Impl]].
  */
 export type Organization_Impl = Entity_Impl;
 
@@ -332,59 +340,57 @@ export type Organization_Impl = Entity_Impl;
  * Extension of [[LocalizableString]] adding a reference to entity specific terms.
  */
 export interface LocalizableString_Impl extends LocalizableString, Impl {
+    /**  This is necessary for some of the generic code although, strictly speaking, a localizable string should not have any more terms... */
     [index: string] : any;
 }
 
 /**
- * Creation of a new [[LocalizableString_Impl]]
+ * Creation of a new [[LocalizableString_Impl]] instance, adding an instance of [[LocalizableStringTerms]].
  */
 export function new_LocalizableString_Impl(): LocalizableString_Impl {
     const retval = {} as LocalizableString_Impl;
-    retval.terms = new LocalizableStringTerms();
+    retval.$terms = new LocalizableStringTerms();
     return retval;
 }
 
 /**
- * Check whether an object is of type [[Entity_Impl]]
+ * Check whether an object is of type [[LocalizableString_Impl]]
  */
 export function isLocalizableString_Impl(obj: any): boolean {
-    return obj.terms !== undefined && obj.terms instanceof LocalizableStringTerms;
+    return obj.$terms !== undefined && obj.$terms instanceof LocalizableStringTerms;
 }
 
 /**
  * Extension of [[LinkedResource]] adding a reference to entity specific terms.
  */
-export interface LinkedResource_Impl extends LinkedResource, Impl {
-}
+export interface LinkedResource_Impl extends LinkedResource, Impl {}
 
 /**
- * Creation of a new [[LinkedResource_Impl]]
+ * Creation of a new [[LinkedResource_Impl]] instance, adding an instance of [[LinkedResourceTerms]].
  */
 export function new_LinkedResource_Impl(): LinkedResource_Impl {
     const retval = {} as LinkedResource_Impl;
-    retval.terms = new LinkedResourceTerms();
+    retval.$terms = new LinkedResourceTerms();
     return retval;
 }
 
 /**
- * Check whether an object is of type [[Entity_Impl]]
+ * Check whether an object is of type [[LinkedResource_Impl]]
  */
 export function isLinkedResource_Impl(obj: any): boolean {
-    return obj.terms !== undefined && obj.terms instanceof LinkedResourceTerms;
+    return obj.$terms !== undefined && obj.$terms instanceof LinkedResourceTerms;
 }
 
 /**
  * Extension of [[PublicationManifest]] adding a reference to entity specific terms.
  */
-export interface PublicationManifest_Impl extends PublicationManifest, Impl {
-}
+export interface PublicationManifest_Impl extends PublicationManifest, Impl {}
 
 /**
- * Creation of a new [[PublicationManifest_Impl]]
+ * Creation of a new [[PublicationManifest_Impl]] instance, adding an instance of [[PublicationManifestTerms]].
  */
 export function new_PublicationManifest_Impl(): PublicationManifest_Impl {
     const retval = {} as PublicationManifest_Impl;
-    retval.terms = new PublicationManifestTerms();
-    retval.$type = 'PublicationManifest_Impl';
+    retval.$terms = new PublicationManifestTerms();
     return retval;
 }

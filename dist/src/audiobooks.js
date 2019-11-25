@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Module implementing the audiobook profile specific extension functions. The specificities of the profile are defined in [§6 Manifest Processing][https://www.w3.org/TR/audiobooks/#audio-manifest-processing] of the Audiobooks specification.
+ * Module implementing the audiobook profile specific extension functions. The specificities of this profile are defined in [§6 Manifest Processing][https://www.w3.org/TR/audiobooks/#audio-manifest-processing] of the Audiobooks specification.
  *
  */
 var __importDefault = (this && this.__importDefault) || function (mod) {

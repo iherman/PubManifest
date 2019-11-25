@@ -10,7 +10,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const manifest_classes_1 = require("./manifest_classes");
+const terms_1 = require("./terms");
 const _ = __importStar(require("underscore"));
 const urlHandler = __importStar(require("url"));
 /**
@@ -131,7 +131,7 @@ exports.copy_object = copy_object;
  *
  */
 function recognized_type(obj) {
-    return _.isObject(obj) && (obj instanceof manifest_classes_1.Entity_Impl || obj instanceof manifest_classes_1.LinkedResource_Impl);
+    return _.isObject(obj) && (terms_1.isEntity_Impl(obj) || terms_1.isLinkedResource_Impl(obj));
 }
 exports.recognized_type = recognized_type;
 /**
@@ -141,9 +141,8 @@ exports.recognized_type = recognized_type;
  * @returns - an instance of Terms
  */
 function get_terms(resource) {
-    if (resource instanceof manifest_classes_1.PublicationManifest_Impl || resource instanceof manifest_classes_1.Entity_Impl ||
-        resource instanceof manifest_classes_1.LinkedResource_Impl || resource instanceof manifest_classes_1.LocalizableString_Impl) {
-        return resource.terms;
+    if (resource.$terms !== undefined) {
+        return resource.$terms instanceof terms_1.Terms ? resource.$terms : undefined;
     }
     else {
         return undefined;
@@ -199,7 +198,7 @@ class Logger {
             final_message = `${message}`;
         }
         else {
-            const obj_dump = JSON.stringify(obj, null, 4).split('\n').map((str) => `>> ${str}`).join('\n');
+            const obj_dump = JSON.stringify(obj, (key, value) => key === '$terms' ? undefined : value, 4).split('\n').map((str) => `>> ${str}`).join('\n');
             final_message = `${message}. Problematic object:\n${obj_dump}`;
         }
         target.push(final_message);

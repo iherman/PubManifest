@@ -44,7 +44,7 @@ import {
     new_LocalizableString_Impl,  isLocalizableString_Impl,
     new_LinkedResource_Impl, isLinkedResource_Impl,
     new_PublicationManifest_Impl
-} from './lib/manifest_classes';
+} from './lib/terms';
 
 /**
  * Interfaces and instances for profile management
