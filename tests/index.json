@@ -113,7 +113,7 @@
                     "id": "m4.7.1.1.01",
                     "description": "The value of 'abridged' must be a boolean",
                     "actions": "The value of abridged should be removed from the result",
-                    "error": "Validation error on abridged"
+                    "errors": "Validation error on abridged"
                 }]
             },
             {
@@ -123,19 +123,19 @@
                         "id": "m4.7.1.2.01",
                         "description": "Simple a11y terms can also be set as single literals",
                         "actions": "All values should be turned into arrays of literals",
-                        "error": "none"
+                        "errors": "none"
                     },
                     {
                         "id": "m4.7.1.2.02",
                         "description": "The value of 'accessModeSufficient' has a strict structure per schema.org",
                         "actions": "The illegal value (visual) should be removed",
-                        "error": "Validation error on the incorrect data"
+                        "errors": "Validation error on the incorrect data"
                     },
                     {
                         "id": "m4.7.1.2.03",
                         "description": "The value of 'accessModeSufficient' has a strict structure per schema.org",
                         "actions": "Both values being invalid, the key should be removed altogether",
-                        "error": "Validation error on the incorrect data"
+                        "errors": "Validation error on the incorrect data"
                     }
                 ]
             },
@@ -146,19 +146,19 @@
                         "id": "m4.7.1.3.01",
                         "description": "All URL values can be relative, expanded via base",
                         "actions": "Value of URL should be absolute",
-                        "error": "none"
+                        "errors": "none"
                     },
                     {
                         "id": "m4.7.1.3.02",
                         "description": "All URL values can be relative, expanded via basee",
                         "actions": "Value of all URLs in the array should be absolute",
-                        "error": "none"
+                        "errors": "none"
                     },
                     {
                         "id": "m4.7.1.3.03",
                         "description": "The values of the 'url' term must be a valid URL",
                         "actions": "The invalid URL should be removed",
-                        "error": "Validation error on the URL"
+                        "errors": "Validation error on the URL"
                     }
                 ]
             },
@@ -169,13 +169,13 @@
                         "id": "m4.7.1.4.01",
                         "description": "The value of 'id' must be a valid URL",
                         "actions": "Value of invalid URL should be removed",
-                        "error": "Validation error on the URL"
+                        "errors": "Validation error on the URL"
                     },
                     {
                         "id": "m4.7.1.4.02",
                         "description": "The manifest should contain a value for 'id'",
                         "actions": "Output unchanged",
-                        "error": "Validation error on the missing ID"
+                        "errors": "Validation error on the missing ID"
                     }
                 ]
             },
@@ -185,26 +185,26 @@
                 "tests": [{
                         "id": "m4.7.1.5.01",
                         "description": "Persons can be provided as single strings",
-                        "action": "Array of names turned into an array of Persons",
-                        "error": "none"
+                        "actions": "Array of names turned into an array of Persons",
+                        "errors": "none"
                     },
                     {
                         "id": "m4.7.1.5.02",
                         "description": "A single person is not required to be in an array",
-                        "action": "The single term is turned into a one-element Array of Persons",
-                        "error": "none"
+                        "actions": "The single term is turned into a one-element Array of Persons",
+                        "errors": "none"
                     },
                     {
                         "id": "m4.7.1.5.03",
                         "description": "An entity should have a name",
-                        "action": "The entry without a name is removed from the array",
-                        "error": "validation error on missing name"
+                        "actions": "The entry without a name is removed from the array",
+                        "errors": "validation error on missing name"
                     },
                     {
                         "id": "m4.7.1.5.04",
                         "description": "All creators defined in the specification, and only those, should have the same behaviors (copy of m47502)",
-                        "action": "All the defined creator values should be turned into array; this does not apply to extra term (\"auteur\")",
-                        "error": "validation error on missing name"
+                        "actions": "All the defined creator values should be turned into array; this does not apply to extra term (\"auteur\")",
+                        "errors": "validation error on missing name"
                     }
                 ]
             },
@@ -260,14 +260,14 @@
                 "tests": [{
                         "id": "m4.7.1.9.01",
                         "description": "The value of 'inLanguage' must be valid BCP47",
-                        "action": "Value of 'inLanguage' must be checked, and removed (as invalid)",
-                        "error": "validation error on incorrect BCP47 value"
+                        "actions": "Value of 'inLanguage' must be checked, and removed (as invalid)",
+                        "errors": "validation error on incorrect BCP47 value"
                     },
                     {
                         "id": "m4.7.1.9.02",
                         "description": "The value of 'inLanguage' value may be an array, each element a valid BCP47",
-                        "action": "Incorrect values must be removed from the array",
-                        "error": "validation error on incorrect BCP47 value"
+                        "actions": "Incorrect values must be removed from the array",
+                        "errors": "validation error on incorrect BCP47 value"
                     }
                 ]
             },
@@ -277,8 +277,8 @@
                 "tests": [{
                     "id": "m4.7.1.10.01",
                     "description": "The value of 'readingProgression' value must ltr or rtl",
-                    "action": "Value of readingProgression must be checked, and set to the default 'ltr'",
-                    "error": "validation error on incorrect direction"
+                    "actions": "Value of readingProgression must be checked, and set to the default 'ltr'",
+                    "errors": "validation error on incorrect direction"
                 }]
             },
             {
@@ -287,20 +287,20 @@
                 "tests": [{
                         "id": "m4.7.1.11.01",
                         "description": "The title (ie, 'name') can be set as a simple string, as an abbreviation for localizable texts",
-                        "action": "Convert the simple string into an array of Localizable string",
-                        "error": "none"
+                        "actions": "Convert the simple string into an array of Localizable string",
+                        "errors": "none"
                     },
                     {
                         "id": "m4.7.1.11.02",
                         "description": "The title (ie, 'name') is a natural language text, the global language and direction must be set",
-                        "action": "Convert the simple string into a text labeled as English, and direction ltr",
-                        "error": "none"
+                        "actions": "Convert the simple string into a text labeled as English, and direction ltr",
+                        "errors": "none"
                     },
                     {
                         "id": "m4.7.1.11.03",
                         "description": "The title (ie, 'name') is an array of natural language texts, each can have its language and direction set individually",
-                        "action": "Convert the two items into arabic and direction rtl for the first, and english and ltr for the second",
-                        "error": "none"
+                        "actions": "Convert the two items into arabic and direction rtl for the first, and english and ltr for the second",
+                        "errors": "none"
                     }
                 ]
             },
