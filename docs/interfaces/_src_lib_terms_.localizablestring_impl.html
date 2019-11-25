@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>TestSuite | Processing the Publishing Manifest</title>
+	<title>LocalizableString_Impl | Processing the Publishing Manifest</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_tests_runner_.html">&quot;tests/runner&quot;</a>
+					<a href="../modules/_src_lib_terms_.html">&quot;src/lib/terms&quot;</a>
 				</li>
 				<li>
-					<a href="_tests_runner_.testsuite.html">TestSuite</a>
+					<a href="_src_lib_terms_.localizablestring_impl.html">LocalizableString_Impl</a>
 				</li>
 			</ul>
-			<h1>Interface TestSuite</h1>
+			<h1>Interface LocalizableString_Impl</h1>
 		</div>
 	</div>
 </header>
@@ -72,7 +72,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A full test suite</p>
+						<p>Extension of <a href="_src_manifest_.localizablestring.html">LocalizableString</a> adding a reference to entity specific terms.</p>
 					</div>
 				</div>
 			</section>
@@ -80,75 +80,91 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">TestSuite</span>
+						<a href="_src_manifest_.localizablestring.html" class="tsd-signature-type">LocalizableString</a>
+					</li>
+					<li>
+						<a href="_src_lib_terms_.impl.html" class="tsd-signature-type">Impl</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">LocalizableString_Impl</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
+			</section>
+			<section class="tsd-panel tsd-kind-interface tsd-parent-kind-external-module">
+				<h3 class="tsd-before-signature">Indexable</h3>
+				<div class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">[</span>index: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">any</span></div>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>This is necessary for some of the generic code although, strictly speaking, a localizable string should not have any more terms...</p>
+					</div>
+				</div>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-not-exported">
+						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_tests_runner_.testsuite.html#audiobooks" class="tsd-kind-icon">audiobooks</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_tests_runner_.testsuite.html#date" class="tsd-kind-icon">date</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_tests_runner_.testsuite.html#generic" class="tsd-kind-icon">generic</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_tests_runner_.testsuite.html#title" class="tsd-kind-icon">title</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_src_lib_terms_.localizablestring_impl.html#_terms" class="tsd-kind-icon">$terms</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_src_lib_terms_.localizablestring_impl.html#direction" class="tsd-kind-icon">direction</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_src_lib_terms_.localizablestring_impl.html#language" class="tsd-kind-icon">language</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_src_lib_terms_.localizablestring_impl.html#value" class="tsd-kind-icon">value</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="audiobooks" class="tsd-anchor"></a>
-					<h3>audiobooks</h3>
-					<div class="tsd-signature tsd-kind-icon">audiobooks<span class="tsd-signature-symbol">:</span> <a href="_tests_runner_.documenttests.html" class="tsd-signature-type">DocumentTests</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="_terms" class="tsd-anchor"></a>
+					<h3>$terms</h3>
+					<div class="tsd-signature tsd-kind-icon">$terms<span class="tsd-signature-symbol">:</span> <a href="../classes/_src_lib_terms_.terms.html" class="tsd-signature-type">Terms</a></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="_src_lib_terms_.impl.html">Impl</a>.<a href="_src_lib_terms_.impl.html#_terms">$terms</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9825576/tests/runner.ts#L92">tests/runner.ts:92</a></li>
+							<li>Defined in src/lib/terms.ts:304</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Specific tests for the audiobook tests</p>
+							<p>A <a href="../classes/_src_lib_terms_.terms.html">Terms</a> instance referring to the terms defined for a respective interface of interest</p>
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="date" class="tsd-anchor"></a>
-					<h3>date</h3>
-					<div class="tsd-signature tsd-kind-icon">date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="direction" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> direction</h3>
+					<div class="tsd-signature tsd-kind-icon">direction<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="_src_manifest_.localizablestring.html">LocalizableString</a>.<a href="_src_manifest_.localizablestring.html#direction">direction</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9825576/tests/runner.ts#L86">tests/runner.ts:86</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9825576/src/manifest.ts#L47">src/manifest.ts:47</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="generic" class="tsd-anchor"></a>
-					<h3>generic</h3>
-					<div class="tsd-signature tsd-kind-icon">generic<span class="tsd-signature-symbol">:</span> <a href="_tests_runner_.documenttests.html" class="tsd-signature-type">DocumentTests</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="language" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> language</h3>
+					<div class="tsd-signature tsd-kind-icon">language<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="_src_manifest_.localizablestring.html">LocalizableString</a>.<a href="_src_manifest_.localizablestring.html#language">language</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9825576/tests/runner.ts#L89">tests/runner.ts:89</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9825576/src/manifest.ts#L46">src/manifest.ts:46</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Tests for the basic manifest algorithm</p>
-						</div>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="title" class="tsd-anchor"></a>
-					<h3>title</h3>
-					<div class="tsd-signature tsd-kind-icon">title<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="value" class="tsd-anchor"></a>
+					<h3>value</h3>
+					<div class="tsd-signature tsd-kind-icon">value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="_src_manifest_.localizablestring.html">LocalizableString</a>.<a href="_src_manifest_.localizablestring.html#value">value</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9825576/tests/runner.ts#L85">tests/runner.ts:85</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9825576/src/manifest.ts#L45">src/manifest.ts:45</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -169,7 +185,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_src_lib_profile_.html">"src/lib/profile"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_src_lib_terms_.html">"src/lib/terms"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -181,63 +197,96 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_src_process_.html">"src/process"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_tests_runner_.html">"tests/runner"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_tests_runner_.documenttests.html" class="tsd-kind-icon">Document<wbr>Tests</a>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../classes/_src_lib_terms_.entityterms.html" class="tsd-kind-icon">Entity<wbr>Terms</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../classes/_src_lib_terms_.linkedresourceterms.html" class="tsd-kind-icon">Linked<wbr>Resource<wbr>Terms</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../classes/_src_lib_terms_.localizablestringterms.html" class="tsd-kind-icon">Localizable<wbr>String<wbr>Terms</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../classes/_src_lib_terms_.publicationmanifestterms.html" class="tsd-kind-icon">Publication<wbr>Manifest<wbr>Terms</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="../classes/_src_lib_terms_.terms.html" class="tsd-kind-icon">Terms</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_src_lib_terms_.entity_impl.html" class="tsd-kind-icon">Entity_<wbr><wbr>Impl</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_tests_runner_.flattenedsuite.html" class="tsd-kind-icon">Flattened<wbr>Suite</a>
+						<a href="_src_lib_terms_.impl.html" class="tsd-kind-icon">Impl</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_tests_runner_.sectiontests.html" class="tsd-kind-icon">Section<wbr>Tests</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_tests_runner_.test.html" class="tsd-kind-icon">Test</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_src_lib_terms_.linkedresource_impl.html" class="tsd-kind-icon">Linked<wbr>Resource_<wbr><wbr>Impl</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_tests_runner_.testsuite.html" class="tsd-kind-icon">Test<wbr>Suite</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_src_lib_terms_.localizablestring_impl.html" class="tsd-kind-icon">Localizable<wbr>String_<wbr><wbr>Impl</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_tests_runner_.testsuite.html#audiobooks" class="tsd-kind-icon">audiobooks</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="_src_lib_terms_.localizablestring_impl.html#_terms" class="tsd-kind-icon">$terms</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_tests_runner_.testsuite.html#date" class="tsd-kind-icon">date</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="_src_lib_terms_.localizablestring_impl.html#direction" class="tsd-kind-icon">direction</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_tests_runner_.testsuite.html#generic" class="tsd-kind-icon">generic</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="_src_lib_terms_.localizablestring_impl.html#language" class="tsd-kind-icon">language</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_tests_runner_.testsuite.html#title" class="tsd-kind-icon">title</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="_src_lib_terms_.localizablestring_impl.html#value" class="tsd-kind-icon">value</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_tests_runner_.html#fs" class="tsd-kind-icon">fs</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_src_lib_terms_.publicationmanifest_impl.html" class="tsd-kind-icon">Publication<wbr>Manifest_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_terms_.html#organization_impl" class="tsd-kind-icon">Organization_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_terms_.html#person_impl" class="tsd-kind-icon">Person_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_terms_.html#recognizedtypes_impl" class="tsd-kind-icon">Recognized<wbr>Types_<wbr><wbr>Impl</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_tests_runner_.html#test_profiles" class="tsd-kind-icon">test_<wbr>profiles</a>
+						<a href="../modules/_src_lib_terms_.html#a11y_properties" class="tsd-kind-icon">a11y_<wbr>properties</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_tests_runner_.html#tests" class="tsd-kind-icon">tests</a>
+						<a href="../modules/_src_lib_terms_.html#creator_properties" class="tsd-kind-icon">creator_<wbr>properties</a>
 					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_tests_runner_.html#generate_scores" class="tsd-kind-icon">generate_<wbr>scores</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_terms_.html#isentity_impl" class="tsd-kind-icon">is<wbr>Entity_<wbr><wbr>Impl</a>
 					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_tests_runner_.html#get_tests" class="tsd-kind-icon">get_<wbr>tests</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_terms_.html#islinkedresource_impl" class="tsd-kind-icon">is<wbr>Linked<wbr>Resource_<wbr><wbr>Impl</a>
 					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_tests_runner_.html#run_test" class="tsd-kind-icon">run_<wbr>test</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_terms_.html#islocalizablestring_impl" class="tsd-kind-icon">is<wbr>Localizable<wbr>String_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_terms_.html#new_entity_impl" class="tsd-kind-icon">new_<wbr><wbr>Entity_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_terms_.html#new_linkedresource_impl" class="tsd-kind-icon">new_<wbr><wbr>Linked<wbr>Resource_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_terms_.html#new_localizablestring_impl" class="tsd-kind-icon">new_<wbr><wbr>Localizable<wbr>String_<wbr><wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_lib_terms_.html#new_publicationmanifest_impl" class="tsd-kind-icon">new_<wbr><wbr>Publication<wbr>Manifest_<wbr><wbr>Impl</a>
 					</li>
 				</ul>
 			</nav>

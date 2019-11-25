@@ -39,8 +39,12 @@ import {
     LinkedResource_Impl,
     RecognizedTypes_Impl,
     PublicationManifest_Impl,
-    Terms
-} from './lib/manifest_classes';
+    Terms,
+    new_Entity_Impl, isEntity_Impl,
+    new_LocalizableString_Impl,  isLocalizableString_Impl,
+    new_LinkedResource_Impl, isLinkedResource_Impl,
+    new_PublicationManifest_Impl
+} from './lib/terms';
 
 /**
  * Interfaces and instances for profile management
@@ -189,8 +193,8 @@ const create_Entity = (resource: any): Person|Organization => {
         Global.logger.log_strong_validation_error(`Invalid entity`, resource);
         return undefined;
     } else if (_.isString(resource)) {
-        const new_entity = new Person_Impl();
-        const new_person = new LocalizableString_Impl();
+        const new_entity = new_Entity_Impl() as Person_Impl;
+        const new_person = new_LocalizableString_Impl();
         new_person.value = resource;
         new_entity.name = [new_person];
         new_entity.type = ["Person"];
@@ -200,15 +204,15 @@ const create_Entity = (resource: any): Person|Organization => {
         let new_entity;
         if (resource.type) {
             if (resource.type.includes('Person')) {
-                new_entity = new Person_Impl();
+                new_entity = new_Entity_Impl() as Person_Impl;
             } else if (resource.type.includes('Organization')) {
-                new_entity = new Organization_Impl();
+                new_entity = new_Entity_Impl() as Organization_Impl;
             } else {
                 resource.type.push('Person');
-                new_entity = new Person_Impl();
+                new_entity = new_Entity_Impl() as Person_Impl;
             }
         } else {
-            new_entity = new Person_Impl();
+            new_entity = new_Entity_Impl() as Person_Impl;
             resource.type = ['Person']
         }
         copy_object(resource, new_entity);
@@ -237,7 +241,7 @@ const create_LocalizableString = (resource: any): LocalizableString => {
         Global.logger.log_strong_validation_error(`Invalid localizable string`, resource);
         return undefined;
     } else if (_.isString(resource)) {
-        const new_ls = new LocalizableString_Impl();
+        const new_ls = new_LocalizableString_Impl();
         new_ls.value = resource;
         if (Global.lang !== '') {
             new_ls.language = Global.lang
@@ -247,7 +251,7 @@ const create_LocalizableString = (resource: any): LocalizableString => {
         }
         return new_ls
     } else if (isMap(resource)) {
-        const new_ls = new LocalizableString_Impl();
+        const new_ls = new_LocalizableString_Impl();
         copy_object(resource, new_ls);
         if (new_ls.language) {
             if (new_ls.language === null) delete new_ls.language;
@@ -284,12 +288,12 @@ const create_LinkedResource = (resource: any): LinkedResource => {
         Global.logger.log_strong_validation_error(`Invalid Linked Resource`, resource);
         return undefined;
     } else if (_.isString(resource)) {
-        const new_lr = new LinkedResource_Impl();
+        const new_lr = new_LinkedResource_Impl();
         new_lr.url = resource;
         new_lr.type = ['LinkedResource'];
         return new_lr
     } else if (isMap(resource)) {
-        const new_lr = new LinkedResource_Impl();
+        const new_lr = new_LinkedResource_Impl();
         copy_object(resource, new_lr);
         if (new_lr.type) {
             if (!new_lr.type.includes('LinkedResource')) {
@@ -342,7 +346,7 @@ export function generate_internal_representation(args: GenerationArguments, logg
 
     /* ============ The individual processing steps, following the spec ============== */
     /* Step: create the, initially empty, processed manifest */
-    let processed = new PublicationManifest_Impl();
+    let processed = new_PublicationManifest_Impl();
 
     /* Step: get the manifest. */
     let manifest: PublicationManifest_Impl;
@@ -891,11 +895,11 @@ function verify_value_category(context: PublicationManifest_Impl|RecognizedTypes
         if (keys.is_literal_or_literals_term(key)) {
             return _.isString(val);
         } else if (keys.is_strings_term(key)) {
-            return val instanceof LocalizableString_Impl;
+            return isLocalizableString_Impl(val);
         } else if (keys.is_entities_term(key)) {
-            return val instanceof Entity_Impl;
+            return isEntity_Impl(val);
         } else if (keys.is_links_term(key)) {
-            return val instanceof LinkedResource_Impl;
+            return isLinkedResource_Impl(val);
         } else if (keys.is_url_or_urls_term(key)) {
             return _.isString(val);
         } else if (keys.is_single_number_term(key)) {

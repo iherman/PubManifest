@@ -32,7 +32,7 @@ const manifest_1 = require("./manifest");
 /**
  * The implementations for the official interfaces, i.e., the bona fide classes
  */
-const manifest_classes_1 = require("./lib/manifest_classes");
+const terms_1 = require("./lib/terms");
 /**
  * Interfaces and instances for profile management
  */
@@ -145,8 +145,8 @@ const create_Entity = (resource) => {
         return undefined;
     }
     else if (_.isString(resource)) {
-        const new_entity = new manifest_classes_1.Person_Impl();
-        const new_person = new manifest_classes_1.LocalizableString_Impl();
+        const new_entity = terms_1.new_Entity_Impl();
+        const new_person = terms_1.new_LocalizableString_Impl();
         new_person.value = resource;
         new_entity.name = [new_person];
         new_entity.type = ["Person"];
@@ -157,18 +157,18 @@ const create_Entity = (resource) => {
         let new_entity;
         if (resource.type) {
             if (resource.type.includes('Person')) {
-                new_entity = new manifest_classes_1.Person_Impl();
+                new_entity = terms_1.new_Entity_Impl();
             }
             else if (resource.type.includes('Organization')) {
-                new_entity = new manifest_classes_1.Organization_Impl();
+                new_entity = terms_1.new_Entity_Impl();
             }
             else {
                 resource.type.push('Person');
-                new_entity = new manifest_classes_1.Person_Impl();
+                new_entity = terms_1.new_Entity_Impl();
             }
         }
         else {
-            new_entity = new manifest_classes_1.Person_Impl();
+            new_entity = terms_1.new_Entity_Impl();
             resource.type = ['Person'];
         }
         utilities_1.copy_object(resource, new_entity);
@@ -197,7 +197,7 @@ const create_LocalizableString = (resource) => {
         return undefined;
     }
     else if (_.isString(resource)) {
-        const new_ls = new manifest_classes_1.LocalizableString_Impl();
+        const new_ls = terms_1.new_LocalizableString_Impl();
         new_ls.value = resource;
         if (utilities_1.Global.lang !== '') {
             new_ls.language = utilities_1.Global.lang;
@@ -208,7 +208,7 @@ const create_LocalizableString = (resource) => {
         return new_ls;
     }
     else if (isMap(resource)) {
-        const new_ls = new manifest_classes_1.LocalizableString_Impl();
+        const new_ls = terms_1.new_LocalizableString_Impl();
         utilities_1.copy_object(resource, new_ls);
         if (new_ls.language) {
             if (new_ls.language === null)
@@ -249,13 +249,13 @@ const create_LinkedResource = (resource) => {
         return undefined;
     }
     else if (_.isString(resource)) {
-        const new_lr = new manifest_classes_1.LinkedResource_Impl();
+        const new_lr = terms_1.new_LinkedResource_Impl();
         new_lr.url = resource;
         new_lr.type = ['LinkedResource'];
         return new_lr;
     }
     else if (isMap(resource)) {
-        const new_lr = new manifest_classes_1.LinkedResource_Impl();
+        const new_lr = terms_1.new_LinkedResource_Impl();
         utilities_1.copy_object(resource, new_lr);
         if (new_lr.type) {
             if (!new_lr.type.includes('LinkedResource')) {
@@ -299,7 +299,7 @@ function generate_internal_representation(args, logger, profiles = [profile_1.de
     utilities_1.Global.document = args.document;
     /* ============ The individual processing steps, following the spec ============== */
     /* Step: create the, initially empty, processed manifest */
-    let processed = new manifest_classes_1.PublicationManifest_Impl();
+    let processed = terms_1.new_PublicationManifest_Impl();
     /* Step: get the manifest. */
     let manifest;
     try {
@@ -822,13 +822,13 @@ function verify_value_category(context, term, value) {
             return _.isString(val);
         }
         else if (keys.is_strings_term(key)) {
-            return val instanceof manifest_classes_1.LocalizableString_Impl;
+            return terms_1.isLocalizableString_Impl(val);
         }
         else if (keys.is_entities_term(key)) {
-            return val instanceof manifest_classes_1.Entity_Impl;
+            return terms_1.isEntity_Impl(val);
         }
         else if (keys.is_links_term(key)) {
-            return val instanceof manifest_classes_1.LinkedResource_Impl;
+            return terms_1.isLinkedResource_Impl(val);
         }
         else if (keys.is_url_or_urls_term(key)) {
             return _.isString(val);

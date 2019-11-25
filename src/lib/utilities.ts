@@ -24,8 +24,11 @@ import {
     LinkedResource_Impl,
     RecognizedTypes_Impl,
     PublicationManifest_Impl,
+    new_Entity_Impl, isEntity_Impl,
+    new_LocalizableString_Impl,  isLocalizableString_Impl,
+    new_LinkedResource_Impl, isLinkedResource_Impl,
     Terms
-} from './manifest_classes';
+} from './terms';
 
 import { Profile } from './profile';
 
@@ -155,7 +158,7 @@ export function copy_object(from: any, to: any): void {
  *
  */
 export function recognized_type(obj: any): boolean {
-    return _.isObject(obj) && (obj instanceof Entity_Impl || obj instanceof LinkedResource_Impl);
+    return _.isObject(obj) && (isEntity_Impl(obj) || isLinkedResource_Impl(obj));
 }
 
 /**
@@ -165,12 +168,10 @@ export function recognized_type(obj: any): boolean {
  * @returns - an instance of Terms
  */
 export function get_terms(resource: any): Terms {
-    if (resource instanceof PublicationManifest_Impl || resource instanceof Entity_Impl ||
-        resource instanceof LinkedResource_Impl || resource instanceof LocalizableString_Impl)
-    {
-        return resource.terms
+    if (resource.$terms !== undefined) {
+        return resource.$terms instanceof Terms ? resource.$terms as Terms : undefined;
     } else {
-        return undefined;
+        return undefined
     }
 }
 
@@ -224,7 +225,7 @@ export class Logger {
         if (obj === null) {
             final_message = `${message}`;
         } else {
-            const obj_dump = JSON.stringify(obj, null, 4).split('\n').map((str) => `>> ${str}`).join('\n');
+            const obj_dump = JSON.stringify(obj, (key, value) =>  key === '$terms' ? undefined : value, 4).split('\n').map((str) => `>> ${str}`).join('\n');
             final_message = `${message}. Problematic object:\n${obj_dump}`;
         }
         target.push(final_message);

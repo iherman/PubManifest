@@ -1,5 +1,5 @@
 /**
- * Module implementing the audiobook profile specific extension functions. The specificities of the profile are defined in [§6 Manifest Processing][https://www.w3.org/TR/audiobooks/#audio-manifest-processing] of the Audiobooks specification.
+ * Module implementing the audiobook profile specific extension functions. The specificities of this profile are defined in [§6 Manifest Processing][https://www.w3.org/TR/audiobooks/#audio-manifest-processing] of the Audiobooks specification.
  *
  */
 
@@ -30,7 +30,7 @@ import {
     RecognizedTypes_Impl,
     PublicationManifest_Impl,
     Terms
-} from './lib/manifest_classes';
+} from './lib/terms';
 
 import moment from 'moment';
 
