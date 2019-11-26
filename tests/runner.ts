@@ -13,19 +13,23 @@
  *
  * A test is, usually, a JSON-LD file for a manifest, to make things simpler to test. Alternatively, some tests are in html (the `format` entry in [[Test]] should be set to `html` for those cases), pointing to a Primary Entry Point.
  *
+ * @author Ivan Herman <ivan@w3.org>
  */
-/** The configuration file is in YAML, need this input */
-const fs = require('fs');
+
+/** Base URL for all files, this should be adapted to the local environment... */
+const test_base = 'http://localhost:8001/LocalData/github/Publishing/pub_manifest_api_tests/tests/';
+
 import { process_manifest, ProcessResult } from '../src/process';
 import { URL } from '../src/manifest';
+import { fetch_json } from "../src/lib/discovery";
 
 // All calls use these two profiles in the caller
 import { Profile, default_profile } from '../src/lib/profile';
 import { audiobook_profile } from '../src/audiobooks';
+
 import * as _ from 'underscore';
 
 const test_profiles: Profile[] = [audiobook_profile, default_profile];
-
 
 /**
  * Interface for a single test. The `format` key defines whether the test is an HTML or a JSON-LD file.
@@ -102,16 +106,17 @@ interface FlattenedSuite {
 /**
  * Generate a flattened version of the test suite, setting the URL of each test on the fly.
  *
+ * @async
  * @param file_name - name of the test manifest file
  */
-function get_tests(file_name: string): FlattenedSuite {
+async function get_tests(file_name: string): Promise<FlattenedSuite> {
     const process_doc_tests = (doc_test: DocumentTests) => {
         let base: string;
         // For local use, the base should be set to localhost...
         if (doc_test.href === 'https://www.w3.org/TR/pub-manifest/') {
-            base = 'http://localhost:8001/LocalData/github/Publishing/PubManifest/tests/generic/';
+            base = `${test_base}generic/`;
         } else {
-            base = 'http://localhost:8001/LocalData/github/Publishing/PubManifest/tests/audiobooks/'
+            base = '${test_base}audiobooks/'
         }
 
         doc_test.tests.forEach((section_tests: SectionTests): void => {
@@ -122,9 +127,8 @@ function get_tests(file_name: string): FlattenedSuite {
         });
     }
 
-    const test_suite: TestSuite = JSON.parse(fs.readFileSync(file_name, 'utf-8'));
-    // console.log(JSON.stringify(test_suite, null, 4)); process.exit(0)
-
+    const index_body: string = await fetch_json(`${test_base}${file_name}`);
+    const test_suite: TestSuite = JSON.parse(index_body);
 
     const flattened_suite: FlattenedSuite = {};
     process_doc_tests(test_suite.generic);
@@ -134,7 +138,7 @@ function get_tests(file_name: string): FlattenedSuite {
 
 
 /**
- * Start the general processing algorithm and, if successful, print the JSON representation of that returned class, as well as
+ * Start the general processing algorithm and, if successful, print the JSON representation of that returned class on standard output, as well as
  * the list of fatal and validation errors.
  *
  * @async
@@ -151,7 +155,11 @@ async function run_test(url: URL) {
     }
 }
 
-
+/**
+ * Generate score object, to be submitted to the test suite reporting
+ *
+ * @param all_tests
+ */
 function generate_scores(all_tests: FlattenedSuite): any {
     let retval = {} as any;
     retval.$name        = "PubManifest";
@@ -164,17 +172,32 @@ function generate_scores(all_tests: FlattenedSuite): any {
     return retval;
 }
 
-// This is the local test run
-const tests: FlattenedSuite = get_tests('tests/index.json');
+/**
+ *
+ * Run a test, or dump a general score object on the standard output. The choice depends on the -s flag of the command line.
+ *
+ * @async
+ */
+async function main() {
+    try {
+        // This is the local test run
+        const tests: FlattenedSuite = await get_tests('index.json');
 
-if (process.argv && process.argv.length >= 2) {
-    if (process.argv[2] === '-s') {
-        // print scores
-        const scores = generate_scores(tests);
-        console.log(JSON.stringify(scores, null, 4));
-    } else {
-        run_test(tests[process.argv[2]].url);
+        if (process.argv && process.argv.length >= 2) {
+            if (process.argv[2] === '-s') {
+                // print scores
+                const scores = generate_scores(tests);
+                console.log(JSON.stringify(scores, null, 4));
+            } else {
+                run_test(tests[process.argv[2]].url);
+            }
+        } else {
+            run_test(tests['m4.01'].url);
+        }
+    } catch(e) {
+        console.log(`Something went very wrong: ${e.message}`);
+        process.exit(1);
     }
-} else {
-    run_test(tests['m4.01'].url);
 }
+
+main();

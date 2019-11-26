@@ -11,6 +11,7 @@
  * - [[process_manifest]]
  * - [[generate_internal_representation]]
  *
+ *  * @author Ivan Herman <ivan@w3.org>
  */
 
 /**
@@ -71,7 +72,7 @@ import {
 /**
  * Manifest discovery function
  */
-import { discover_manifest, GenerationArguments } from './lib/manifest_discovery';
+import { discover_manifest, GenerationArguments } from './lib/discovery';
 
 import * as urlHandler from 'url';
 import * as validUrl from 'valid-url';
