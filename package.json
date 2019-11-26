@@ -2,7 +2,7 @@
     "name": "PubManifest",
     "version": "1.0.0",
     "description": "Processing of a publication manifests into a Typescript internal representation.",
-    "main": "dist/main.js",
+    "main": "dist/test_runner.js",
     "scripts": {
         "test": "ts-node tests/runner.ts",
         "build": "tsc; typedoc src/ tests/",

@@ -12,6 +12,7 @@
  * - [[process_manifest]]
  * - [[generate_internal_representation]]
  *
+ *  * @author Ivan Herman <ivan@w3.org>
  */
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
@@ -44,7 +45,7 @@ const utilities_1 = require("./lib/utilities");
 /**
  * Manifest discovery function
  */
-const manifest_discovery_1 = require("./lib/manifest_discovery");
+const discovery_1 = require("./lib/discovery");
 const urlHandler = __importStar(require("url"));
 const validUrl = __importStar(require("valid-url"));
 const _ = __importStar(require("underscore"));
@@ -107,7 +108,7 @@ async function process_manifest(url, profiles = [profile_1.default_profile], deb
     let manifest_object = {};
     let args;
     try {
-        args = await manifest_discovery_1.discover_manifest(url);
+        args = await discovery_1.discover_manifest(url);
     }
     catch (err) {
         logger.log_fatal_error(`The manifest could not be discovered (${err.message})`);

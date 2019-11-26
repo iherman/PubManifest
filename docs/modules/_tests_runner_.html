@@ -80,6 +80,11 @@
 						For each document there are some metadata and a series of section tests (see <a href="../interfaces/_tests_runner_.sectiontests.html">SectionTests</a>), corresponding to some sections in the specifications. Finally,
 					each section tests is a series of individual tests (see <a href="../interfaces/_tests_runner_.test.html">Test</a>).</p>
 					<p>A test is, usually, a JSON-LD file for a manifest, to make things simpler to test. Alternatively, some tests are in html (the <code>format</code> entry in <a href="../interfaces/_tests_runner_.test.html">Test</a> should be set to <code>html</code> for those cases), pointing to a Primary Entry Point.</p>
+					<dl class="tsd-comment-tags">
+						<dt>author</dt>
+						<dd><p>Ivan Herman <a href="mailto:&#105;&#x76;&#x61;&#x6e;&#64;&#x77;&#x33;&#x2e;&#x6f;&#114;&#103;">&#105;&#x76;&#x61;&#x6e;&#64;&#x77;&#x33;&#x2e;&#x6f;&#114;&#103;</a></p>
+						</dd>
+					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -99,9 +104,8 @@
 						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_tests_runner_.html#fs" class="tsd-kind-icon">fs</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_tests_runner_.html#test_base" class="tsd-kind-icon">test_<wbr>base</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_tests_runner_.html#test_profiles" class="tsd-kind-icon">test_<wbr>profiles</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_tests_runner_.html#tests" class="tsd-kind-icon">tests</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-not-exported">
@@ -109,6 +113,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_tests_runner_.html#generate_scores" class="tsd-kind-icon">generate_<wbr>scores</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_tests_runner_.html#get_tests" class="tsd-kind-icon">get_<wbr>tests</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_tests_runner_.html#main" class="tsd-kind-icon">main</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_tests_runner_.html#run_test" class="tsd-kind-icon">run_<wbr>test</a></li>
 							</ul>
 						</section>
@@ -118,17 +123,17 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Variables</h2>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="fs" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> fs</h3>
-					<div class="tsd-signature tsd-kind-icon">fs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;require(&#x27;fs&#x27;)</span></div>
+					<a name="test_base" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> test_<wbr>base</h3>
+					<div class="tsd-signature tsd-kind-icon">test_<wbr>base<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"http://localhost:8001/LocalData/github/Publishing/pub_manifest_api_tests/tests/"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;http://localhost:8001/LocalData/github/Publishing/pub_manifest_api_tests/tests/&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9825576/tests/runner.ts#L18">tests/runner.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/1f3ce29/tests/runner.ts#L20">tests/runner.ts:20</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The configuration file is in YAML, need this input</p>
+							<p>Base URL for all files, this should be adapted to the local environment...</p>
 						</div>
 					</div>
 				</section>
@@ -138,17 +143,7 @@
 					<div class="tsd-signature tsd-kind-icon">test_<wbr>profiles<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_src_lib_profile_.profile.html" class="tsd-signature-type">Profile</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[audiobook_profile, default_profile]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9825576/tests/runner.ts#L27">tests/runner.ts:27</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="tests" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> tests</h3>
-					<div class="tsd-signature tsd-kind-icon">tests<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_tests_runner_.flattenedsuite.html" class="tsd-signature-type">FlattenedSuite</a><span class="tsd-signature-symbol"> =&nbsp;get_tests(&#x27;tests/index.json&#x27;)</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9825576/tests/runner.ts#L168">tests/runner.ts:168</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/1f3ce29/tests/runner.ts#L32">tests/runner.ts:32</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -165,13 +160,20 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9825576/tests/runner.ts#L155">tests/runner.ts:155</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/1f3ce29/tests/runner.ts#L163">tests/runner.ts:163</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Generate score object, to be submitted to the test suite reporting</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>all_tests: <a href="../interfaces/_tests_runner_.flattenedsuite.html" class="tsd-signature-type">FlattenedSuite</a></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -182,19 +184,23 @@
 					<a name="get_tests" class="tsd-anchor"></a>
 					<h3>get_<wbr>tests</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">get_<wbr>tests<span class="tsd-signature-symbol">(</span>file_name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_tests_runner_.flattenedsuite.html" class="tsd-signature-type">FlattenedSuite</a></li>
+						<li class="tsd-signature tsd-kind-icon">get_<wbr>tests<span class="tsd-signature-symbol">(</span>file_name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tests_runner_.flattenedsuite.html" class="tsd-signature-type">FlattenedSuite</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9825576/tests/runner.ts#L107">tests/runner.ts:107</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/1f3ce29/tests/runner.ts#L112">tests/runner.ts:112</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Generate a flattened version of the test suite, setting the URL of each test on the fly.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>async</dt>
+									<dd></dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -205,7 +211,33 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_tests_runner_.flattenedsuite.html" class="tsd-signature-type">FlattenedSuite</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tests_runner_.flattenedsuite.html" class="tsd-signature-type">FlattenedSuite</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="main" class="tsd-anchor"></a>
+					<h3>main</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">main<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/1f3ce29/tests/runner.ts#L181">tests/runner.ts:181</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Run a test, or dump a general score object on the standard output. The choice depends on the -s flag of the command line.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>async</dt>
+									<dd></dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -219,12 +251,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/9825576/tests/runner.ts#L143">tests/runner.ts:143</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/1f3ce29/tests/runner.ts#L147">tests/runner.ts:147</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Start the general processing algorithm and, if successful, print the JSON representation of that returned class, as well as
+									<p>Start the general processing algorithm and, if successful, print the JSON representation of that returned class on standard output, as well as
 									the list of fatal and validation errors.</p>
 								</div>
 								<dl class="tsd-comment-tags">
@@ -257,7 +289,7 @@
 						<a href="_src_audiobooks_.html">"src/audiobooks"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_src_lib_manifest_discovery_.html">"src/lib/manifest_<wbr>discovery"</a>
+						<a href="_src_lib_discovery_.html">"src/lib/discovery"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_src_lib_profile_.html">"src/lib/profile"</a>
@@ -297,19 +329,19 @@
 						<a href="../interfaces/_tests_runner_.testsuite.html" class="tsd-kind-icon">Test<wbr>Suite</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_tests_runner_.html#fs" class="tsd-kind-icon">fs</a>
+						<a href="_tests_runner_.html#test_base" class="tsd-kind-icon">test_<wbr>base</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_tests_runner_.html#test_profiles" class="tsd-kind-icon">test_<wbr>profiles</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_tests_runner_.html#tests" class="tsd-kind-icon">tests</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_tests_runner_.html#generate_scores" class="tsd-kind-icon">generate_<wbr>scores</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_tests_runner_.html#get_tests" class="tsd-kind-icon">get_<wbr>tests</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_tests_runner_.html#main" class="tsd-kind-icon">main</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_tests_runner_.html#run_test" class="tsd-kind-icon">run_<wbr>test</a>
