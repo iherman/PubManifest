@@ -129,7 +129,7 @@ exports.audiobook_profile = {
         /** Step 3, check the required terms */
         required_terms.forEach((term) => {
             if (data[term] === undefined) {
-                utilities_1.Global.logger.log_light_validation_error(`Term ${term} is missing from the manifest`);
+                utilities_1.Global.logger.log_light_validation_error(`Term "${term}" is missing from the manifest`);
             }
         });
         /** Step 4, check the recommended resources */

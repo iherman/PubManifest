@@ -32,6 +32,7 @@ const discovery_1 = require("../src/lib/discovery");
 const profile_1 = require("../src/lib/profile");
 const audiobooks_1 = require("../src/audiobooks");
 const _ = __importStar(require("underscore"));
+const yaml = __importStar(require("yaml"));
 const test_profiles = [audiobooks_1.audiobook_profile, profile_1.default_profile];
 ;
 /**
@@ -48,7 +49,7 @@ async function get_tests(file_name) {
             base = `${test_base}generic/`;
         }
         else {
-            base = '${test_base}audiobooks/';
+            base = `${test_base}audiobooks/`;
         }
         doc_test.tests.forEach((section_tests) => {
             section_tests.tests.forEach((test) => {
@@ -74,8 +75,11 @@ async function get_tests(file_name) {
 async function run_test(url) {
     try {
         const results = await process_1.process_manifest(url, test_profiles, true);
-        console.log(JSON.stringify(results.manifest_object, (key, value) => key === '$terms' ? undefined : value, 4));
-        console.log(results.logger.toString());
+        console.log(yaml.stringify(results.manifest_object));
+        if (!results.logger.isEmpty()) {
+            console.log('--- Errors, warnings: ---\n');
+            console.log(yaml.stringify(results.logger));
+        }
     }
     catch (e) {
         console.log(`Something went wrong: ${e.message}`);
