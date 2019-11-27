@@ -149,12 +149,16 @@ async function run_test(url: URL) {
     try {
         const results: ProcessResult = await process_manifest(url, test_profiles, true);
         console.log(yaml.stringify(results.manifest_object))
-        console.log(results.logger.toString());
+        if (!results.logger.isEmpty()) {
+            console.log('--- Errors, warnings: ---\n');
+            console.log(yaml.stringify(results.logger));
+        }
     } catch(e) {
         console.log(`Something went wrong: ${e.message}`);
         process.exit(1);
     }
 }
+
 
 /**
  * Generate score object, to be submitted to the test suite reporting
