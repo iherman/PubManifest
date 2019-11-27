@@ -27,6 +27,7 @@
         "@types/node-fetch": "^2.5.2",
         "@types/underscore": "^1.9.3",
         "@types/valid-url": "^1.0.2",
+        "@types/yaml": "^1.2.0",
         "@types/yamljs": "^0.2.30",
         "@typescript-eslint/eslint-plugin": "^2.4.0",
         "@typescript-eslint/parser": "^2.4.0",
@@ -44,6 +45,7 @@
         "tsutils": "^3.17.1",
         "underscore": "^1.9.1",
         "url": "^0.11.0",
-        "valid-url": "^1.0.9"
+        "valid-url": "^1.0.9",
+        "yaml": "^1.7.2"
     }
 }

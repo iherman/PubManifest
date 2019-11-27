@@ -21,13 +21,14 @@ const test_base = 'http://localhost:8001/LocalData/github/Publishing/pub_manifes
 
 import { process_manifest, ProcessResult } from '../src/process';
 import { URL } from '../src/manifest';
-import { fetch_json } from "../src/lib/discovery";
+import { fetch_json } from '../src/lib/discovery';
 
 // All calls use these two profiles in the caller
 import { Profile, default_profile } from '../src/lib/profile';
 import { audiobook_profile } from '../src/audiobooks';
 
 import * as _ from 'underscore';
+import * as yaml from 'yaml';
 
 const test_profiles: Profile[] = [audiobook_profile, default_profile];
 
@@ -116,7 +117,7 @@ async function get_tests(file_name: string): Promise<FlattenedSuite> {
         if (doc_test.href === 'https://www.w3.org/TR/pub-manifest/') {
             base = `${test_base}generic/`;
         } else {
-            base = '${test_base}audiobooks/'
+            base = `${test_base}audiobooks/`;
         }
 
         doc_test.tests.forEach((section_tests: SectionTests): void => {
@@ -147,7 +148,7 @@ async function get_tests(file_name: string): Promise<FlattenedSuite> {
 async function run_test(url: URL) {
     try {
         const results: ProcessResult = await process_manifest(url, test_profiles, true);
-        console.log(JSON.stringify(results.manifest_object, (key, value) =>  key === '$terms' ? undefined : value, 4));
+        console.log(yaml.stringify(results.manifest_object))
         console.log(results.logger.toString());
     } catch(e) {
         console.log(`Something went wrong: ${e.message}`);

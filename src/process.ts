@@ -164,7 +164,7 @@ export async function process_manifest(url: URL, profiles: Profile[] = [default_
     }
 
     try {
-        manifest_object = await generate_internal_representation(args, logger, profiles);
+        manifest_object = generate_internal_representation(args, logger, profiles);
     } catch(err) {
         logger.log_fatal_error(`Some extra error occurred during generation (${err.toString()})`);
         if (Global.debug) console.log(err);
@@ -456,7 +456,14 @@ export function generate_internal_representation(args: GenerationArguments, logg
     }
 
     /* Step: Profile specific processing, and return: */
-    return Global.profile.generate_internal_representation(processed);
+    const retval_impl = Global.profile.generate_internal_representation(processed);
+
+    // Doing an ugly trick here. The objects are all '_impl', meaning that they contain additional data
+    // that are only necessary for processing and not for the rest, namely '$terms'. To filter them all out
+    // the most straightforward way is to convert the object into JSON and back but, along the line,
+    // filter those unwanted keys out.
+    const retval = JSON.parse(JSON.stringify(retval_impl,(key, value) =>  key === '$terms' ? undefined : value)) as PublicationManifest;
+    return retval;
 }
 
 
