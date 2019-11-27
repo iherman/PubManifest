@@ -193,6 +193,9 @@ async function main() {
                 // print scores
                 const scores = generate_scores(tests);
                 console.log(JSON.stringify(scores, null, 4));
+            } else if (process.argv[2] === '-l') {
+                // run a local test that is not registered in the official test suite
+                run_test(process.argv[3]);
             } else {
                 run_test(tests[process.argv[2]].url);
             }
