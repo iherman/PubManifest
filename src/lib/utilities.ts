@@ -197,6 +197,11 @@ export function get_resources(resources: LinkedResource[]): URL[] {
 
 /* **************************** Logger **************************** */
 
+interface Log {
+    "Error message": string,
+    "Problematic Object"?: any
+}
+
 /**
  * Simple logger class to record errors and warnings for subsequent display.
  *
@@ -204,14 +209,13 @@ export function get_resources(resources: LinkedResource[]): URL[] {
  * class.
  */
 export class Logger {
-    private _light_validation_errors: string[] = [];
-    get light_validation_errors(): string[] { return this._light_validation_errors; }
+    "Fatal errors": Log[]               = [];
+    "Warnings with data removal": Log[] = [];
+    "Warnings": Log[]                   = [];
 
-    private _strong_validation_errors: string[] = [];
-    get strong_validation_errors(): string[] { return this._strong_validation_errors; }
-
-    private _fatal_errors: string[]      = [];
-    get fatal_errors() : string[] { return this._fatal_errors; }
+    isEmpty(): boolean {
+        return this["Fatal errors"].length === 0 && this["Warnings with data removal"].length === 0 && this["Warnings"].length === 0;
+    }
 
     /**
      * Log an error
@@ -220,15 +224,14 @@ export class Logger {
      * @param message - the message that should be logged, possibly, in case the condition is false
      * @param obj - an optional object that should be added to the message in JSON
      */
-    private log(target: string[], message: string, obj: any) : void {
-        let final_message;
-        if (obj === null) {
-            final_message = `${message}`;
-        } else {
-            const obj_dump = JSON.stringify(obj, (key, value) =>  key === '$terms' ? undefined : value, 4).split('\n').map((str) => `>> ${str}`).join('\n');
-            final_message = `${message}. Problematic object:\n${obj_dump}`;
+    private log(target: Log[], message: string, obj: any) : void {
+        const error: Log = {
+            "Error message" : message,
         }
-        target.push(final_message);
+        if (obj !== null) {
+            error["Problematic Object"] = JSON.parse(JSON.stringify(obj,(key, value) =>  key === '$terms' ? undefined : value));
+        }
+        target.push(error);
     }
 
     /**
@@ -238,7 +241,7 @@ export class Logger {
      * @param obj - an optional object that should be added to the message in JSON
      */
     log_light_validation_error(message: string, obj: any = null): void {
-        this.log(this._light_validation_errors, message, obj);
+        this.log(this["Warnings"], message, obj);
     }
 
     /**
@@ -248,7 +251,7 @@ export class Logger {
      * @param obj - an optional object that should be added to the message in JSON
      */
     log_strong_validation_error(message: string, obj: any = null): void {
-        this.log(this._strong_validation_errors, message, obj);
+        this.log(this["Warnings with data removal"], message, obj);
     }
 
     /**
@@ -259,54 +262,7 @@ export class Logger {
      * @param required - an optional flag whether a final remark should be added on removing faulty data (i.e., whether the feature is required or not)
      */
     log_fatal_error(message: string, obj: any = null): void {
-        this.log(this._fatal_errors, message, obj);
-    }
-
-    /**
-     * Display all fatal errors as one string.
-     */
-    fatal_errors_toString(): string {
-        return this._display(this.fatal_errors, 'Fatal Errors:');
-    }
-
-    /**
-     * Display all validation errors as one string.
-     */
-    light_validation_errors_toString(): string {
-        return this._display(this.light_validation_errors, 'Validation Errors:');
-    }
-
-    /**
-     * Display all validation errors as one string.
-     */
-    strong_validation_errors_toString(): string {
-        return this._display(this.strong_validation_errors, 'Validation Errors, with data removed:');
-    }
-
-    /**
-     * Display all the messages as one string.
-     */
-    toString(): string {
-        return `${this.fatal_errors_toString()}\n\n${this.strong_validation_errors_toString()}\n\n${this.light_validation_errors_toString()}\n`;
-    }
-
-    /**
-     * Generate a string for a category of messages.
-     *
-     * @param messages - set of messages to display.
-     * @param start - a text preceding the full dump.
-     * @returns - a text ready to be displayed
-     */
-    private _display(messages: string[], start: string) : string {
-        let retval = start;
-        if (messages.length === 0) {
-            retval += ' none';
-        } else {
-            messages.forEach((element: string) => {
-                retval += `\n- ${element}`;
-            });
-        }
-        return retval;
+        this.log(this["Fatal errors"], message, obj);
     }
 }
 
