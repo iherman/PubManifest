@@ -18,16 +18,13 @@ There is also a rudimentary CLI implemented in the separate [runner](modules/_te
 The implementation is in Typescript and on top of `node.js`.
 
 - When the document says 'failure is returned', this appears in the code as returning the Javascript value `undefined` or, when the function returns a boolean, `false`.
-- The notion of a 'context' in the algorithm is implemented via one of the `*_Impl` class instances corresponding to the TS Interface definitions for the internal representations (see [manifest](modules/_manifest_.html) and [manifest_classes](modules/_manifest_classes_.html) for details). All these classes have a reference to a [[Terms]] instance that classifies the terms defined for that class (type).
+- The notion of a 'context' in the algorithm is implemented via one of the `*_Impl` interfaces corresponding to the TS Interface definitions for the internal representations (see [manifest](modules/_manifest_.html) and [terms](modules/_terms_.html) for details). All these classes have a reference to a [[Terms]] instance that classifies the terms defined for that class (type).
 
-Also, the implementation is a bit more complicated than it would be in Javascript, mainly due to the requirements of Typescript.
-For example, the original object, parsed from JSON, cannot be directly modified and returned as `processed`; instead, Typescript classes, duly defined as
-implementing the Typescript interfaces, must be created with the key/values set.
 
 The project can be downloaded via cloning and and can be run via the standard `npm` processing.
 
 ---
 
-The documentation is also available [on-line](https://iherman.github.io/PubManifest/).
+The documentation is also available [on-line](https://iherman.github.io/PubManifest/docs/).
 
 Ivan Herman (ivan@w3.org)

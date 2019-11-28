@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Processing a Publication Manifest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
+    <script src="js/pm.js"></script>
+ </head>
+<body>
+    <header>
+        <h1>Processing a Publication Manifest</h1>
+    </header>
+    <main>
+        <div id=convert_dialogue>
+            <div class=container id=pm_input>
+                <div>
+                    <label>JSON-LD manifest to process:
+                        <textarea class="text" id="pm_holder" cols=100 rows="30" data-url='https://www.example.org/pm/'></textarea>
+                    </label>
+                </div>
+                <div>
+                    <label>Upload local file:
+                        <input id="upload_pm" type="file" width="40" spellcheck=false/>
+                    </label>
+                </div>
+                 <div>
+                    <label>
+                        Fetch remote JSON-LD from:<br>
+                        <input type=text id="pm_url" size="70" placeholder="https://" />
+                    </label>
+                </div>
+           </div>
+
+            <div id="convert">
+                <input type="button" id="process" value='Process &gt;&gt;'>
+            </div>
+
+            <div id="generated" class="container">
+                <label>Result of processing:
+                    <textarea class="text" id="processed_pm" cols="90" rows="45"></textarea>
+                </label>
+                <!-- <input type='button' id='save' value='Save as…'>
+                <a style='display:none' id='download'></a> -->
+            </div>
+            <!-- <div class=container>
+                <label for="">
+                    Primary Entry Page:<br>
+                    <input type=text id="pep_url" size="70" placeholder="http://" />
+                </label>
+            </div> -->
+        </div>
+
+        <h2>Description</h2>
+
+        <p>
+            This is a non-production level tool to see what transformations are performed by the <a href='https://www.w3.org/TR/pub-manifest/#manifest-processing'>Processing Algorithm of the Publication Manifest specification</a>. The internal code is based on an test level code of the algorithm, <a href="https://github.com/iherman/PubManifest/">also available on github</a>.
+        </p>
+        <p>
+            The user may provide a JSON-LD file containing a Publication Manifest, which is transformed into the internal data structure following the specification. The result is displayed in Yaml for an easier read. The possible ways of submitting a manifest are:
+        </p>
+
+        <ul>
+            <li>
+                The text panel on the left, labeled as “JSON-LD manifest to process” is editable: the user can type in, or paste, a full manifest. Pushing the “Process” button generates the Yaml representation of the generation result. The panel can also be filled by:
+                <ul>
+                    <li>
+                        providing a URL for a manifest file; this is then uploaded into the text panel; or
+                    </li>
+                    <li>
+                        uploading a local file.
+                    </li>
+                </ul>
+            </li>
+            <!-- <li>
+                The user can provide the URL of an <a href="https://www.w3.org/TR/wpub/#wp-primary-entry-page">HTML Primary Entry Page</a>. By pushing the corresponding button the manifest file is extracted (following the <a href="https://www.w3.org/TR/wpub/#manifest-linking">the steps described in the specification</a>), the result filled in the text panel, and the canonicalization triggered automatically.
+            </li> -->
+        </ul>
+
+        <p>
+            Note that, strictly speaking, some of those combination may not be correct: indeed, the processing algorithm requires that all relative URL-s are transformed into absolute ones. This cannot be done properly if the manifest is copy pasted, edited by hand, or uploaded from a local file; to make the result formally correct the base value of <code>https://www.example.org/pm/</code> is used for that case.
+        </p>
+    </main>
+    <footer>
+        <p>
+            The page uses API-s and HTML attributes that may not be available for all browsers yet.
+        </p>
+        <p>
+            Ivan Herman, W3C, <a href="mailto:ivan@w3.org">&lt;ivan@w3.org&gt;</a>. Last modified: <span id='date'></span>.
+        </p>
+    </footer>
+</body>
+</html>

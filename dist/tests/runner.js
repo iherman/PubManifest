@@ -31,8 +31,8 @@ const discovery_1 = require("../src/lib/discovery");
 // All calls use these two profiles in the caller
 const profile_1 = require("../src/lib/profile");
 const audiobooks_1 = require("../src/audiobooks");
+const bridge_1 = require("../src/bridge");
 const _ = __importStar(require("underscore"));
-const yaml = __importStar(require("yaml"));
 const test_profiles = [audiobooks_1.audiobook_profile, profile_1.default_profile];
 ;
 /**
@@ -75,11 +75,7 @@ async function get_tests(file_name) {
 async function run_test(url) {
     try {
         const results = await process_1.process_manifest(url, test_profiles, true);
-        console.log(yaml.stringify(results.manifest_object));
-        if (!results.logger.isEmpty()) {
-            console.log('--- Errors, warnings: ---\n');
-            console.log(yaml.stringify(results.logger));
-        }
+        console.log(bridge_1.processedToString(results));
     }
     catch (e) {
         console.log(`Something went wrong: ${e.message}`);
@@ -117,6 +113,10 @@ async function main() {
                 // print scores
                 const scores = generate_scores(tests);
                 console.log(JSON.stringify(scores, null, 4));
+            }
+            else if (process.argv[2] === '-l') {
+                // run a local test that is not registered in the official test suite
+                run_test(process.argv[3]);
             }
             else {
                 run_test(tests[process.argv[2]].url);
