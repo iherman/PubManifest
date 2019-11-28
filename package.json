@@ -5,9 +5,9 @@
     "main": "dist/test_runner.js",
     "scripts": {
         "test": "ts-node tests/runner.ts",
-        "build": "tsc; typedoc src/ tests/",
+        "build": "tsc && browserify webview/lib/main.js > webview/js/pm.js && terser webview/js/pm.js > webview/js/pm.min.js",
         "run": "node dist/tests/runner.js",
-        "doc": "typedoc src/ tests/"
+        "docs": "typedoc src/ tests/"
     },
     "license": "W3C-20150513",
     "keywords": [
@@ -31,9 +31,11 @@
         "@types/yamljs": "^0.2.30",
         "@typescript-eslint/eslint-plugin": "^2.4.0",
         "@typescript-eslint/parser": "^2.4.0",
+        "browserify": "^16.5.0",
         "eslint": "^6.2.1",
         "eslint-config-airbnb-base": "^14.0.0",
         "eslint-plugin-import": "^2.18.2",
+        "terser": "^4.4.0",
         "typedoc": "^0.15.0",
         "typescript": "^3.6.4"
     },

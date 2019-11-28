@@ -1,0 +1,67 @@
+body {
+    font-family: 'Roboto',  arial, helvetica, arial, sans-serif;
+    font-size: 100%;
+    font-variant-ligatures: common-ligatures no-discretionary-ligatures no-historical-ligatures;
+    color: black;
+    background-color: #F8F8F8;
+    padding: 2em 2em;
+    hyphens: auto;
+    font-kerning: normal;
+}
+
+textarea {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 100%;
+    background-color: white;
+}
+
+/* ------------------------- Dialogue layout ------------------- */
+#convert_dialogue {
+    display: grid;
+    grid-template-columns: 4fr 1fr 4fr;
+    grid-gap: 10px;
+}
+
+#convert {
+    text-align: center;
+    align-self: center;
+}
+
+#pm_input {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 8fr 1fr 1fr;
+    grid-gap: 5px;
+}
+
+#generated {
+   grid-row: 1 / span 2;
+   grid-column: 3;
+}
+
+/* --------------------- Just styling ----------------------- */
+
+.container {
+    padding: 1em;
+    border-radius: 10px;
+    border: 1px solid black;
+}
+
+#canonicalize, #fetch_pep, #fetch_wpm {
+    font-size: 1.5em;
+}
+
+.text {
+    display: block;
+    width: 100%;
+}
+
+@media screen and (max-width: 800px) {
+    #convert_dialogue {
+        display: block;
+    }
+
+    div {
+        margin-bottom: 10px;
+    }
+}

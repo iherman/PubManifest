@@ -26,6 +26,8 @@ import { fetch_json } from '../src/lib/discovery';
 // All calls use these two profiles in the caller
 import { Profile, default_profile } from '../src/lib/profile';
 import { audiobook_profile } from '../src/audiobooks';
+import { processedToString } from '../src/bridge';
+
 
 import * as _ from 'underscore';
 import * as yaml from 'yaml';
@@ -148,11 +150,7 @@ async function get_tests(file_name: string): Promise<FlattenedSuite> {
 async function run_test(url: URL) {
     try {
         const results: ProcessResult = await process_manifest(url, test_profiles, true);
-        console.log(yaml.stringify(results.manifest_object))
-        if (!results.logger.isEmpty()) {
-            console.log('--- Errors, warnings: ---\n');
-            console.log(yaml.stringify(results.logger));
-        }
+        console.log(processedToString(results));
     } catch(e) {
         console.log(`Something went wrong: ${e.message}`);
         process.exit(1);
