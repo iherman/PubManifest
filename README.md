@@ -11,7 +11,7 @@ The following public functions are available:
 - The [[generate_internal_representation]] function, implementing the processing algorithm itself and resulting in a class implementing the [[PublicationManifest]] interface;
 - The [[process_manifest]] function, a wrapper of around the combination of the two previous functions to provide a single entry point.
 
-There is also a rudimentary CLI implemented in the separate [runner](modules/_tests_runner_) module. That is for testing only.
+There is a rudimentary CLI implemented in the separate [runner](modules/_tests_runner_) module for testing only. There is also a [“webview”](https://iherman.github.io/PubManifest/docs/index.html) where the user can upload, or type in, manifests and see the resulting data structure.
 
 ## Implementation specificities
 
@@ -25,6 +25,6 @@ The project can be downloaded via cloning and and can be run via the standard `n
 
 ---
 
-The documentation is also available [on-line](https://iherman.github.io/PubManifest/docs/).
+The documentation is also available [on-line](https://iherman.github.io/PubManifest/docs/index.html).
 
 Ivan Herman (ivan@w3.org)
