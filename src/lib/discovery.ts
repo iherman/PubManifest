@@ -29,10 +29,21 @@ export interface GenerationArguments {
     document: HTMLDocument
 }
 
-import * as fetch      from 'node-fetch';
+import * as node_fetch from 'node-fetch';
 import * as urlHandler from 'url';
 import * as validUrl   from 'valid-url';
 import * as jsdom      from 'jsdom';
+
+/**
+ * The effective fetch implementation run by the rest of the code.
+ *
+ * If the code is ran in a browser, we get an error message whereby
+ * only the fetch implementation in the Window is acceptable for the browser. However, there is
+ * no default fetch implementation for `node.js`, hence the necessity to import 'node-fetch' for that case.
+ *
+ * I guess this makes this entry a bit polyfill like:-)
+ */
+const my_fetch: ((arg:string) => Promise<any>) = (process !== undefined) ? node_fetch.default : fetch;
 
 
 /**
@@ -111,10 +122,10 @@ async function fetch_resource(resource_url: URL, format: ContentType): Promise<a
             // This is a real URL, whose content must be accessed via HTTP(S)
             // An exception is raised if the URL has security/sanity issues.
             const final_url = check_Web_url(resource_url);
-            fetch.default(final_url)
+            my_fetch(final_url)
                 .then((response) => {
                     if (response.ok) {
-                        // If the response content type is set (which is usually the case, but not always in all cases...)
+                        // If the response content type is set (which is usually the case, but not in all cases...)
                         const response_type = response.headers.get('content-type');
                         if (response_type && response_type !== '') {
                             // check whether we got what we wanted
@@ -268,5 +279,4 @@ export async function discover_manifest(address: URL): Promise<GenerationArgumen
     } catch (err) {
         throw new Error(`Problems discovering the manifest (${err.message})`);
     }
-
 }

@@ -3,16 +3,21 @@
  *
  */
 /** The main entries needed to process the manifest */
-import { process_manifest, ProcessResult, generate_internal_representation } from './process';
+import { ProcessResult, generate_internal_representation } from './process';
 import { discover_manifest, GenerationArguments } from './lib/discovery';
-// All calls use these two profiles in the caller
+import { Logger } from './lib/utilities';
+
+import * as yaml from 'yaml';
+
 import { Profile, default_profile } from './lib/profile';
 import { audiobook_profile } from './audiobooks';
-import * as yaml from 'yaml';
-import { Logger } from './lib/utilities';
 
 /** Profiles made available through the bridge */
 const bridge_profiles: Profile[] = [audiobook_profile, default_profile];
+
+/* It is pretty ugly to use a global variable across event handlers, but I do not have too much simple choices... */
+let global_document: HTMLDocument = undefined;
+
 
 /**
  * Create a human readable version of the processing results: convert all data into Yaml, and
@@ -39,9 +44,9 @@ export function processedToString(result: ProcessResult): string {
  * @param base - the base URL to be used for the processing
  * @returns - human readable, ie, Yaml version of the processing results and, if not empty, the [[Logger]] instance
  */
-function generate_from_json_content(json: string, base = ''): string {
+function generate_from_pm_holder(json: string, base = ''): string {
     const arg: GenerationArguments = {
-        document : undefined,
+        document : global_document,
         base     : base,
         text     : json
     };
@@ -60,9 +65,15 @@ export function convert(): void {
     try {
         if (pm_holder.value !== '') {
             const processed_pm = document.getElementById('processed_pm') as HTMLTextAreaElement;
+            const pep_url = document.getElementById('pep_url') as HTMLTextAreaElement;
             const data = pm_holder.dataset;
-            const result = generate_from_json_content(pm_holder.value, data.url);
+            const result = generate_from_pm_holder(pm_holder.value, data.url);
             processed_pm.value = result;
+            if (global_document === undefined) {
+                pep_url.value = ''
+            } else {
+                pep_url.value = global_document.documentURI;
+            }
         }
     } catch (err) {
         console.error(`Error in processing: ${err.message} in ${err.lineNumber}`);
@@ -79,11 +90,10 @@ export function upload_pm(e: InputEvent): void {
     const file: File = target.files[0];
     const reader = new FileReader();
     reader.addEventListener('loadend', () => {
+        clear();
         const pm_holder = document.getElementById('pm_holder') as HTMLTextAreaElement;
         pm_holder.value = reader.result as string;
         pm_holder.dataset.url = `file:///${file.name}/`;
-        (<HTMLTextAreaElement>document.getElementById('processed_pm')).value = '';
-        (<HTMLInputElement>document.getElementById('pm_url')).value = '';
     });
     reader.readAsText(file);
 }
@@ -98,13 +108,26 @@ export async function fetch_pm(e: InputEvent) {
         const target = e.target as HTMLInputElement;
         const pm_url = target.value;
         const pm_holder = document.getElementById('pm_holder') as HTMLTextAreaElement;
-        // const json = await fetch_json(pm_url);
-        const json = await fetch(pm_url).then((response) => response.text());
-        pm_holder.value = json;
+
+        const args: GenerationArguments = await discover_manifest(pm_url);
+
         pm_holder.dataset.url = pm_url;
+        global_document = args.document;
+        pm_holder.value = args.text;
         (<HTMLTextAreaElement>document.getElementById('processed_pm')).value = '';
+        (<HTMLTextAreaElement>document.getElementById('pep_url')).value = '';
     } catch (err) {
         console.error(`Error in get_pm: ${err.message}`);
         alert(`Error in get_pm: ${err.message}`);
     }
+}
+
+/**
+ * Event handler to clear all result fields.
+ */
+export function clear() {
+    (<HTMLTextAreaElement>document.getElementById('pm_holder')).value = '';
+    (<HTMLTextAreaElement>document.getElementById('pep_url')).value = '';
+    (<HTMLTextAreaElement>document.getElementById('processed_pm')).value = '';
+    global_document = undefined;
 }

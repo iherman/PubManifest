@@ -81,14 +81,16 @@
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_src_bridge_.html#bridge_profiles" class="tsd-kind-icon">bridge_<wbr>profiles</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_src_bridge_.html#global_document" class="tsd-kind-icon">global_<wbr>document</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_src_bridge_.html#clear" class="tsd-kind-icon">clear</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_src_bridge_.html#convert" class="tsd-kind-icon">convert</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_src_bridge_.html#fetch_pm" class="tsd-kind-icon">fetch_<wbr>pm</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_src_bridge_.html#generate_from_json_content" class="tsd-kind-icon">generate_<wbr>from_<wbr>json_<wbr>content</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_src_bridge_.html#generate_from_pm_holder" class="tsd-kind-icon">generate_<wbr>from_<wbr>pm_<wbr>holder</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_src_bridge_.html#processedtostring" class="tsd-kind-icon">processed<wbr>ToString</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_src_bridge_.html#upload_pm" class="tsd-kind-icon">upload_<wbr>pm</a></li>
 							</ul>
@@ -104,7 +106,7 @@
 					<div class="tsd-signature tsd-kind-icon">bridge_<wbr>profiles<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_src_lib_profile_.profile.html" class="tsd-signature-type">Profile</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[audiobook_profile, default_profile]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/cbd8886/src/bridge.ts#L15">src/bridge.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/src/bridge.ts#L16">src/bridge.ts:16</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -113,9 +115,41 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="global_document" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagLet">Let</span> global_<wbr>document</h3>
+					<div class="tsd-signature tsd-kind-icon">global_<wbr>document<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">HTMLDocument</span><span class="tsd-signature-symbol"> =&nbsp;undefined</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/src/bridge.ts#L19">src/bridge.ts:19</a></li>
+						</ul>
+					</aside>
+				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="clear" class="tsd-anchor"></a>
+					<h3>clear</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">clear<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/src/bridge.ts#L128">src/bridge.ts:128</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Event handler to clear all result fields.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 					<a name="convert" class="tsd-anchor"></a>
 					<h3>convert</h3>
@@ -126,7 +160,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/cbd8886/src/bridge.ts#L58">src/bridge.ts:58</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/src/bridge.ts#L63">src/bridge.ts:63</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -149,7 +183,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/cbd8886/src/bridge.ts#L96">src/bridge.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/src/bridge.ts#L106">src/bridge.ts:106</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -172,16 +206,16 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="generate_from_json_content" class="tsd-anchor"></a>
-					<h3>generate_<wbr>from_<wbr>json_<wbr>content</h3>
+					<a name="generate_from_pm_holder" class="tsd-anchor"></a>
+					<h3>generate_<wbr>from_<wbr>pm_<wbr>holder</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">generate_<wbr>from_<wbr>json_<wbr>content<span class="tsd-signature-symbol">(</span>json<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, base<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">generate_<wbr>from_<wbr>pm_<wbr>holder<span class="tsd-signature-symbol">(</span>json<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, base<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/cbd8886/src/bridge.ts#L42">src/bridge.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/src/bridge.ts#L47">src/bridge.ts:47</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -221,7 +255,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/cbd8886/src/bridge.ts#L24">src/bridge.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/src/bridge.ts#L29">src/bridge.ts:29</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -256,7 +290,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/cbd8886/src/bridge.ts#L77">src/bridge.ts:77</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/src/bridge.ts#L88">src/bridge.ts:88</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -316,6 +350,12 @@
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_src_bridge_.html#bridge_profiles" class="tsd-kind-icon">bridge_<wbr>profiles</a>
 					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_src_bridge_.html#global_document" class="tsd-kind-icon">global_<wbr>document</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_src_bridge_.html#clear" class="tsd-kind-icon">clear</a>
+					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_src_bridge_.html#convert" class="tsd-kind-icon">convert</a>
 					</li>
@@ -323,7 +363,7 @@
 						<a href="_src_bridge_.html#fetch_pm" class="tsd-kind-icon">fetch_<wbr>pm</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_src_bridge_.html#generate_from_json_content" class="tsd-kind-icon">generate_<wbr>from_<wbr>json_<wbr>content</a>
+						<a href="_src_bridge_.html#generate_from_pm_holder" class="tsd-kind-icon">generate_<wbr>from_<wbr>pm_<wbr>holder</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_src_bridge_.html#processedtostring" class="tsd-kind-icon">processed<wbr>ToString</a>

@@ -13,10 +13,20 @@ const json_content_type = 'application/json';
 const jsonld_content_type = 'application/ld+json';
 /** Media type for HTML */
 const html_content_type = 'text/html';
-const fetch = __importStar(require("node-fetch"));
+const node_fetch = __importStar(require("node-fetch"));
 const urlHandler = __importStar(require("url"));
 const validUrl = __importStar(require("valid-url"));
 const jsdom = __importStar(require("jsdom"));
+/**
+ * The effective fetch implementation run by the rest of the code.
+ *
+ * If the code is ran in a browser, we get an error message whereby
+ * only the fetch implementation in the Window is acceptable for the browser. However, there is
+ * no default fetch implementation for `node.js`, hence the necessity to import 'node-fetch' for that case.
+ *
+ * I guess this makes this entry a bit polyfill like:-)
+ */
+const my_fetch = (process !== undefined) ? node_fetch.default : fetch;
 /**
 * Basic sanity check on a URL that is supposed to be used to retrieve a Web Resource.
 *
@@ -91,10 +101,10 @@ async function fetch_resource(resource_url, format) {
             // This is a real URL, whose content must be accessed via HTTP(S)
             // An exception is raised if the URL has security/sanity issues.
             const final_url = check_Web_url(resource_url);
-            fetch.default(final_url)
+            my_fetch(final_url)
                 .then((response) => {
                 if (response.ok) {
-                    // If the response content type is set (which is usually the case, but not always in all cases...)
+                    // If the response content type is set (which is usually the case, but not in all cases...)
                     const response_type = response.headers.get('content-type');
                     if (response_type && response_type !== '') {
                         // check whether we got what we wanted
