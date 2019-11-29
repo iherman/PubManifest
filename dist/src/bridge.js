@@ -13,13 +13,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 /** The main entries needed to process the manifest */
 const process_1 = require("./process");
-// All calls use these two profiles in the caller
+const discovery_1 = require("./lib/discovery");
+const utilities_1 = require("./lib/utilities");
+const yaml = __importStar(require("yaml"));
 const profile_1 = require("./lib/profile");
 const audiobooks_1 = require("./audiobooks");
-const yaml = __importStar(require("yaml"));
-const utilities_1 = require("./lib/utilities");
 /** Profiles made available through the bridge */
 const bridge_profiles = [audiobooks_1.audiobook_profile, profile_1.default_profile];
+/* It is pretty ugly to use a global variable across event handlers, but I do not have too much simple choices... */
+let global_document = undefined;
 /**
  * Create a human readable version of the processing results: convert all data into Yaml, and
  * return the generated text
@@ -46,9 +48,9 @@ exports.processedToString = processedToString;
  * @param base - the base URL to be used for the processing
  * @returns - human readable, ie, Yaml version of the processing results and, if not empty, the [[Logger]] instance
  */
-function generate_from_json_content(json, base = '') {
+function generate_from_pm_holder(json, base = '') {
     const arg = {
-        document: undefined,
+        document: global_document,
         base: base,
         text: json
     };
@@ -66,9 +68,16 @@ function convert() {
     try {
         if (pm_holder.value !== '') {
             const processed_pm = document.getElementById('processed_pm');
+            const pep_url = document.getElementById('pep_url');
             const data = pm_holder.dataset;
-            const result = generate_from_json_content(pm_holder.value, data.url);
+            const result = generate_from_pm_holder(pm_holder.value, data.url);
             processed_pm.value = result;
+            if (global_document === undefined) {
+                pep_url.value = '';
+            }
+            else {
+                pep_url.value = global_document.documentURI;
+            }
         }
     }
     catch (err) {
@@ -86,11 +95,10 @@ function upload_pm(e) {
     const file = target.files[0];
     const reader = new FileReader();
     reader.addEventListener('loadend', () => {
+        clear();
         const pm_holder = document.getElementById('pm_holder');
         pm_holder.value = reader.result;
         pm_holder.dataset.url = `file:///${file.name}/`;
-        document.getElementById('processed_pm').value = '';
-        document.getElementById('pm_url').value = '';
     });
     reader.readAsText(file);
 }
@@ -105,11 +113,12 @@ async function fetch_pm(e) {
         const target = e.target;
         const pm_url = target.value;
         const pm_holder = document.getElementById('pm_holder');
-        // const json = await fetch_json(pm_url);
-        const json = await fetch(pm_url).then((response) => response.text());
-        pm_holder.value = json;
+        const args = await discovery_1.discover_manifest(pm_url);
         pm_holder.dataset.url = pm_url;
+        global_document = args.document;
+        pm_holder.value = args.text;
         document.getElementById('processed_pm').value = '';
+        document.getElementById('pep_url').value = '';
     }
     catch (err) {
         console.error(`Error in get_pm: ${err.message}`);
@@ -117,4 +126,14 @@ async function fetch_pm(e) {
     }
 }
 exports.fetch_pm = fetch_pm;
+/**
+ * Event handler to clear all result fields.
+ */
+function clear() {
+    document.getElementById('pm_holder').value = '';
+    document.getElementById('pep_url').value = '';
+    document.getElementById('processed_pm').value = '';
+    global_document = undefined;
+}
+exports.clear = clear;
 //# sourceMappingURL=bridge.js.map

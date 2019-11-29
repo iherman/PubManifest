@@ -3,7 +3,7 @@
 /* eslint-env browser */
 /* eslint-disable no-alert */
 
-const { convert, upload_pm, fetch_pm } = require('../../dist/src/bridge');
+const { convert, upload_pm, fetch_pm, clear } = require('../../dist/src/bridge');
 
 
 // Just a small goody for the home page...
@@ -33,8 +33,7 @@ function printDate() {
 window.addEventListener('load', () => {
     document.getElementById('date').textContent = printDate();
     document.getElementById('pm_url').addEventListener('change', fetch_pm);
-    // document.getElementById('pep_url').addEventListener('change', get_pep);
     document.getElementById('process').addEventListener('click', convert);
     document.getElementById('upload_pm').addEventListener('change', upload_pm);
-    // document.getElementById('save').addEventListener('click', save);
+    document.getElementById('clear').addEventListener('click', clear);
 });

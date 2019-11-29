@@ -5,7 +5,8 @@
     <title>Processing a Publication Manifest</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
-    <script src="js/pm.js"></script>
+    <!-- <script src="js/pm.js"></script> -->
+    <script src="js/pm.min.js"></script>
  </head>
 <body>
     <header>
@@ -15,41 +16,38 @@
         <div id=convert_dialogue>
             <div class=container id=pm_input>
                 <div>
-                    <label>JSON-LD manifest to process:
-                        <textarea class="text" id="pm_holder" cols=100 rows="30" data-url='https://www.example.org/pm/'></textarea>
+                    <label>Publication manifest to process:
+                        <textarea class="text" id="pm_holder" cols=100 rows="35" data-url='https://www.example.org/pm/'></textarea>
                     </label>
                 </div>
                 <div>
-                    <label>Upload local file:
+                    <label>Upload local JSON-LD file:<br>
                         <input id="upload_pm" type="file" width="40" spellcheck=false/>
                     </label>
                 </div>
                  <div>
                     <label>
-                        Fetch remote JSON-LD from:<br>
-                        <input type=text id="pm_url" size="70" placeholder="https://" />
+                        Fetch manifest from:<br>
+                        <input type=text id="pm_url" size="80" placeholder="https://" />
                     </label>
                 </div>
            </div>
 
             <div id="convert">
-                <input type="button" id="process" value='Process &gt;&gt;'>
+                <input type="button" id="process" value='Process &gt;&gt;'> <br/>
+                <input type="button" id="clear" value='Clear'> <br/>
             </div>
 
-            <div id="generated" class="container">
+            <div class="container" id="generated">
                 <label>Result of processing:
-                    <textarea class="text" id="processed_pm" cols="90" rows="45"></textarea>
+                    <textarea class="text" id="processed_pm" cols="100" rows="35"></textarea>
                 </label>
-                <!-- <input type='button' id='save' value='Save as…'>
-                <a style='display:none' id='download'></a> -->
+                <label>
+                    URL of PEP (if applicable):
+                    <textarea class="text" id="pep_url" cols="100" rows="1"></textarea>
+                </label>
             </div>
-            <!-- <div class=container>
-                <label for="">
-                    Primary Entry Page:<br>
-                    <input type=text id="pep_url" size="70" placeholder="http://" />
-                </label>
-            </div> -->
-        </div>
+       </div>
 
         <h2>Description</h2>
 
@@ -65,16 +63,13 @@
                 The text panel on the left, labeled as “JSON-LD manifest to process” is editable: the user can type in, or paste, a full manifest. Pushing the “Process” button generates the Yaml representation of the generation result. The panel can also be filled by:
                 <ul>
                     <li>
-                        providing a URL for a manifest file; this is then uploaded into the text panel; or
+                        providing a URL for either a JSON-LD manifest file or an HTML file with embedded or linked manifest; or
                     </li>
                     <li>
                         uploading a local file.
                     </li>
                 </ul>
             </li>
-            <!-- <li>
-                The user can provide the URL of an <a href="https://www.w3.org/TR/wpub/#wp-primary-entry-page">HTML Primary Entry Page</a>. By pushing the corresponding button the manifest file is extracted (following the <a href="https://www.w3.org/TR/wpub/#manifest-linking">the steps described in the specification</a>), the result filled in the text panel, and the canonicalization triggered automatically.
-            </li> -->
         </ul>
 
         <p>
