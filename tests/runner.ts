@@ -17,7 +17,7 @@
  */
 
 /** Base URL for all files, this should be adapted to the local environment... */
-const test_base = 'http://localhost:8001/LocalData/github/Publishing/pub_manifest_api_tests/tests/';
+const test_base = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/APITests/tests/';
 
 import { process_manifest, ProcessResult } from '../src/process';
 import { URL } from '../src/manifest';
@@ -186,7 +186,7 @@ async function main() {
         // This is the local test run
         const tests: FlattenedSuite = await get_tests('index.json');
 
-        if (process.argv && process.argv.length >= 2) {
+        if (process.argv && process.argv.length > 2) {
             if (process.argv[2] === '-s') {
                 // print scores
                 const scores = generate_scores(tests);
