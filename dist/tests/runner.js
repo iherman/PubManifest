@@ -25,7 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 /** Base URL for all files, this should be adapted to the local environment... */
-const test_base = 'http://localhost:8001/LocalData/github/Publishing/pub_manifest_api_tests/tests/';
+const test_base = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/APITests/tests/';
 const process_1 = require("../src/process");
 const discovery_1 = require("../src/lib/discovery");
 // All calls use these two profiles in the caller
@@ -53,7 +53,7 @@ async function get_tests(file_name) {
         }
         doc_test.tests.forEach((section_tests) => {
             section_tests.tests.forEach((test) => {
-                test.url = (test.format && test.format === 'html') ? `${base}test_${test.id}.html` : `${base}test_${test.id}.jsonld`;
+                test.url = (test['media-type'] && test['media-type'] === 'text/html') ? `${base}test_${test.id}.html` : `${base}test_${test.id}.jsonld`;
                 flattened_suite[`${test.id}`] = test;
             });
         });
@@ -108,7 +108,7 @@ async function main() {
     try {
         // This is the local test run
         const tests = await get_tests('index.json');
-        if (process.argv && process.argv.length >= 2) {
+        if (process.argv && process.argv.length > 2) {
             if (process.argv[2] === '-s') {
                 // print scores
                 const scores = generate_scores(tests);

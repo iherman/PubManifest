@@ -44,7 +44,7 @@ interface Test {
     id: Number;
 
     /** Format of the test; default is jsonld, can be set to `html` */
-    format?: string;
+    "media-type"?: string;
 
     /** Some words about the test */
     description: string;
@@ -124,7 +124,7 @@ async function get_tests(file_name: string): Promise<FlattenedSuite> {
 
         doc_test.tests.forEach((section_tests: SectionTests): void => {
             section_tests.tests.forEach((test: Test): void => {
-                test.url = (test.format && test.format === 'html') ? `${base}test_${test.id}.html` : `${base}test_${test.id}.jsonld`;
+                test.url = (test['media-type'] && test['media-type'] === 'text/html') ? `${base}test_${test.id}.html` : `${base}test_${test.id}.jsonld`;
                 flattened_suite[`${test.id}`] = test;
             })
         });
