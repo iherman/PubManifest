@@ -17,7 +17,8 @@
  */
 
 /** Base URL for all files, this should be adapted to the local environment... */
-const test_base = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/APITests/tests/';
+const test_base_general = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/manifest_processing/tests';
+const test_base_audio = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/audiobooks/manifest_processing/tests';
 
 import { process_manifest, ProcessResult } from '../src/process';
 import { URL } from '../src/manifest';
@@ -78,26 +79,13 @@ interface SectionTests {
  */
 interface DocumentTests {
     title: string;
+    date: string;
 
     /** Base URL; it is combined with the `id` value in [[Test]] to set the final URL of the tests */
     href: URL;
-
     tests: SectionTests[];
 }
 
-/**
- * A full test suite
- */
-interface TestSuite {
-    title: string;
-    date: string;
-
-    /** Tests for the basic manifest algorithm */
-    generic: DocumentTests;
-
-    /** Specific tests for the audiobook tests */
-    audiobooks: DocumentTests;
-}
 
 /**
  * The preprocessing creates a flattened version of the test suite, keyed by the id each test.
@@ -114,13 +102,7 @@ interface FlattenedSuite {
  */
 async function get_tests(file_name: string): Promise<FlattenedSuite> {
     const process_doc_tests = (doc_test: DocumentTests) => {
-        let base: string;
-        // For local use, the base should be set to localhost...
-        if (doc_test.href === 'https://www.w3.org/TR/pub-manifest/') {
-            base = `${test_base}generic/`;
-        } else {
-            base = `${test_base}audiobooks/`;
-        }
+        const base = `${file_name.split('/').slice(0,-1).join('/')}/`;
 
         doc_test.tests.forEach((section_tests: SectionTests): void => {
             section_tests.tests.forEach((test: Test): void => {
@@ -130,12 +112,11 @@ async function get_tests(file_name: string): Promise<FlattenedSuite> {
         });
     }
 
-    const index_body: string = await fetch_json(`${test_base}${file_name}`);
-    const test_suite: TestSuite = JSON.parse(index_body);
+    const index_body: string = await fetch_json(file_name);
+    const test_suite: DocumentTests = JSON.parse(index_body);
 
     const flattened_suite: FlattenedSuite = {};
-    process_doc_tests(test_suite.generic);
-    process_doc_tests(test_suite.audiobooks);
+    process_doc_tests(test_suite);
     return flattened_suite;
 }
 
@@ -182,23 +163,35 @@ function generate_scores(all_tests: FlattenedSuite): any {
  * @async
  */
 async function main() {
+    const g_tests = async (flag: string): Promise<FlattenedSuite> => {
+        const retval = (flag === 'm') ? await get_tests(`${test_base_general}/index.json`) : await get_tests(`${test_base_audio}/index.json`);
+        return retval;
+    }
+    const preamble_run_test = async (name: string)=> {
+        if (name[0] === 'm' || name[0] === 'a') {
+            const tests: FlattenedSuite = await g_tests(name[0]);
+            run_test(tests[name].url);
+        } else {
+            throw new Error('Abnormal test id...');
+        }
+    }
+
     try {
-        // This is the local test run
-        const tests: FlattenedSuite = await get_tests('index.json');
 
         if (process.argv && process.argv.length > 2) {
-            if (process.argv[2] === '-s') {
-                // print scores
+            if (process.argv[2] === '-sm' || process.argv[2] === '-sa') {
+                const label = process.argv[2][2];
+                const tests = await g_tests(label);
                 const scores = generate_scores(tests);
                 console.log(JSON.stringify(scores, null, 4));
             } else if (process.argv[2] === '-l') {
                 // run a local test that is not registered in the official test suite
                 run_test(process.argv[3]);
             } else {
-                run_test(tests[process.argv[2]].url);
+                preamble_run_test(process.argv[2]);
             }
         } else {
-            run_test(tests['m4.01'].url);
+            preamble_run_test('m4.01');
         }
     } catch(e) {
         console.log(`Something went very wrong: ${e.message}`);
