@@ -1,22 +1,28 @@
-
-enum traverse {
-    exit,
-    proceed
+"use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
 };
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var traverse;
+(function (traverse) {
+    traverse[traverse["exit"] = 0] = "exit";
+    traverse[traverse["proceed"] = 1] = "proceed";
+})(traverse || (traverse = {}));
+;
 /** Sectioning Content Elements, see  https://html.spec.whatwg.org/multipage/dom.html#sectioning-content-2 */
-const sectioning_content_elements: string[] = ['ARTICLE', 'ASIDE', 'NAV', 'SECTION'];
+const sectioning_content_elements = ['ARTICLE', 'ASIDE', 'NAV', 'SECTION'];
 /** Sectioning Root Elements, https://html.spec.whatwg.org/multipage/sections.html#sectioning-root */
-const sectioning_root_elements: string[] = ['BLOCKQUOTE', 'BODY', 'DETAILS', 'DIALOG', 'FIELDSET', 'FIGURE', 'TD'];
+const sectioning_root_elements = ['BLOCKQUOTE', 'BODY', 'DETAILS', 'DIALOG', 'FIELDSET', 'FIGURE', 'TD'];
 /** Per spec, Sectioning elements are skipped, see step 4.7 */
-const skipped_elements: string[] = [...sectioning_content_elements, ...sectioning_root_elements];
-
-const heading_content_elements: string[] = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HGROUP'];
-const list_elements: string[] = ['UL', 'OL'];
-const list_item_elements: string[] = ['LI'];
-const anchor_elements: string[] = ['A'];
-
+const skipped_elements = [...sectioning_content_elements, ...sectioning_root_elements];
+const heading_content_elements = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HGROUP'];
+const list_elements = ['UL', 'OL'];
+const list_item_elements = ['LI'];
+const anchor_elements = ['A'];
 /**
  * Depth-first traversal of a DOM tree: for each interesting child element:
  *
@@ -30,16 +36,15 @@ const anchor_elements: string[] = ['A'];
  * @param enter - 'enter element' call-back
  * @param exit = 'exit element' call-back
  */
-
-function core_element_cycle(element: HTMLElement, enter: ((entry:HTMLElement)=>traverse), exit: ((entry:HTMLElement)=>void) ): void {
-    element.childNodes.forEach((child: HTMLElement) =>  {
+function core_element_cycle(element, enter, exit) {
+    element.childNodes.forEach((child) => {
         if (enter(child) === traverse.proceed) {
-            core_element_cycle(child, enter, exit)
+            core_element_cycle(child, enter, exit);
         }
         exit(child);
     });
-};
-
+}
+;
 /**
  * Get the text content of an element.
  * The spec gives a choice between using the text content of an element or
@@ -51,32 +56,14 @@ function core_element_cycle(element: HTMLElement, enter: ((entry:HTMLElement)=>t
  * @param element - element whose text content is collected
  * @return - text content, null if the text is empty
  */
-function text_content(element: HTMLElement): string {
-    //@@@ Maybe it should be innerText for a proper HTML file? To be tested!
-    const txt = element.textContent;
+function text_content(element) {
+    const txt = element.innerText;
     return (txt === '') ? null : txt;
 }
-
-
-/* ----------------------- */
-
-export interface TocBranch {
-    name: string;
-    url: string;
-    type: string;
-    rel: string[];
-    entries: TocBranch[];
-}
-
-export interface ToC {
-    name: string;
-    entries: TocBranch[];
-}
-
-export function generate_TOC(nav: HTMLElement): ToC {
+function generate_TOC(nav) {
     // The real 'meat' is in the six functions below.
     // Everything else is scaffolding...
-    const enter_heading_content = (entry: HTMLElement) :traverse => {
+    const enter_heading_content = (entry) => {
         // Step 4.1
         if (toc.name === '' && branches.length === 0) {
             // this will return null instead of the empty string as defined in the spec
@@ -84,21 +71,22 @@ export function generate_TOC(nav: HTMLElement): ToC {
         }
         return traverse.exit;
     };
-
-    const enter_list_element = (entry: HTMLElement) :traverse => {
+    const enter_list_element = (entry) => {
         // Step 4.2
         // Step 4.2.1.
-        if (toc.name === '') toc.name = null;
-
+        if (toc.name === '')
+            toc.name = null;
         if (current_toc_branch !== null) {
             // Step 4.2.2.
             if (current_toc_branch.entries === null || current_toc_branch.entries.length !== 0) {
                 return traverse.exit;
-            } else {
+            }
+            else {
                 branches.push(current_toc_branch);
                 current_toc_branch = null;
             }
-        } else if (branches.length === 0) {
+        }
+        else if (branches.length === 0) {
             // Step 4.2.3.
             if (toc.entries === null || toc.entries.length !== 0) {
                 return traverse.exit;
@@ -106,129 +94,122 @@ export function generate_TOC(nav: HTMLElement): ToC {
         }
         return traverse.proceed;
     };
-
-    const exit_list_element = (entry: HTMLElement) => {
+    const exit_list_element = (entry) => {
         // Step 4.3
         if (branches.length !== 0) {
             current_toc_branch = branches.pop();
-        } else if (toc.entries.length === 0) {
+        }
+        else if (toc.entries.length === 0) {
             toc.entries = null;
         }
     };
-
-    const enter_list_item_element = (entry: HTMLElement) :traverse => {
+    const enter_list_item_element = (entry) => {
         // Step 4.4
         current_toc_branch = {
-            name    : "",
-            url     : "",
-            type    : "",
-            rel     : null,
-            entries : [],
-        }
+            name: "",
+            url: "",
+            type: "",
+            rel: null,
+            entries: [],
+        };
         return traverse.proceed;
     };
-
-    const exit_list_item_element = (entry: HTMLElement) => {
+    const exit_list_item_element = (entry) => {
         // Step 4.5.1
         if (current_toc_branch.entries.length === 0) {
             current_toc_branch.entries = null;
         }
-
         // Step 4.5.2
         if (current_toc_branch.name === '') {
             if (current_toc_branch.entries !== null) {
                 current_toc_branch.name = null;
-            } else {
+            }
+            else {
                 current_toc_branch = null;
                 return;
             }
         }
-
         // Step 4.5.3
         if (branches.length !== 0) {
             branches[branches.length - 1].entries.push(current_toc_branch);
-        } else {
+        }
+        else {
             toc.entries.push(current_toc_branch);
         }
-
         current_toc_branch = null;
     };
-
-    const enter_anchor_element = (entry: HTMLElement) :traverse => {
+    const enter_anchor_element = (entry) => {
         if (current_toc_branch !== null) {
             // Step 4.6.1
             if (current_toc_branch.name !== '') {
                 return traverse.exit;
-            } else {
+            }
+            else {
                 // Step 4.6.2.1
                 // the function returns null instead of an empty string, as required by the spec
                 current_toc_branch.name = text_content(entry);
-
                 // Step 4.6.2.2
-                const url = (<HTMLAnchorElement>entry).href;
+                const url = entry.href;
                 // things are to be checked here, that is left for later!!!
                 current_toc_branch.url = url;
-
-                const type = (<HTMLAnchorElement>entry).type.trim();
+                const type = entry.type.trim();
                 current_toc_branch.type = (type !== '') ? type : null;
-
-                const rel = (<HTMLAnchorElement>entry).rel.trim().split(' ');
+                const rel = entry.rel.trim().split(' ');
                 current_toc_branch.rel = (rel.length !== 0) ? rel : null;
             }
         }
-
         return traverse.exit;
     };
-
-    const enter_element = (entry: HTMLElement): traverse => {
+    const enter_element = (entry) => {
         if (heading_content_elements.includes((entry.tagName))) {
             // Step 4.1
             return enter_heading_content(entry);
-        } else if (list_elements.includes(entry.tagName)) {
+        }
+        else if (list_elements.includes(entry.tagName)) {
             // Step 4.2
-            return enter_list_element(entry)
-        } else if (list_item_elements.includes(entry.tagName)) {
+            return enter_list_element(entry);
+        }
+        else if (list_item_elements.includes(entry.tagName)) {
             // Step 4.4
             return enter_list_item_element(entry);
-        } else if (anchor_elements.includes(entry.tagName)) {
+        }
+        else if (anchor_elements.includes(entry.tagName)) {
             // Step 4.6
             return enter_anchor_element(entry);
-        } else if (skipped_elements.includes(entry.tagName) || entry.hidden === true) {
+        }
+        else if (skipped_elements.includes(entry.tagName) || entry.hidden === true) {
             // Step 4.7
             return traverse.exit;
-        } else {
+        }
+        else {
             // Step 4.8
             return traverse.proceed;
         }
     };
-    const exit_element = (entry: HTMLElement) => {
+    const exit_element = (entry) => {
         if (list_elements.includes(entry.tagName)) {
             // Step 4.3
             exit_list_element(entry);
-        } else if (list_item_elements.includes(entry.tagName)) {
+        }
+        else if (list_item_elements.includes(entry.tagName)) {
             // Step 4.5
             exit_list_item_element(entry);
         }
         // Step 4.8
     };
-
-    const toc: ToC = {
+    const toc = {
         name: '',
         entries: []
     };
-    let current_toc_branch: TocBranch = null;
-    const branches: TocBranch[] = [];
-
+    let current_toc_branch = null;
+    const branches = [];
     // Depth first traversal of the nav element with the enter/exit functions above
     core_element_cycle(nav, enter_element, exit_element);
-
     // Return either a real ToC or undefined...
     return toc.entries.length !== 0 ? toc : null;
 }
-
-
+exports.generate_TOC = generate_TOC;
 //----------------------------- Temporary testing area ---------------------------------
-
 const html_content = `
 <nav role="doc-toc">
    <h2>Contents</h2>
@@ -240,20 +221,15 @@ const html_content = `
      <li><a href="fourth.html">The End of It</a></li>
   </ol>
 </nav>
-`
-
-import * as jsdom      from 'jsdom';
-import * as yaml from 'yaml';
-
-
+`;
+const jsdom = __importStar(require("jsdom"));
+const yaml = __importStar(require("yaml"));
 function main() {
-    const dom = new jsdom.JSDOM(html_content, { url: 'http://www.example.org'});
+    const dom = new jsdom.JSDOM(html_content, { url: 'http://www.example.org' });
     const document = dom.window.document;
-    const nav = document.querySelector('*[role*="doc-toc"]') as HTMLElement;
+    const nav = document.querySelector('*[role*="doc-toc"]');
     const toc = generate_TOC(nav);
     console.log(yaml.stringify(toc));
 }
-
 main();
-
-
+//# sourceMappingURL=toc.js.map

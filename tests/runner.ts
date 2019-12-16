@@ -31,7 +31,6 @@ import { processedToString } from '../src/bridge';
 
 
 import * as _ from 'underscore';
-import * as yaml from 'yaml';
 
 const test_profiles: Profile[] = [audiobook_profile, default_profile];
 
