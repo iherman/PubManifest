@@ -164,19 +164,23 @@ export function generate_TOC(nav: HTMLElement): ToC {
                 // the function returns null instead of an empty string, as required by the spec
                 current_toc_branch.name = text_content(entry);
 
+                const anchor: HTMLAnchorElement = entry as HTMLAnchorElement;
+                // @@@ TODO: check the URL!!!!
                 // Step 4.6.2.2
-                const url = (<HTMLAnchorElement>entry).href;
-                // things are to be checked here, that is left for later!!!
-                current_toc_branch.url = url;
+                current_toc_branch.url = anchor.hasAttribute('href') ? anchor.href : null;
 
-                const type = (<HTMLAnchorElement>entry).type.trim();
-                current_toc_branch.type = (type !== '') ? type : null;
+                // Step 4.6.2.3
+                current_toc_branch.type = anchor.hasAttribute('type') ? anchor.type.trim() : null;
 
-                const rel = (<HTMLAnchorElement>entry).rel.trim().split(' ');
-                current_toc_branch.rel = (rel.length !== 0) ? rel : null;
+                // Step 4.6.2.4
+                if (anchor.hasAttribute('rel')) {
+                    const rel = anchor.rel.trim().split(' ');
+                    current_toc_branch.rel = (rel.length !== 0) ? rel : null;
+                } else {
+                    current_toc_branch.rel = null;
+                }
             }
         }
-
         return traverse.exit;
     };
 
@@ -231,14 +235,15 @@ export function generate_TOC(nav: HTMLElement): ToC {
 
 const html_content = `
 <nav role="doc-toc">
-   <h2>Contents</h2>
-   <ol>
-     <li><a href="xmas_carol.html">Marley's Ghost</a></li>
-     <li><a href="first.html">The First of Three Spirits</a></li>
-     <li><a href="second.html">The Second of Three Spirits</a></li>
-     <li><a href="third.html">The Last of the Spirits</a></li>
-     <li><a href="fourth.html">The End of It</a></li>
-  </ol>
+<h2>Contents</h2>
+
+<ol>
+   <li><a href="xmas_carol.html">Marley's Ghost</a></li>
+   <li><a>The First of Three Spirits</a></li>
+   <li><a>The Second of Three Spirits</a></li>
+   <li><a>The Last of the Spirits</a></li>
+   <li><a>The End of It</a></li>
+</ol>
 </nav>
 `
 
