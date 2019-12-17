@@ -19,6 +19,7 @@
 /** Base URL for all files, this should be adapted to the local environment... */
 const test_base_general = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/manifest_processing/tests';
 const test_base_audio = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/audiobooks/manifest_processing/tests';
+const test_base_toc = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/toc_processing/tests';
 
 import { process_manifest, ProcessResult } from '../src/process';
 import { URL } from '../src/manifest';
@@ -98,14 +99,15 @@ interface FlattenedSuite {
  *
  * @async
  * @param file_name - name of the test manifest file
+ * @param prefix - prefix added to the id of the test for the file name
  */
-async function get_tests(file_name: string): Promise<FlattenedSuite> {
+async function get_tests(file_name: string, prefix: string): Promise<FlattenedSuite> {
     const process_doc_tests = (doc_test: DocumentTests) => {
         const base = `${file_name.split('/').slice(0,-1).join('/')}/`;
 
         doc_test.tests.forEach((section_tests: SectionTests): void => {
             section_tests.tests.forEach((test: Test): void => {
-                test.url = (test['media-type'] && test['media-type'] === 'text/html') ? `${base}test_${test.id}.html` : `${base}test_${test.id}.jsonld`;
+                test.url = (test['media-type'] && test['media-type'] === 'text/html') ? `${base}${prefix}${test.id}.html` : `${base}${prefix}${test.id}.jsonld`;
                 flattened_suite[`${test.id}`] = test;
             })
         });
@@ -163,11 +165,27 @@ function generate_scores(all_tests: FlattenedSuite): any {
  */
 async function main() {
     const g_tests = async (flag: string): Promise<FlattenedSuite> => {
-        const retval = (flag === 'm') ? await get_tests(`${test_base_general}/index.json`) : await get_tests(`${test_base_audio}/index.json`);
+        let test_base: string;
+        let prefix: string = '';
+        switch (flag) {
+            case 'm':
+                test_base = test_base_general;
+                prefix = 'test_';
+                break;
+            case 'a':
+                test_base = test_base_audio;
+                prefix = 'test_';
+                break;
+            case 's':
+            case 'c':
+                test_base = test_base_toc
+                break;
+        };
+        const retval = await get_tests(`${test_base}/index.json`, prefix)
         return retval;
     }
     const preamble_run_test = async (name: string)=> {
-        if (name[0] === 'm' || name[0] === 'a') {
+        if (name[0] === 'm' || name[0] === 'a' || name[0] === 's' || name[0] === 'c') {
             const tests: FlattenedSuite = await g_tests(name[0]);
             run_test(tests[name].url);
         } else {
@@ -176,7 +194,6 @@ async function main() {
     }
 
     try {
-
         if (process.argv && process.argv.length > 2) {
             if (process.argv[2] === '-sm' || process.argv[2] === '-sa') {
                 const label = process.argv[2][2];

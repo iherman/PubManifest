@@ -167,7 +167,7 @@ async function fetch_resource(resource_url: URL, format: ContentType): Promise<a
  * @return - DOM object for the parsed HTML
  * @throws Error if something goes wrong with fetch or DOM Parsing
  */
-async function fetch_html(html_url: URL): Promise<jsdom.JSDOM> {
+export async function fetch_html(html_url: URL): Promise<jsdom.JSDOM> {
     try {
         const body = await fetch_resource(html_url, ContentType.html);
         const retval = new jsdom.JSDOM(body, { url: html_url });

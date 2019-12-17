@@ -1,9 +1,8 @@
 
-enum traverse {
-    exit,
-    proceed
-};
-
+import { TocEntry, ToC, PublicationManifest, LinkedResource } from '../manifest';
+import { Global, toc_query_selector } from './utilities';
+import { fetch_html } from './discovery';
+import * as urlHandler from 'url';
 
 /** Sectioning Content Elements, see  https://html.spec.whatwg.org/multipage/dom.html#sectioning-content-2 */
 const sectioning_content_elements: string[] = ['ARTICLE', 'ASIDE', 'NAV', 'SECTION'];
@@ -17,10 +16,16 @@ const list_elements: string[] = ['UL', 'OL'];
 const list_item_elements: string[] = ['LI'];
 const anchor_elements: string[] = ['A'];
 
+/** Internal type to control the exact flow in [[core_element_cycle]] */
+enum traverse {
+    exit,
+    proceed
+};
+
 /**
  * Depth-first traversal of a DOM tree: for each interesting child element:
  *
- * 1. it calls the `enter` function,
+ * 1. it calls the `enter` function, which also returns a [[traverse]] value
  * 2. unless the result of the previous step is to to exit right away, goes down to the children recursively
  * 3. calls the `exit` function
  *
@@ -28,9 +33,8 @@ const anchor_elements: string[] = ['A'];
  *
  * @param element - element to handle
  * @param enter - 'enter element' call-back
- * @param exit = 'exit element' call-back
+ * @param exit - 'exit element' call-back
  */
-
 function core_element_cycle(element: HTMLElement, enter: ((entry:HTMLElement)=>traverse), exit: ((entry:HTMLElement)=>void) ): void {
     element.childNodes.forEach((child: HTMLElement) =>  {
         if (enter(child) === traverse.proceed) {
@@ -57,23 +61,15 @@ function text_content(element: HTMLElement): string {
     return (txt === '') ? null : txt;
 }
 
-
-/* ----------------------- */
-
-export interface TocBranch {
-    name: string;
-    url: string;
-    type: string;
-    rel: string[];
-    entries: TocBranch[];
-}
-
-export interface ToC {
-    name: string;
-    entries: TocBranch[];
-}
-
-export function generate_TOC(nav: HTMLElement): ToC {
+/**
+ * Extract the Table of Content data from the HTML source.
+ *
+ * This is the implementation of the core [§C.3 User Agent Processing algorithm](https://www.w3.org/TR/pub-manifest/#app-toc-ua) of the specification.
+ *
+ * @param nav - the DOM `<nav>` element to extract the data from
+ * @returns - the Table of Content structure; if there are no valid entries, the function returns `null`
+ */
+function extract_TOC(nav: HTMLElement): ToC {
     // The real 'meat' is in the six functions below.
     // Everything else is scaffolding...
     const enter_heading_content = (entry: HTMLElement) :traverse => {
@@ -220,8 +216,8 @@ export function generate_TOC(nav: HTMLElement): ToC {
         name: '',
         entries: []
     };
-    let current_toc_branch: TocBranch = null;
-    const branches: TocBranch[] = [];
+    let current_toc_branch: TocEntry = null;
+    const branches: TocEntry[] = [];
 
     // Depth first traversal of the nav element with the enter/exit functions above
     core_element_cycle(nav, enter_element, exit_element);
@@ -231,34 +227,96 @@ export function generate_TOC(nav: HTMLElement): ToC {
 }
 
 
-//----------------------------- Temporary testing area ---------------------------------
+/**
+ * Extract the ToC, if available, via the manifest information. This is the implementation of
+ * the [§C.3 User Agent Processing algorithm](https://www.w3.org/TR/pub-manifest/#app-toc-ua) of the specification: after finding the relevant element
+ * that is supposed to contain the ToC, the heavy lifting is done in [[extract_TOC]].
+ *
+ * The function is asynchronous because, possibly, the HTML resource, containing the ToC, must be fetched.
+ *
+ * @async
+ * @param manifest - the processed manifest
+ */
+export async function generate_TOC(manifest: PublicationManifest): Promise<ToC> {
+    const locate_toc_element = async (): Promise<HTMLElement> => {
+        const linked_resources = (manifest.resources) ? [...manifest.readingOrder, ...manifest.resources] : manifest.readingOrder;
+        const resource: LinkedResource = linked_resources.find((link) => (link.rel && link.rel.includes('contents')));
 
-const html_content = `
-<nav role="doc-toc">
-<h2>Contents</h2>
+        if (resource !== undefined && resource.url !== '') {
+            const parsed = urlHandler.parse(resource.url);
+            const fragment = parsed.hash;
+            delete parsed.hash;
+            const absolute_url = urlHandler.format(parsed);
 
-<ol>
-   <li><a href="xmas_carol.html">Marley's Ghost</a></li>
-   <li><a>The First of Three Spirits</a></li>
-   <li><a>The Second of Three Spirits</a></li>
-   <li><a>The Last of the Spirits</a></li>
-   <li><a>The End of It</a></li>
-</ol>
-</nav>
-`
+            /* TODO: There can be an optimization step here: if the Global document url is the same as this absolute url, then there is no reason to go through another fetch */
 
-import * as jsdom      from 'jsdom';
-import * as yaml from 'yaml';
+            // Try to get hold of the HTML resource
+            let html_dom: Document = null;
+            try {
+                const dom = await fetch_html(absolute_url);
+                html_dom = dom.window.document;
+            } catch(e) {
+                Global.logger.log_light_validation_error(`Problems fetching ToC resource (${e.message})`);
+                return null;
+            }
 
+            // Branch out on whether there is a fragment ID or not...
+            if (fragment !== null) {
+                const nav: HTMLElement = html_dom.getElementById(fragment);
+                if (nav !== null && nav.hasAttribute('role') && nav.getAttribute('role').trim().split(' ').includes('doc-toc')) {
+                    // This is indeed a toc element, we can proceed to extract the content
+                    return nav;
+                } else {
+                    Global.logger.log_light_validation_error(`ToC entry with ${resource.url} not found`);
+                }
+                // If we get there, there is no valid TOC, so we fall through the whole branch to the closure of the function
+            } else {
+                const nav: HTMLElement = html_dom.querySelector(toc_query_selector);
+                if (nav !== null) {
+                    return nav;
+                } else {
+                    Global.logger.log_light_validation_error(`ToC entry in ${resource.url} not found`);
+                }
+                // If we get there, there is no valid TOC, so we fall through the whole branch to the closure of the function
+            }
+        } else {
+            return null;
+        }
+    }
 
-function main() {
-    const dom = new jsdom.JSDOM(html_content, { url: 'http://www.example.org'});
-    const document = dom.window.document;
-    const nav = document.querySelector('*[role*="doc-toc"]') as HTMLElement;
-    const toc = generate_TOC(nav);
-    console.log(yaml.stringify(toc));
+    const toc_element: HTMLElement = Global.profile.get_toc_element(manifest) || await locate_toc_element();
+    return toc_element !== null ? extract_TOC(toc_element) : null;
 }
 
-main();
+
+//----------------------------- Temporary testing area ---------------------------------
+
+// const html_content = `
+// <nav role="doc-toc">
+// <h2>Contents</h2>
+
+// <ol>
+//    <li><a href="xmas_carol.html">Marley's Ghost</a></li>
+//    <li><a>The First of Three Spirits</a></li>
+//    <li><a>The Second of Three Spirits</a></li>
+//    <li><a>The Last of the Spirits</a></li>
+//    <li><a>The End of It</a></li>
+// </ol>
+// </nav>
+// `
+
+// import * as jsdom      from 'jsdom';
+// import * as yaml from 'yaml';
+
+
+// function main() {
+//     const dom = new jsdom.JSDOM(html_content, { url: 'http://www.example.org'});
+//     const document = dom.window.document;
+//     const nav = document.querySelector('*[role*="doc-toc"]') as HTMLElement;
+//     const toc = extract_TOC(nav);
+//     console.log(yaml.stringify(toc));
+// }
+
+// main();
 
 

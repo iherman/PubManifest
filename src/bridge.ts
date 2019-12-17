@@ -40,18 +40,19 @@ export function processedToString(result: ProcessResult): string {
 /**
  * Wrapper around the core generation algorithm ([[generate_internal_representation]]) and a conversion of the results into Yaml (in [[processedToString]]).
  *
+ * @async
  * @param json - the JSON string, representing the manifest
  * @param base - the base URL to be used for the processing
  * @returns - human readable, ie, Yaml version of the processing results and, if not empty, the [[Logger]] instance
  */
-function generate_from_pm_holder(json: string, base = ''): string {
+async function generate_from_pm_holder(json: string, base = ''): Promise<string> {
     const arg: GenerationArguments = {
         document : global_document,
         base     : base,
         text     : json
     };
     const logger: Logger = new Logger();
-    const manifest_object = generate_internal_representation(arg, logger, bridge_profiles);
+    const manifest_object = await generate_internal_representation(arg, logger, bridge_profiles);
     return processedToString({manifest_object, logger});
 }
 
@@ -60,14 +61,14 @@ function generate_from_pm_holder(json: string, base = ''): string {
  *
  * This function is ran when the 'process' button is clicked.
  */
-export function convert(): void {
+export async function convert(): Promise<void> {
     const pm_holder = document.getElementById('pm_holder') as HTMLTextAreaElement;
     try {
         if (pm_holder.value !== '') {
             const processed_pm = document.getElementById('processed_pm') as HTMLTextAreaElement;
             const pep_url = document.getElementById('pep_url') as HTMLTextAreaElement;
             const data = pm_holder.dataset;
-            const result = generate_from_pm_holder(pm_holder.value, data.url);
+            const result = await generate_from_pm_holder(pm_holder.value, data.url);
             processed_pm.value = result;
             if (global_document === undefined) {
                 pep_url.value = ''

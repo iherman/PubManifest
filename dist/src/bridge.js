@@ -44,18 +44,19 @@ exports.processedToString = processedToString;
 /**
  * Wrapper around the core generation algorithm ([[generate_internal_representation]]) and a conversion of the results into Yaml (in [[processedToString]]).
  *
+ * @async
  * @param json - the JSON string, representing the manifest
  * @param base - the base URL to be used for the processing
  * @returns - human readable, ie, Yaml version of the processing results and, if not empty, the [[Logger]] instance
  */
-function generate_from_pm_holder(json, base = '') {
+async function generate_from_pm_holder(json, base = '') {
     const arg = {
         document: global_document,
         base: base,
         text: json
     };
     const logger = new utilities_1.Logger();
-    const manifest_object = process_1.generate_internal_representation(arg, logger, bridge_profiles);
+    const manifest_object = await process_1.generate_internal_representation(arg, logger, bridge_profiles);
     return processedToString({ manifest_object, logger });
 }
 /**
@@ -63,14 +64,14 @@ function generate_from_pm_holder(json, base = '') {
  *
  * This function is ran when the 'process' button is clicked.
  */
-function convert() {
+async function convert() {
     const pm_holder = document.getElementById('pm_holder');
     try {
         if (pm_holder.value !== '') {
             const processed_pm = document.getElementById('processed_pm');
             const pep_url = document.getElementById('pep_url');
             const data = pm_holder.dataset;
-            const result = generate_from_pm_holder(pm_holder.value, data.url);
+            const result = await generate_from_pm_holder(pm_holder.value, data.url);
             processed_pm.value = result;
             if (global_document === undefined) {
                 pep_url.value = '';

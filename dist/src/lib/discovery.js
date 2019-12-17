@@ -158,6 +158,7 @@ async function fetch_html(html_url) {
         throw new Error(`HTML parsing error in ${html_url}: ${err}`);
     }
 }
+exports.fetch_html = fetch_html;
 /**
  * Fetch the (text) content of a JSON file via via [[fetch_resource]]
  *

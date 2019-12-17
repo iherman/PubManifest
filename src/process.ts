@@ -53,6 +53,11 @@ import {
 import { Profile, default_profile } from './lib/profile';
 
 /**
+ * Interface for the ToC extraction function
+ */
+import { generate_TOC } from './lib/toc';
+
+/**
  * Various utilities
  */
 import {
@@ -164,7 +169,7 @@ export async function process_manifest(url: URL, profiles: Profile[] = [default_
     }
 
     try {
-        manifest_object = generate_internal_representation(args, logger, profiles);
+        manifest_object = await generate_internal_representation(args, logger, profiles);
     } catch(err) {
         logger.log_fatal_error(`Some extra error occurred during generation (${err.toString()})`);
         if (Global.debug) console.log(err);
@@ -327,13 +332,14 @@ const create_LinkedResource = (resource: any): LinkedResource => {
  * [§7.4  Publication Manifest](https://www.w3.org/TR/pub-manifest/#processing-algorithm), i.e., the starting
  * point of the algorithm.
  *
+ * @async
  * @param args - the arguments to the generation: the (JSON) text of the manifest, the base URL, and the (DOM) document object
  * @param base - base URL; if undefined or empty, fall back on the value of url
  * @param logger - an extra parameter to collect the error messages in one place, to be then processed by the caller
  * @param profiles - the sets of profiles that the caller can handle
  * @return - the processed manifest
  */
-export function generate_internal_representation(args: GenerationArguments, logger: Logger, profiles: Profile[] = [default_profile]): PublicationManifest {
+export async function generate_internal_representation(args: GenerationArguments, logger: Logger, profiles: Profile[] = [default_profile]): Promise<PublicationManifest> {
     // This is necessary to make the language and direction global extraction in a TS happy way...
     interface lang_dir {
         language?: string;
@@ -457,6 +463,9 @@ export function generate_internal_representation(args: GenerationArguments, logg
 
     /* Step: Profile specific processing, and return: */
     const retval_impl = Global.profile.generate_internal_representation(processed);
+
+    /* Step: Extract the ToC */
+    retval_impl.toc = await generate_TOC(retval_impl);
 
     // Doing an ugly trick here. The objects are all '_impl', meaning that they contain additional data
     // that are only necessary for processing and not for the rest, namely '$terms'. To filter them all out
