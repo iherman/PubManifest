@@ -1,6 +1,6 @@
 
 import { TocEntry, ToC, PublicationManifest, LinkedResource } from '../manifest';
-import { Global, toc_query_selector } from './utilities';
+import { Global, toc_query_selector, remove_url_fragment } from './utilities';
 import { fetch_html } from './discovery';
 import * as urlHandler from 'url';
 
@@ -66,10 +66,11 @@ function text_content(element: HTMLElement): string {
  *
  * This is the implementation of the core [§C.3 User Agent Processing algorithm](https://www.w3.org/TR/pub-manifest/#app-toc-ua) of the specification.
  *
- * @param nav - the DOM `<nav>` element to extract the data from
+ * @param toc_element - the DOM element to extract the data from
+ * @param manifest - the (already processed) publication manifest
  * @returns - the Table of Content structure; if there are no valid entries, the function returns `null`
  */
-function extract_TOC(nav: HTMLElement): ToC {
+function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): ToC {
     // The real 'meat' is in the six functions below.
     // Everything else is scaffolding...
     const enter_heading_content = (entry: HTMLElement) :traverse => {
@@ -161,9 +162,21 @@ function extract_TOC(nav: HTMLElement): ToC {
                 current_toc_branch.name = text_content(entry);
 
                 const anchor: HTMLAnchorElement = entry as HTMLAnchorElement;
-                // @@@ TODO: check the URL!!!!
+
                 // Step 4.6.2.2
-                current_toc_branch.url = anchor.hasAttribute('href') ? anchor.href : null;
+                // Note that, by this step, the HTML parser has already turned the relative URL into an absolute one!
+                // Also check that the URL is part of the resources listed in the manifest
+                const url = anchor.hasAttribute('href') ? anchor.href : null;
+                if (url !== null) {
+                    if (manifest.uniqueResources.includes(remove_url_fragment(url))) {
+                        current_toc_branch.url = url
+                    } else {
+                        Global.logger.log_light_validation_error(`The ToC reference "${url}" does not appear in the resources listed in the manifest.`);
+                        current_toc_branch.url = null;
+                    }
+                } else {
+                    current_toc_branch.url = null;
+                }
 
                 // Step 4.6.2.3
                 current_toc_branch.type = anchor.hasAttribute('type') ? anchor.type.trim() : null;
@@ -220,7 +233,7 @@ function extract_TOC(nav: HTMLElement): ToC {
     const branches: TocEntry[] = [];
 
     // Depth first traversal of the nav element with the enter/exit functions above
-    core_element_cycle(nav, enter_element, exit_element);
+    core_element_cycle(toc_element, enter_element, exit_element);
 
     // Return either a real ToC or undefined...
     return toc.entries.length !== 0 ? toc : null;
@@ -285,38 +298,7 @@ export async function generate_TOC(manifest: PublicationManifest): Promise<ToC> 
     }
 
     const toc_element: HTMLElement = Global.profile.get_toc_element(manifest) || await locate_toc_element();
-    return toc_element !== null ? extract_TOC(toc_element) : null;
+    return toc_element !== null ? extract_TOC(toc_element, manifest) : null;
 }
-
-
-//----------------------------- Temporary testing area ---------------------------------
-
-// const html_content = `
-// <nav role="doc-toc">
-// <h2>Contents</h2>
-
-// <ol>
-//    <li><a href="xmas_carol.html">Marley's Ghost</a></li>
-//    <li><a>The First of Three Spirits</a></li>
-//    <li><a>The Second of Three Spirits</a></li>
-//    <li><a>The Last of the Spirits</a></li>
-//    <li><a>The End of It</a></li>
-// </ol>
-// </nav>
-// `
-
-// import * as jsdom      from 'jsdom';
-// import * as yaml from 'yaml';
-
-
-// function main() {
-//     const dom = new jsdom.JSDOM(html_content, { url: 'http://www.example.org'});
-//     const document = dom.window.document;
-//     const nav = document.querySelector('*[role*="doc-toc"]') as HTMLElement;
-//     const toc = extract_TOC(nav);
-//     console.log(yaml.stringify(toc));
-// }
-
-// main();
 
 
