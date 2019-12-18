@@ -88,6 +88,14 @@ export const audiobook_profile: Profile = {
             Global.logger.log_light_validation_error('No table of content found')
         }
 
+        // The PEP (if it exists) should also be in the unique resources array.
+        // @@@@@@@@@@@@!!!!!! This is not yet accepted, just a proposed amendment of the audiobook spec!
+        if (Global.document !== undefined) {
+            if (!processed.uniqueResources.includes(Global.document.documentURI)) {
+                processed.uniqueResources.push(Global.document.documentURI);
+            }
+        }
+
         return processed;
     },
 

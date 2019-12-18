@@ -1,19 +1,38 @@
-
+/**
+ * Table of Content extraction.
+ *
+ * (As defined in
+ * [§C.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#app-toc-ua)).
+ *
+ * The function follows, as far as possible, the names used in the specification.
+ *
+ * The main entry of the module is: [[generate_TOC]]
+ *
+ */
 import { TocEntry, ToC, PublicationManifest, LinkedResource } from '../manifest';
 import { Global, toc_query_selector, remove_url_fragment } from './utilities';
 import { fetch_html } from './discovery';
 import * as urlHandler from 'url';
 
-/** Sectioning Content Elements, see  https://html.spec.whatwg.org/multipage/dom.html#sectioning-content-2 */
+/** Sectioning Content Elements, see as specified by the [html spec](https://html.spec.whatwg.org/multipage/dom.html#sectioning-content-2) */
 const sectioning_content_elements: string[] = ['ARTICLE', 'ASIDE', 'NAV', 'SECTION'];
-/** Sectioning Root Elements, https://html.spec.whatwg.org/multipage/sections.html#sectioning-root */
+
+/** Sectioning Root Elements, as specified by the [html spec](https://html.spec.whatwg.org/multipage/sections.html#sectioning-root) */
 const sectioning_root_elements: string[] = ['BLOCKQUOTE', 'BODY', 'DETAILS', 'DIALOG', 'FIELDSET', 'FIGURE', 'TD'];
-/** Per spec, Sectioning elements are skipped, see step 4.7 */
+
+/** Per specification, Sectioning elements are skipped, see step 4.7 */
 const skipped_elements: string[] = [...sectioning_content_elements, ...sectioning_root_elements];
 
+/** Heading Content elements, as specified by the [html spec](https://html.spec.whatwg.org/multipage/dom.html#heading-content-2) */
 const heading_content_elements: string[] = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HGROUP'];
+
+/** List elements, as specified by the [spec](https://www.w3.org/TR/pub-manifest/#dfn-list-element) */
 const list_elements: string[] = ['UL', 'OL'];
+
+/** List item elements, as specified by the [html spec](https://html.spec.whatwg.org/multipage/grouping-content.html#the-li-element) */
 const list_item_elements: string[] = ['LI'];
+
+/** Anchor elements, as specified by the [html spec](https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element) */
 const anchor_elements: string[] = ['A'];
 
 /** Internal type to control the exact flow in [[core_element_cycle]] */
@@ -23,10 +42,10 @@ enum traverse {
 };
 
 /**
- * Depth-first traversal of a DOM tree: for each interesting child element:
+ * Depth-first traversal of a DOM tree. For each child element:
  *
  * 1. it calls the `enter` function, which also returns a [[traverse]] value
- * 2. unless the result of the previous step is to to exit right away, goes down to the children recursively
+ * 2. unless the result of the previous step is to exit right away, goes down to the children recursively
  * 3. calls the `exit` function
  *
  * All these actions happen on elements that are of interest for the process. If that is not the case, just go to children without entering `enter` and `exit`.
@@ -35,12 +54,12 @@ enum traverse {
  * @param enter - 'enter element' call-back
  * @param exit - 'exit element' call-back
  */
-function core_element_cycle(element: HTMLElement, enter: ((entry:HTMLElement)=>traverse), exit: ((entry:HTMLElement)=>void) ): void {
+function core_element_cycle(element: HTMLElement, enter: ((entry:HTMLElement) => traverse), exit: ((entry:HTMLElement) => void) ): void {
     element.childNodes.forEach((child: HTMLElement) =>  {
         if (enter(child) === traverse.proceed) {
             core_element_cycle(child, enter, exit)
+            exit(child);
         }
-        exit(child);
     });
 };
 
@@ -56,7 +75,6 @@ function core_element_cycle(element: HTMLElement, enter: ((entry:HTMLElement)=>t
  * @return - text content, null if the text is empty
  */
 function text_content(element: HTMLElement): string {
-    //@@@ Maybe it should be innerText for a proper HTML file? To be tested!
     const txt = element.textContent;
     return (txt === '') ? null : txt;
 }
@@ -82,8 +100,8 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
         return traverse.exit;
     };
 
+    // Step 4.2
     const enter_list_element = (entry: HTMLElement) :traverse => {
-        // Step 4.2
         // Step 4.2.1.
         if (toc.name === '') toc.name = null;
 
@@ -104,8 +122,8 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
         return traverse.proceed;
     };
 
+    // Step 4.3
     const exit_list_element = (entry: HTMLElement) => {
-        // Step 4.3
         if (branches.length !== 0) {
             current_toc_branch = branches.pop();
         } else if (toc.entries.length === 0) {
@@ -113,8 +131,8 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
         }
     };
 
+    // Step 4.4
     const enter_list_item_element = (entry: HTMLElement) :traverse => {
-        // Step 4.4
         current_toc_branch = {
             name    : "",
             url     : "",
@@ -125,6 +143,7 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
         return traverse.proceed;
     };
 
+    // Step 4.5
     const exit_list_item_element = (entry: HTMLElement) => {
         // Step 4.5.1
         if (current_toc_branch.entries.length === 0) {
@@ -151,6 +170,7 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
         current_toc_branch = null;
     };
 
+    // Step 4.6
     const enter_anchor_element = (entry: HTMLElement) :traverse => {
         if (current_toc_branch !== null) {
             // Step 4.6.1
@@ -193,6 +213,7 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
         return traverse.exit;
     };
 
+    // "Universal" entry, branching off to the individual steps based on the element tags
     const enter_element = (entry: HTMLElement): traverse => {
         if (heading_content_elements.includes((entry.tagName))) {
             // Step 4.1
@@ -214,6 +235,8 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
             return traverse.proceed;
         }
     };
+
+    // "Universal" exit, branching off to the individual steps based on the element tags
     const exit_element = (entry: HTMLElement) => {
         if (list_elements.includes(entry.tagName)) {
             // Step 4.3
@@ -225,17 +248,20 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
         // Step 4.8
     };
 
+    // --- The real processing
+
+    // Initializations (steps 1, 2, 3)
     const toc: ToC = {
         name: '',
         entries: []
     };
-    let current_toc_branch: TocEntry = null;
     const branches: TocEntry[] = [];
+    let current_toc_branch: TocEntry = null;
 
-    // Depth first traversal of the nav element with the enter/exit functions above
+    // Top level of step 4: depth first traversal of the nav element with the enter/exit functions above
     core_element_cycle(toc_element, enter_element, exit_element);
 
-    // Return either a real ToC or undefined...
+    // Step 5: Return either a real ToC or undefined...
     return toc.entries.length !== 0 ? toc : null;
 }
 
@@ -275,12 +301,13 @@ export async function generate_TOC(manifest: PublicationManifest): Promise<ToC> 
 
             // Branch out on whether there is a fragment ID or not...
             if (fragment !== null) {
-                const nav: HTMLElement = html_dom.getElementById(fragment);
+                const nav: HTMLElement = html_dom.getElementById(fragment.slice(1));
                 if (nav !== null && nav.hasAttribute('role') && nav.getAttribute('role').trim().split(' ').includes('doc-toc')) {
                     // This is indeed a toc element, we can proceed to extract the content
                     return nav;
                 } else {
                     Global.logger.log_light_validation_error(`ToC entry with ${resource.url} not found`);
+                    return null;
                 }
                 // If we get there, there is no valid TOC, so we fall through the whole branch to the closure of the function
             } else {
@@ -289,6 +316,7 @@ export async function generate_TOC(manifest: PublicationManifest): Promise<ToC> 
                     return nav;
                 } else {
                     Global.logger.log_light_validation_error(`ToC entry in ${resource.url} not found`);
+                    return null;
                 }
                 // If we get there, there is no valid TOC, so we fall through the whole branch to the closure of the function
             }

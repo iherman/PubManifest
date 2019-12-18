@@ -27,6 +27,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /** Base URL for all files, this should be adapted to the local environment... */
 const test_base_general = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/manifest_processing/tests';
 const test_base_audio = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/audiobooks/manifest_processing/tests';
+const test_base_toc = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/toc_processing/tests';
 const process_1 = require("../src/process");
 const discovery_1 = require("../src/lib/discovery");
 // All calls use these two profiles in the caller
@@ -41,13 +42,14 @@ const test_profiles = [audiobooks_1.audiobook_profile, profile_1.default_profile
  *
  * @async
  * @param file_name - name of the test manifest file
+ * @param prefix - prefix added to the id of the test for the file name
  */
-async function get_tests(file_name) {
+async function get_tests(file_name, prefix) {
     const process_doc_tests = (doc_test) => {
         const base = `${file_name.split('/').slice(0, -1).join('/')}/`;
         doc_test.tests.forEach((section_tests) => {
             section_tests.tests.forEach((test) => {
-                test.url = (test['media-type'] && test['media-type'] === 'text/html') ? `${base}test_${test.id}.html` : `${base}test_${test.id}.jsonld`;
+                test.url = (test['media-type'] && test['media-type'] === 'text/html') ? `${base}${prefix}${test.id}.html` : `${base}${prefix}${test.id}.jsonld`;
                 flattened_suite[`${test.id}`] = test;
             });
         });
@@ -99,11 +101,28 @@ function generate_scores(all_tests) {
  */
 async function main() {
     const g_tests = async (flag) => {
-        const retval = (flag === 'm') ? await get_tests(`${test_base_general}/index.json`) : await get_tests(`${test_base_audio}/index.json`);
+        let test_base;
+        let prefix = '';
+        switch (flag) {
+            case 'm':
+                test_base = test_base_general;
+                prefix = 'test_';
+                break;
+            case 'a':
+                test_base = test_base_audio;
+                prefix = 'test_';
+                break;
+            case 's':
+            case 'c':
+                test_base = test_base_toc;
+                break;
+        }
+        ;
+        const retval = await get_tests(`${test_base}/index.json`, prefix);
         return retval;
     };
     const preamble_run_test = async (name) => {
-        if (name[0] === 'm' || name[0] === 'a') {
+        if (name[0] === 'm' || name[0] === 'a' || name[0] === 's' || name[0] === 'c') {
             const tests = await g_tests(name[0]);
             run_test(tests[name].url);
         }

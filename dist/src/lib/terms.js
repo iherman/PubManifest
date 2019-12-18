@@ -291,7 +291,6 @@ exports.isLinkedResource_Impl = isLinkedResource_Impl;
 function new_PublicationManifest_Impl() {
     const retval = {};
     retval.$terms = new PublicationManifestTerms();
-    retval.toc = null;
     return retval;
 }
 exports.new_PublicationManifest_Impl = new_PublicationManifest_Impl;
