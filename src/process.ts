@@ -659,10 +659,11 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
     }
 
     /* Step: identifier check; has been mostly done by virtue of checking the URL */
-    if (!data.id)
+    if (data.id === undefined || data.id === '') {
         Global.logger.log_light_validation_error(`No id provided`);
         // This removes the '' string, if present
         delete data.id;
+    }
 
     /* Step: duration check */
     if (data.duration) {
