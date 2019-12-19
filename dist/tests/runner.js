@@ -4,11 +4,11 @@
  * and uses (for the time being) a rudimentary CLI: the runner should be invoked with the test id, which executes [[process_manifest]] on that test entry,
  * displays the resulting processed manifest, as well as the validation and fatal errors as defined in the specification.
  *
- * The tests themselves are separated into two directories: a generic one for the tests running the algorithm as specified in the
+ * The tests themselves are separated into three directories: a generic one for the tests running the algorithm as specified in the
  * core [publication manifest spec](https://www.w3.org/TR/pub-manifest/), and a separate audiobooks one, for tests related to the audiobooks extension, specified
- * by the [audiobooks profile spec](https://www.w3.org/TR/audiobooks/).
+ * by the [audiobooks profile spec](https://www.w3.org/TR/audiobooks/), and the [ToC extraction algorithm](https://www.w3.org/TR/pub-manifest/#app-toc-ua).
  *
- * The structure of the JSON is organized by separate test suites for the two categories (see [[TestSuite]], referring to [[DocumentTests]]).
+ * The structure of the JSON is organized by separate test suites for the different categories (see [[DocumentTests]]).
  * For each document there are some metadata and a series of section tests (see [[SectionTests]]), corresponding to some sections in the specifications. Finally,
  * each section tests is a series of individual tests (see [[Test]]).
  *

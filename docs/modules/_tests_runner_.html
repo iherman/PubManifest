@@ -73,16 +73,16 @@
 							and uses (for the time being) a rudimentary CLI: the runner should be invoked with the test id, which executes <a href="_src_process_.html#process_manifest">process_manifest</a> on that test entry,
 						displays the resulting processed manifest, as well as the validation and fatal errors as defined in the specification.</p>
 					</div>
-					<p>The tests themselves are separated into two directories: a generic one for the tests running the algorithm as specified in the
+					<p>The tests themselves are separated into three directories: a generic one for the tests running the algorithm as specified in the
 						core <a href="https://www.w3.org/TR/pub-manifest/">publication manifest spec</a>, and a separate audiobooks one, for tests related to the audiobooks extension, specified
-					by the <a href="https://www.w3.org/TR/audiobooks/">audiobooks profile spec</a>.</p>
-					<p>The structure of the JSON is organized by separate test suites for the two categories (see <a href="../interfaces/_tests_runner_.testsuite.html">TestSuite</a>, referring to <a href="../interfaces/_tests_runner_.documenttests.html">DocumentTests</a>).
+					by the <a href="https://www.w3.org/TR/audiobooks/">audiobooks profile spec</a>, and the <a href="https://www.w3.org/TR/pub-manifest/#app-toc-ua">ToC extraction algorithm</a>.</p>
+					<p>The structure of the JSON is organized by separate test suites for the different categories (see <a href="../interfaces/_tests_runner_.documenttests.html">DocumentTests</a>).
 						For each document there are some metadata and a series of section tests (see <a href="../interfaces/_tests_runner_.sectiontests.html">SectionTests</a>), corresponding to some sections in the specifications. Finally,
 					each section tests is a series of individual tests (see <a href="../interfaces/_tests_runner_.test.html">Test</a>).</p>
 					<p>A test is, usually, a JSON-LD file for a manifest, to make things simpler to test. Alternatively, some tests are in html (the <code>format</code> entry in <a href="../interfaces/_tests_runner_.test.html">Test</a> should be set to <code>html</code> for those cases), pointing to a Primary Entry Point.</p>
 					<dl class="tsd-comment-tags">
 						<dt>author</dt>
-						<dd><p>Ivan Herman <a href="mailto:&#105;&#118;&#x61;&#110;&#x40;&#119;&#51;&#46;&#x6f;&#114;&#103;">&#105;&#118;&#x61;&#110;&#x40;&#119;&#51;&#46;&#x6f;&#114;&#103;</a></p>
+						<dd><p>Ivan Herman <a href="mailto:&#105;&#x76;&#97;&#x6e;&#x40;&#119;&#x33;&#x2e;&#x6f;&#114;&#x67;">&#105;&#x76;&#97;&#x6e;&#x40;&#119;&#x33;&#x2e;&#x6f;&#114;&#x67;</a></p>
 						</dd>
 					</dl>
 				</div>
@@ -98,13 +98,14 @@
 								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_tests_runner_.flattenedsuite.html" class="tsd-kind-icon">Flattened<wbr>Suite</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_tests_runner_.sectiontests.html" class="tsd-kind-icon">Section<wbr>Tests</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_tests_runner_.test.html" class="tsd-kind-icon">Test</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_tests_runner_.testsuite.html" class="tsd-kind-icon">Test<wbr>Suite</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_tests_runner_.html#test_base" class="tsd-kind-icon">test_<wbr>base</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_tests_runner_.html#test_base_audio" class="tsd-kind-icon">test_<wbr>base_<wbr>audio</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_tests_runner_.html#test_base_general" class="tsd-kind-icon">test_<wbr>base_<wbr>general</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_tests_runner_.html#test_base_toc" class="tsd-kind-icon">test_<wbr>base_<wbr>toc</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_tests_runner_.html#test_profiles" class="tsd-kind-icon">test_<wbr>profiles</a></li>
 							</ul>
 						</section>
@@ -123,12 +124,22 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Variables</h2>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="test_base" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> test_<wbr>base</h3>
-					<div class="tsd-signature tsd-kind-icon">test_<wbr>base<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"http://localhost:8001/LocalData/github/Publishing/pub_manifest_api_tests/tests/"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;http://localhost:8001/LocalData/github/Publishing/pub_manifest_api_tests/tests/&quot;</span></div>
+					<a name="test_base_audio" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> test_<wbr>base_<wbr>audio</h3>
+					<div class="tsd-signature tsd-kind-icon">test_<wbr>base_<wbr>audio<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"http://localhost:8001/LocalData/github/Publishing/publ-tests/audiobooks/manifest_processing/tests"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;http://localhost:8001/LocalData/github/Publishing/publ-tests/audiobooks/manifest_processing/tests&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/tests/runner.ts#L20">tests/runner.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/tests/runner.ts#L21">tests/runner.ts:21</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="test_base_general" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> test_<wbr>base_<wbr>general</h3>
+					<div class="tsd-signature tsd-kind-icon">test_<wbr>base_<wbr>general<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/manifest_processing/tests"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/manifest_processing/tests&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/tests/runner.ts#L20">tests/runner.ts:20</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -138,12 +149,22 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="test_base_toc" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> test_<wbr>base_<wbr>toc</h3>
+					<div class="tsd-signature tsd-kind-icon">test_<wbr>base_<wbr>toc<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/toc_processing/tests"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/toc_processing/tests&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/tests/runner.ts#L22">tests/runner.ts:22</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="test_profiles" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> test_<wbr>profiles</h3>
 					<div class="tsd-signature tsd-kind-icon">test_<wbr>profiles<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_src_lib_profile_.profile.html" class="tsd-signature-type">Profile</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[audiobook_profile, default_profile]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/tests/runner.ts#L35">tests/runner.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/tests/runner.ts#L36">tests/runner.ts:36</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -160,7 +181,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/tests/runner.ts#L166">tests/runner.ts:166</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/tests/runner.ts#L148">tests/runner.ts:148</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -184,13 +205,13 @@
 					<a name="get_tests" class="tsd-anchor"></a>
 					<h3>get_<wbr>tests</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">get_<wbr>tests<span class="tsd-signature-symbol">(</span>file_name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tests_runner_.flattenedsuite.html" class="tsd-signature-type">FlattenedSuite</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get_<wbr>tests<span class="tsd-signature-symbol">(</span>file_name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, prefix<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tests_runner_.flattenedsuite.html" class="tsd-signature-type">FlattenedSuite</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/tests/runner.ts#L115">tests/runner.ts:115</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/tests/runner.ts#L104">tests/runner.ts:104</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -210,6 +231,12 @@
 										<p>name of the test manifest file</p>
 									</div>
 								</li>
+								<li>
+									<h5>prefix: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>prefix added to the id of the test for the file name</p>
+									</div>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tests_runner_.flattenedsuite.html" class="tsd-signature-type">FlattenedSuite</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
@@ -225,7 +252,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/tests/runner.ts#L184">tests/runner.ts:184</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/tests/runner.ts#L166">tests/runner.ts:166</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -251,7 +278,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/tests/runner.ts#L150">tests/runner.ts:150</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/tests/runner.ts#L132">tests/runner.ts:132</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -301,6 +328,9 @@
 						<a href="_src_lib_terms_.html">"src/lib/terms"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="_src_lib_toc_.html">"src/lib/toc"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="_src_lib_utilities_.html">"src/lib/utilities"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -328,11 +358,14 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="../interfaces/_tests_runner_.test.html" class="tsd-kind-icon">Test</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../interfaces/_tests_runner_.testsuite.html" class="tsd-kind-icon">Test<wbr>Suite</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_tests_runner_.html#test_base_audio" class="tsd-kind-icon">test_<wbr>base_<wbr>audio</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_tests_runner_.html#test_base" class="tsd-kind-icon">test_<wbr>base</a>
+						<a href="_tests_runner_.html#test_base_general" class="tsd-kind-icon">test_<wbr>base_<wbr>general</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_tests_runner_.html#test_base_toc" class="tsd-kind-icon">test_<wbr>base_<wbr>toc</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_tests_runner_.html#test_profiles" class="tsd-kind-icon">test_<wbr>profiles</a>

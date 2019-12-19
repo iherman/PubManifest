@@ -262,7 +262,7 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
     core_element_cycle(toc_element, enter_element, exit_element);
 
     // Step 5: Return either a real ToC or undefined...
-    return toc.entries.length !== 0 ? toc : null;
+    return (toc.entries === null || toc.entries.length === 0) ? null : toc;
 }
 
 

@@ -48,8 +48,8 @@ function core_element_cycle(element, enter, exit) {
     element.childNodes.forEach((child) => {
         if (enter(child) === traverse.proceed) {
             core_element_cycle(child, enter, exit);
+            exit(child);
         }
-        exit(child);
     });
 }
 ;
@@ -248,7 +248,7 @@ function extract_TOC(toc_element, manifest) {
     // Top level of step 4: depth first traversal of the nav element with the enter/exit functions above
     core_element_cycle(toc_element, enter_element, exit_element);
     // Step 5: Return either a real ToC or undefined...
-    return toc.entries.length !== 0 ? toc : null;
+    return (toc.entries === null || toc.entries.length === 0) ? null : toc;
 }
 /**
  * Extract the ToC, if available, via the manifest information. This is the implementation of
