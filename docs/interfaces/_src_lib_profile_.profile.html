@@ -94,6 +94,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_lib_profile_.profile.html#add_default_values" class="tsd-kind-icon">add_<wbr>default_<wbr>values</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_lib_profile_.profile.html#data_validation" class="tsd-kind-icon">data_<wbr>validation</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_lib_profile_.profile.html#generate_internal_representation" class="tsd-kind-icon">generate_<wbr>internal_<wbr>representation</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_lib_profile_.profile.html#get_toc_element" class="tsd-kind-icon">get_<wbr>toc_<wbr>element</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_lib_profile_.profile.html#identifier" class="tsd-kind-icon">identifier</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_lib_profile_.profile.html#normalize_data" class="tsd-kind-icon">normalize_<wbr>data</a></li>
 							</ul>
@@ -109,7 +110,7 @@
 					<div class="tsd-signature tsd-kind-icon">add_<wbr>default_<wbr>values<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/src/lib/profile.ts#L81">src/lib/profile.ts:81</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/src/lib/profile.ts#L80">src/lib/profile.ts:80</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -118,9 +119,6 @@
 							<a href="https://www.w3.org/TR/pub-manifest/#add-html-defaults">§7.4.3 of the Publication Manifest</a>.</p>
 						</div>
 						<dl class="tsd-comment-tags">
-							<dt>param</dt>
-							<dd><p>global data instance, containing data like global language and direction tag, base URL, etc.</p>
-							</dd>
 							<dt>param</dt>
 							<dd><p>the (almost) final processed manifest</p>
 							</dd>
@@ -159,7 +157,7 @@
 					<div class="tsd-signature tsd-kind-icon">data_<wbr>validation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/src/lib/profile.ts#L71">src/lib/profile.ts:71</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/src/lib/profile.ts#L71">src/lib/profile.ts:71</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -207,7 +205,7 @@
 					<div class="tsd-signature tsd-kind-icon">generate_<wbr>internal_<wbr>representation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/src/lib/profile.ts#L49">src/lib/profile.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/src/lib/profile.ts#L49">src/lib/profile.ts:49</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -249,12 +247,58 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="get_toc_element" class="tsd-anchor"></a>
+					<h3>get_<wbr>toc_<wbr>element</h3>
+					<div class="tsd-signature tsd-kind-icon">get_<wbr>toc_<wbr>element<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/src/lib/profile.ts#L88">src/lib/profile.ts:88</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Look for a (possible) TOC element, possibly preempting the general mechanism of finding the ToC via the manifest.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>param</dt>
+							<dd><p>the generated manifest (by that point all manifest processing, cleanup, etc, is done)</p>
+							</dd>
+							<dt>returns</dt>
+							<dd><ul>
+									<li>the ToC element, if found, <code>null</code> otherwise</li>
+								</ul>
+							</dd>
+						</dl>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>manifest<span class="tsd-signature-symbol">: </span><a href="_src_manifest_.publicationmanifest.html" class="tsd-signature-type">PublicationManifest</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLElement</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>manifest: <a href="_src_manifest_.publicationmanifest.html" class="tsd-signature-type">PublicationManifest</a></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">HTMLElement</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="identifier" class="tsd-anchor"></a>
 					<h3>identifier</h3>
 					<div class="tsd-signature tsd-kind-icon">identifier<span class="tsd-signature-symbol">:</span> <a href="../modules/_src_manifest_.html#url" class="tsd-signature-type">URL</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/src/lib/profile.ts#L40">src/lib/profile.ts:40</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/src/lib/profile.ts#L40">src/lib/profile.ts:40</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -269,7 +313,7 @@
 					<div class="tsd-signature tsd-kind-icon">normalize_<wbr>data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/34461c5/src/lib/profile.ts#L61">src/lib/profile.ts:61</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/a28271c/src/lib/profile.ts#L61">src/lib/profile.ts:61</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -347,6 +391,9 @@
 						<a href="../modules/_src_lib_terms_.html">"src/lib/terms"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="../modules/_src_lib_toc_.html">"src/lib/toc"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_src_lib_utilities_.html">"src/lib/utilities"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -375,6 +422,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_src_lib_profile_.profile.html#generate_internal_representation" class="tsd-kind-icon">generate_<wbr>internal_<wbr>representation</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_src_lib_profile_.profile.html#get_toc_element" class="tsd-kind-icon">get_<wbr>toc_<wbr>element</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_src_lib_profile_.profile.html#identifier" class="tsd-kind-icon">identifier</a>

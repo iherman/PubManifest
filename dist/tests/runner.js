@@ -4,11 +4,11 @@
  * and uses (for the time being) a rudimentary CLI: the runner should be invoked with the test id, which executes [[process_manifest]] on that test entry,
  * displays the resulting processed manifest, as well as the validation and fatal errors as defined in the specification.
  *
- * The tests themselves are separated into two directories: a generic one for the tests running the algorithm as specified in the
+ * The tests themselves are separated into three directories: a generic one for the tests running the algorithm as specified in the
  * core [publication manifest spec](https://www.w3.org/TR/pub-manifest/), and a separate audiobooks one, for tests related to the audiobooks extension, specified
- * by the [audiobooks profile spec](https://www.w3.org/TR/audiobooks/).
+ * by the [audiobooks profile spec](https://www.w3.org/TR/audiobooks/), and the [ToC extraction algorithm](https://www.w3.org/TR/pub-manifest/#app-toc-ua).
  *
- * The structure of the JSON is organized by separate test suites for the two categories (see [[TestSuite]], referring to [[DocumentTests]]).
+ * The structure of the JSON is organized by separate test suites for the different categories (see [[DocumentTests]]).
  * For each document there are some metadata and a series of section tests (see [[SectionTests]]), corresponding to some sections in the specifications. Finally,
  * each section tests is a series of individual tests (see [[Test]]).
  *
@@ -25,7 +25,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 /** Base URL for all files, this should be adapted to the local environment... */
-const test_base = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/APITests/tests/';
+const test_base_general = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/manifest_processing/tests';
+const test_base_audio = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/audiobooks/manifest_processing/tests';
+const test_base_toc = 'http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/toc_processing/tests';
 const process_1 = require("../src/process");
 const discovery_1 = require("../src/lib/discovery");
 // All calls use these two profiles in the caller
@@ -40,29 +42,22 @@ const test_profiles = [audiobooks_1.audiobook_profile, profile_1.default_profile
  *
  * @async
  * @param file_name - name of the test manifest file
+ * @param prefix - prefix added to the id of the test for the file name
  */
-async function get_tests(file_name) {
+async function get_tests(file_name, prefix) {
     const process_doc_tests = (doc_test) => {
-        let base;
-        // For local use, the base should be set to localhost...
-        if (doc_test.href === 'https://www.w3.org/TR/pub-manifest/') {
-            base = `${test_base}generic/`;
-        }
-        else {
-            base = `${test_base}audiobooks/`;
-        }
+        const base = `${file_name.split('/').slice(0, -1).join('/')}/`;
         doc_test.tests.forEach((section_tests) => {
             section_tests.tests.forEach((test) => {
-                test.url = (test['media-type'] && test['media-type'] === 'text/html') ? `${base}test_${test.id}.html` : `${base}test_${test.id}.jsonld`;
+                test.url = (test['media-type'] && test['media-type'] === 'text/html') ? `${base}${prefix}${test.id}.html` : `${base}${prefix}${test.id}.jsonld`;
                 flattened_suite[`${test.id}`] = test;
             });
         });
     };
-    const index_body = await discovery_1.fetch_json(`${test_base}${file_name}`);
+    const index_body = await discovery_1.fetch_json(file_name);
     const test_suite = JSON.parse(index_body);
     const flattened_suite = {};
-    process_doc_tests(test_suite.generic);
-    process_doc_tests(test_suite.audiobooks);
+    process_doc_tests(test_suite);
     return flattened_suite;
 }
 /**
@@ -105,12 +100,41 @@ function generate_scores(all_tests) {
  * @async
  */
 async function main() {
+    const g_tests = async (flag) => {
+        let test_base;
+        let prefix = '';
+        switch (flag) {
+            case 'm':
+                test_base = test_base_general;
+                prefix = 'test_';
+                break;
+            case 'a':
+                test_base = test_base_audio;
+                prefix = 'test_';
+                break;
+            case 's':
+            case 'c':
+                test_base = test_base_toc;
+                break;
+        }
+        ;
+        const retval = await get_tests(`${test_base}/index.json`, prefix);
+        return retval;
+    };
+    const preamble_run_test = async (name) => {
+        if (name[0] === 'm' || name[0] === 'a' || name[0] === 's' || name[0] === 'c') {
+            const tests = await g_tests(name[0]);
+            run_test(tests[name].url);
+        }
+        else {
+            throw new Error('Abnormal test id...');
+        }
+    };
     try {
-        // This is the local test run
-        const tests = await get_tests('index.json');
         if (process.argv && process.argv.length > 2) {
-            if (process.argv[2] === '-s') {
-                // print scores
+            if (process.argv[2] === '-sm' || process.argv[2] === '-sa') {
+                const label = process.argv[2][2];
+                const tests = await g_tests(label);
                 const scores = generate_scores(tests);
                 console.log(JSON.stringify(scores, null, 4));
             }
@@ -119,11 +143,11 @@ async function main() {
                 run_test(process.argv[3]);
             }
             else {
-                run_test(tests[process.argv[2]].url);
+                preamble_run_test(process.argv[2]);
             }
         }
         else {
-            run_test(tests['m4.01'].url);
+            preamble_run_test('m4.01');
         }
     }
     catch (e) {

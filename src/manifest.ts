@@ -68,6 +68,26 @@ export interface LinkedResource {
 };
 
 /**
+ * One Table of Content's entry. Contains data extracted from an `<a>` element (`url`, `type`, `rel`),
+ * as well as the name of the entry, plus an array of possible entries of the next layer in the tree.
+ */
+export interface TocEntry {
+    name   : string;
+    url    : string;
+    type   : string;
+    rel    : string[];
+    entries: TocEntry[];
+}
+
+/**
+ * Table of Content
+ */
+export interface ToC {
+    name   : string;
+    entries: TocEntry[];
+}
+
+/**
  * The complete interface for a processed representation of the data model
  */
 export interface PublicationManifest {
@@ -107,5 +127,8 @@ export interface PublicationManifest {
     resources?         : LinkedResource[];
     links?             : LinkedResource[];
     uniqueResources    : URL[];
+
+    toc?               : ToC;
+
     [propName: string] : any;
 };

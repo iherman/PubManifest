@@ -22,6 +22,9 @@ exports.default_profile = {
     },
     add_default_values(data) {
         return data;
+    },
+    get_toc_element(data) {
+        return null;
     }
 };
 //# sourceMappingURL=profile.js.map

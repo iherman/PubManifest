@@ -39,6 +39,10 @@ const terms_1 = require("./lib/terms");
  */
 const profile_1 = require("./lib/profile");
 /**
+ * Interface for the ToC extraction function
+ */
+const toc_1 = require("./lib/toc");
+/**
  * Various utilities
  */
 const utilities_1 = require("./lib/utilities");
@@ -115,7 +119,7 @@ async function process_manifest(url, profiles = [profile_1.default_profile], deb
         return { manifest_object, logger };
     }
     try {
-        manifest_object = generate_internal_representation(args, logger, profiles);
+        manifest_object = await generate_internal_representation(args, logger, profiles);
     }
     catch (err) {
         logger.log_fatal_error(`Some extra error occurred during generation (${err.toString()})`);
@@ -288,13 +292,14 @@ const create_LinkedResource = (resource) => {
  * [§7.4  Publication Manifest](https://www.w3.org/TR/pub-manifest/#processing-algorithm), i.e., the starting
  * point of the algorithm.
  *
+ * @async
  * @param args - the arguments to the generation: the (JSON) text of the manifest, the base URL, and the (DOM) document object
  * @param base - base URL; if undefined or empty, fall back on the value of url
  * @param logger - an extra parameter to collect the error messages in one place, to be then processed by the caller
  * @param profiles - the sets of profiles that the caller can handle
  * @return - the processed manifest
  */
-function generate_internal_representation(args, logger, profiles = [profile_1.default_profile]) {
+async function generate_internal_representation(args, logger, profiles = [profile_1.default_profile]) {
     utilities_1.Global.logger = logger;
     utilities_1.Global.base = args.base;
     utilities_1.Global.document = args.document;
@@ -409,6 +414,8 @@ function generate_internal_representation(args, logger, profiles = [profile_1.de
     }
     /* Step: Profile specific processing, and return: */
     const retval_impl = utilities_1.Global.profile.generate_internal_representation(processed);
+    /* Step: Extract the ToC */
+    retval_impl.toc = await toc_1.generate_TOC(retval_impl);
     // Doing an ugly trick here. The objects are all '_impl', meaning that they contain additional data
     // that are only necessary for processing and not for the rest, namely '$terms'. To filter them all out
     // the most straightforward way is to convert the object into JSON and back but, along the line,
@@ -586,10 +593,11 @@ function data_validation(data) {
         });
     }
     /* Step: identifier check; has been mostly done by virtue of checking the URL */
-    if (!data.id)
+    if (data.id === undefined || data.id === '') {
         utilities_1.Global.logger.log_light_validation_error(`No id provided`);
-    // This removes the '' string, if present
-    delete data.id;
+        // This removes the '' string, if present
+        delete data.id;
+    }
     /* Step: duration check */
     if (data.duration) {
         if (!utilities_1.check_duration_value(data.duration, utilities_1.Global.logger)) {

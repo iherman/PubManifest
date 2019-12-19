@@ -75,6 +75,10 @@ export const Global: GlobalData = new GlobalData();
 
 /* **************************** General utilities **************************** */
 
+/** Query selector string for ToC */
+export const toc_query_selector = '*[role*="doc-toc"]';
+
+
 /**
  * Name tells it all: if the argument is  single value, it is encapsulated into
  * an array. Used for Localizable String, Linked Resources, etc.

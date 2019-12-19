@@ -7,7 +7,7 @@
 import { Profile } from './lib/profile';
 
 /** Global data class */
-import { Global, check_duration_value } from './lib/utilities';
+import { Global, check_duration_value, toc_query_selector } from './lib/utilities';
 
 import {
     URL,
@@ -74,7 +74,7 @@ export const audiobook_profile: Profile = {
     generate_internal_representation(processed: PublicationManifest): PublicationManifest {
         let toc: boolean = false;
         if (Global.document !== undefined) {
-            if (Global.document.querySelector('*[role*="doc-toc"]') !== null) {
+            if (Global.document.querySelector(toc_query_selector) !== null) {
                 toc = true;
             }
         }
@@ -86,6 +86,14 @@ export const audiobook_profile: Profile = {
 
         if (!toc) {
             Global.logger.log_light_validation_error('No table of content found')
+        }
+
+        // The PEP (if it exists) should also be in the unique resources array.
+        // @@@@@@@@@@@@!!!!!! This is not yet accepted, just a proposed amendment of the audiobook spec!
+        if (Global.document !== undefined) {
+            if (!processed.uniqueResources.includes(Global.document.documentURI)) {
+                processed.uniqueResources.push(Global.document.documentURI);
+            }
         }
 
         return processed;
@@ -209,11 +217,21 @@ export const audiobook_profile: Profile = {
      * The [§6 Manifest Processing][https://www.w3.org/TR/audiobooks/#audio-manifest-processing] of the Audiobooks specification does not
      * define any special defaults, i.e., this method returns the data value unchanged.
      *
-     * @param global_data - global data instance, containing data like global language and direction tag, base URL, etc.
      * @param data - the (almost) final processed manifest
      * @returns - `null` if a fatal error has been raised, the original (albeit possibly modified) data otherwise.
      */
     add_default_values(data: PublicationManifest_Impl): PublicationManifest_Impl {
         return data;
+    },
+
+    /**
+     * Look for a (possible) TOC element in the PEP, if present, and return it if found. This ToC element should preempt
+     * any other search for the ToC element.
+     *
+     * @param manifest - the generated manifest (by that point all manifest processing, cleanup, etc, is done)
+     * @returns - the ToC element, if found, `null` otherwise
+     */
+    get_toc_element(data: PublicationManifest): HTMLElement {
+        return (Global.document !== undefined) ? Global.document.querySelector(toc_query_selector) : null;
     }
 }

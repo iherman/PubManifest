@@ -74,11 +74,18 @@ export interface Profile {
      * Add default values from the (possible) HTML document. This corresponds to the profile extension point in
      * [§7.4.3 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#add-html-defaults).
      *
-     * @param global_data - global data instance, containing data like global language and direction tag, base URL, etc.
      * @param data - the (almost) final processed manifest
      * @returns - `null` if a fatal error has been raised, the original (albeit possibly modified) data otherwise.
      */
     add_default_values: (data: PublicationManifest_Impl) => PublicationManifest_Impl;
+
+    /**
+     * Look for a (possible) TOC element, possibly preempting the general mechanism of finding the ToC via the manifest.
+     *
+     * @param manifest - the generated manifest (by that point all manifest processing, cleanup, etc, is done)
+     * @returns - the ToC element, if found, `null` otherwise
+     */
+    get_toc_element: (manifest: PublicationManifest) => HTMLElement;
 }
 
 /**
@@ -102,5 +109,9 @@ export const default_profile: Profile = {
 
     add_default_values(data: PublicationManifest_Impl): PublicationManifest_Impl {
         return data;
+    },
+
+    get_toc_element(data: PublicationManifest): HTMLElement {
+        return null;
     }
 }
