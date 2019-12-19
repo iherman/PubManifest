@@ -1,9 +1,9 @@
 
 # Publication Manifest Processing
 
-Implementation (with minor omissions, see below) of the Processing steps as defined in [§7 of the Publication Manifest](https://www.w3.org/TR/pub-manifest/#manifest-processing).
+Implementation (with minor omissions, see below) of the Processing steps as defined in [§7 of the Publication Manifest Specification](https://www.w3.org/TR/pub-manifest/#manifest-processing), the ToC extraction algorithm as defined in [§C.3 of the Publication Manifest Specification](https://www.w3.org/TR/pub-manifest/#app-toc-ua), and the extension to the core algorithm as defined in [§6 of the Audiobook Specification](https://www.w3.org/TR/audiobooks/#audio-manifest-processing).
 
-It is _not_ a meaningful implementation insofar as it could be embedded in a full-blown User Agent implementation based on Publication Manifests right away. _Its main purpose is to check the correctness of the specification itself_. This means that, for example, necessary checks on, e.g., the security and validity on the URL-s in the manifest are omitted.  It does not have a proper user interface and only a rudimentary command line interface is used.
+It is _not_ a meaningful implementation insofar as it should be embedded in a full-blown User Agent implementation based on Publication Manifests to make it useful. _Its main purpose is to check the correctness of the specifications themselves_. This means that, for example, necessary checks on, e.g., the security and validity on the URL-s in the manifest are omitted.
 
 The following public functions are available:
 
