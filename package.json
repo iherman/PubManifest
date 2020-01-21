@@ -37,7 +37,7 @@
         "eslint-plugin-import": "^2.18.2",
         "terser": "^4.4.0",
         "typedoc": "^0.15.0",
-        "typescript": "^3.6.4"
+        "typescript": "^3.7.4"
     },
     "dependencies": {
         "content-type": "^1.0.4",
