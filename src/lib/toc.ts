@@ -37,7 +37,7 @@ const anchor_elements: string[] = ['A'];
 
 /** Internal type to control the exact flow in [[core_element_cycle]] */
 enum traverse {
-    exit,
+    skip,
     proceed
 };
 
@@ -89,15 +89,18 @@ function text_content(element: HTMLElement): string {
  * @returns - the Table of Content structure; if there are no valid entries, the function returns `null`
  */
 function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): ToC {
-    // The real 'meat' is in the six functions below.
-    // Everything else is scaffolding...
+    // The real 'meat' is in the six functions below; each one represent the entry
+    // (or entry/exit pair, if applicable) corresponding to the various entries under
+    // step 4. in the algorithm of C.3.
+    // The invocation of these functions is done (recursively) via [[core_element_cycle]],
+    // started, at the top level, at the end of this function.
     const enter_heading_content = (entry: HTMLElement) :traverse => {
         // Step 4.1
         if (toc.name === '' && branches.length === 0) {
             // this will return null instead of the empty string as defined in the spec
             toc.name = text_content(entry);
         }
-        return traverse.exit;
+        return traverse.skip;
     };
 
     // Step 4.2
@@ -105,18 +108,18 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
         // Step 4.2.1.
         if (toc.name === '') toc.name = null;
 
-        if (current_toc_branch !== null) {
+        if (current_toc_node !== null) {
             // Step 4.2.2.
-            if (current_toc_branch.entries === null || current_toc_branch.entries.length !== 0) {
-                return traverse.exit;
+            if (current_toc_node.entries === null || current_toc_node.entries.length !== 0) {
+                return traverse.skip;
             } else {
-                branches.push(current_toc_branch);
-                current_toc_branch = null;
+                branches.push(current_toc_node);
+                current_toc_node = null;
             }
         } else if (branches.length === 0) {
             // Step 4.2.3.
             if (toc.entries === null || toc.entries.length !== 0) {
-                return traverse.exit;
+                return traverse.skip;
             }
         }
         return traverse.proceed;
@@ -125,7 +128,7 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
     // Step 4.3
     const exit_list_element = (entry: HTMLElement) => {
         if (branches.length !== 0) {
-            current_toc_branch = branches.pop();
+            current_toc_node = branches.pop();
         } else if (toc.entries.length === 0) {
             toc.entries = null;
         }
@@ -133,10 +136,10 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
 
     // Step 4.4
     const enter_list_item_element = (entry: HTMLElement) :traverse => {
-        current_toc_branch = {
-            name    : "",
-            url     : "",
-            type    : "",
+        current_toc_node = {
+            name    : null,
+            url     : null,
+            type    : null,
             rel     : null,
             entries : [],
         }
@@ -146,40 +149,40 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
     // Step 4.5
     const exit_list_item_element = (entry: HTMLElement) => {
         // Step 4.5.1
-        if (current_toc_branch.entries.length === 0) {
-            current_toc_branch.entries = null;
+        if (current_toc_node.entries.length === 0) {
+            current_toc_node.entries = null;
         }
 
         // Step 4.5.2
-        if (current_toc_branch.name === '') {
-            if (current_toc_branch.entries !== null) {
-                current_toc_branch.name = null;
+        if (current_toc_node.name === null) {
+            if (current_toc_node.entries !== null) {
+                current_toc_node.name = null;
             } else {
-                current_toc_branch = null;
+                current_toc_node = null;
                 return;
             }
         }
 
         // Step 4.5.3
         if (branches.length !== 0) {
-            branches[branches.length - 1].entries.push(current_toc_branch);
+            branches[branches.length - 1].entries.push(current_toc_node);
         } else {
-            toc.entries.push(current_toc_branch);
+            toc.entries.push(current_toc_node);
         }
 
-        current_toc_branch = null;
+        current_toc_node = null;
     };
 
     // Step 4.6
     const enter_anchor_element = (entry: HTMLElement) :traverse => {
-        if (current_toc_branch !== null) {
+        if (current_toc_node !== null) {
             // Step 4.6.1
-            if (current_toc_branch.name !== '') {
-                return traverse.exit;
+            if (current_toc_node.name !== null) {
+                return traverse.skip;
             } else {
                 // Step 4.6.2.1
                 // the function returns null instead of an empty string, as required by the spec
-                current_toc_branch.name = text_content(entry);
+                current_toc_node.name = text_content(entry);
 
                 const anchor: HTMLAnchorElement = entry as HTMLAnchorElement;
 
@@ -189,28 +192,28 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
                 const url = anchor.hasAttribute('href') ? anchor.href : null;
                 if (url !== null) {
                     if (manifest.uniqueResources.includes(remove_url_fragment(url))) {
-                        current_toc_branch.url = url
+                        current_toc_node.url = url
                     } else {
                         Global.logger.log_light_validation_error(`The ToC reference "${url}" does not appear in the resources listed in the manifest.`);
-                        current_toc_branch.url = null;
+                        current_toc_node.url = null;
                     }
                 } else {
-                    current_toc_branch.url = null;
+                    current_toc_node.url = null;
                 }
 
                 // Step 4.6.2.3
-                current_toc_branch.type = anchor.hasAttribute('type') ? anchor.type.trim() : null;
+                current_toc_node.type = anchor.hasAttribute('type') ? anchor.type.trim() : null;
 
                 // Step 4.6.2.4
                 if (anchor.hasAttribute('rel')) {
                     const rel = anchor.rel.trim().split(' ');
-                    current_toc_branch.rel = (rel.length !== 0) ? rel : null;
+                    current_toc_node.rel = (rel.length !== 0) ? rel : null;
                 } else {
-                    current_toc_branch.rel = null;
+                    current_toc_node.rel = null;
                 }
             }
         }
-        return traverse.exit;
+        return traverse.skip;
     };
 
     // "Universal" entry, branching off to the individual steps based on the element tags
@@ -229,7 +232,7 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
             return enter_anchor_element(entry);
         } else if (skipped_elements.includes(entry.tagName) || entry.hidden === true) {
             // Step 4.7
-            return traverse.exit;
+            return traverse.skip;
         } else {
             // Step 4.8
             return traverse.proceed;
@@ -256,7 +259,7 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
         entries: []
     };
     const branches: TocEntry[] = [];
-    let current_toc_branch: TocEntry = null;
+    let current_toc_node: TocEntry = null;
 
     // Top level of step 4: depth first traversal of the nav element with the enter/exit functions above
     core_element_cycle(toc_element, enter_element, exit_element);
@@ -283,7 +286,6 @@ export async function generate_TOC(manifest: PublicationManifest): Promise<ToC> 
 
         if (resource !== undefined && resource.url !== '') {
             const parsed = urlHandler.parse(resource.url);
-            const fragment = parsed.hash;
             delete parsed.hash;
             const absolute_url = urlHandler.format(parsed);
 
@@ -299,26 +301,12 @@ export async function generate_TOC(manifest: PublicationManifest): Promise<ToC> 
                 return null;
             }
 
-            // Branch out on whether there is a fragment ID or not...
-            if (fragment !== null) {
-                const nav: HTMLElement = html_dom.getElementById(fragment.slice(1));
-                if (nav !== null && nav.hasAttribute('role') && nav.getAttribute('role').trim().split(' ').includes('doc-toc')) {
-                    // This is indeed a toc element, we can proceed to extract the content
-                    return nav;
-                } else {
-                    Global.logger.log_light_validation_error(`ToC entry with ${resource.url} not found`);
-                    return null;
-                }
-                // If we get there, there is no valid TOC, so we fall through the whole branch to the closure of the function
+            const nav: HTMLElement = html_dom.querySelector(toc_query_selector);
+            if (nav !== null) {
+                return nav;
             } else {
-                const nav: HTMLElement = html_dom.querySelector(toc_query_selector);
-                if (nav !== null) {
-                    return nav;
-                } else {
-                    Global.logger.log_light_validation_error(`ToC entry in ${resource.url} not found`);
-                    return null;
-                }
-                // If we get there, there is no valid TOC, so we fall through the whole branch to the closure of the function
+                Global.logger.log_light_validation_error(`ToC entry in ${resource.url} not found`);
+                return null;
             }
         } else {
             return null;
