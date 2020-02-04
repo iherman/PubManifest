@@ -66,14 +66,6 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Generic module to implement publication profiles. It defines a generic interface and an &#39;empty&#39; profile; the latter can be used
-						as some sort of a default profile with, essentially, empty extension functions.</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -101,22 +93,16 @@
 					<div class="tsd-signature tsd-kind-icon">default_<wbr>profile<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/profile.ts#L95">src/lib/profile.ts:95</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/profile.ts#L106">src/lib/profile.ts:106</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Default profile: all methods are empty, i.e., simply return the incoming values. See <a href="../interfaces/_src_lib_profile_.profile.html">Profile</a> for the details of the method
-							specifications.</p>
-						</div>
-					</div>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
 						<a name="default_profile.identifier" class="tsd-anchor"></a>
 						<h3>identifier</h3>
 						<div class="tsd-signature tsd-kind-icon">identifier<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;https://www.w3.org/TR/pub-manifest/&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/profile.ts#L96">src/lib/profile.ts:96</a></li>
+								<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/profile.ts#L107">src/lib/profile.ts:107</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -130,7 +116,7 @@
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/profile.ts#L110">src/lib/profile.ts:110</a></li>
+										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/profile.ts#L125">src/lib/profile.ts:125</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -153,7 +139,7 @@
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/profile.ts#L106">src/lib/profile.ts:106</a></li>
+										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/profile.ts#L121">src/lib/profile.ts:121</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -176,7 +162,7 @@
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/profile.ts#L98">src/lib/profile.ts:98</a></li>
+										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/profile.ts#L113">src/lib/profile.ts:113</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -199,7 +185,7 @@
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/profile.ts#L114">src/lib/profile.ts:114</a></li>
+										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/profile.ts#L129">src/lib/profile.ts:129</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -222,7 +208,7 @@
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/profile.ts#L102">src/lib/profile.ts:102</a></li>
+										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/profile.ts#L117">src/lib/profile.ts:117</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -238,6 +224,32 @@
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal">
+						<a name="default_profile.validate_context" class="tsd-anchor"></a>
+						<h3>validate_<wbr>context</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal">
+							<li class="tsd-signature tsd-kind-icon">validate_<wbr>context<span class="tsd-signature-symbol">(</span>manifest<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a>, processed<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/profile.ts#L109">src/lib/profile.ts:109</a></li>
+									</ul>
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>manifest: <a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a></h5>
+									</li>
+									<li>
+										<h5>processed: <a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a></h4>
 							</li>
 						</ul>
 					</section>
