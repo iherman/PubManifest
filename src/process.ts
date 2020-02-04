@@ -438,6 +438,13 @@ export async function generate_internal_representation(args: GenerationArguments
         }
     }
 
+    /* Step: profile specific check on the context files */
+    processed = Global.profile.validate_context(manifest, processed);
+    if (processed === null) {
+        // a fatal error has occured when checking the context files
+        return {} as PublicationManifest
+    }
+
     /* Step: go (recursively!) through all the term in manifest, normalize the value, an set it in processed */
     process_object_keys(manifest, (term:string): void => {
         const value = manifest[term];
