@@ -71,7 +71,8 @@ import {
     recognized_type,
     get_terms,
     remove_url_fragment,
-    check_duration_value
+    check_duration_value,
+    lower
 } from './lib/utilities';
 
 /**
@@ -729,7 +730,7 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
                 if (!link["rel"] || link["rel"].length === 0) {
                     Global.logger.log_light_validation_error(`Rel value in "links" not set`, link);
                 } else {
-                    const intersection = _.intersection(link["rel"],structural_resources);
+                    const intersection = _.intersection(lower(link["rel"]),structural_resources);
                     if (intersection.length > 0) {
                         Global.logger.log_strong_validation_error(`Linked Resource in "links" includes "${intersection}"`, link);
                         return false;
@@ -748,8 +749,9 @@ function data_validation(data: PublicationManifest_Impl): PublicationManifest_Im
         const res2 = (data.resources) ? data.resources : [];
         [...res1, ...res2].forEach((resource: LinkedResource): void => {
             if (resource.rel) {
+                let lower_case_rel = lower(resource.rel);
                 structural_resources.forEach((str: string) => {
-                    if (resource.rel.includes(str)) {
+                    if (lower_case_rel.includes(str)) {
                         // we found a possible structural resource
                         if (flags[str] === true) {
                             // Duplicate, should not be used
