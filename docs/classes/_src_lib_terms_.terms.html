@@ -69,23 +69,6 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Categorization of terms per value types.</p>
-					</div>
-					<p>A wrapper around arrays for terms as single literal values, multiple literal values (i.e., that must be turned into an array of strings),
-						single localizable string and an array of localizable strings, array of entities, array of linked resources, urls, booleans, etc. These arrays
-					are used in generic method calls to handle, e.g., the creation and check of arrays of localizable strings. There are accessors to return combination of terms, used by the main algorithm: all terms that refer to arrays, to literals, resp. URL-s, in some ways (arrays or not), etc.</p>
-					<p>The pattern used for these classes is to</p>
-					<ul>
-						<li>define a number of static variables for each implementation class, listing the relevant terms</li>
-						<li>define an instance of the <a href="_src_lib_terms_.terms.html">Terms</a> class for each implementation class using this terms.</li>
-					</ul>
-					<p>The reason for this pattern is that end user, who gets an instance of, say, an object implementing <a href="../interfaces/_src_lib_terms_.entity_impl.html">Entity_Impl</a>,
-					can use generic methods to check, normalize, validate, etc., term values.</p>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -163,14 +146,9 @@
 					<div class="tsd-signature tsd-kind-icon">array_<wbr>of_<wbr>entities<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L82">src/lib/terms.ts:82</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L82">src/lib/terms.ts:82</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Terms referring to an array of entities (e.g., the terms in <a href="../modules/_src_lib_terms_.html#creator_properties">creator_properties</a>)</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="array_of_links" class="tsd-anchor"></a>
@@ -178,14 +156,9 @@
 					<div class="tsd-signature tsd-kind-icon">array_<wbr>of_<wbr>links<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L85">src/lib/terms.ts:85</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L85">src/lib/terms.ts:85</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Terms referring to an array of linked resources (e.g., <code>readingOrder</code>)</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="array_of_literals" class="tsd-anchor"></a>
@@ -193,14 +166,9 @@
 					<div class="tsd-signature tsd-kind-icon">array_<wbr>of_<wbr>literals<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L76">src/lib/terms.ts:76</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L76">src/lib/terms.ts:76</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Terms referring to an array (list) of literals (e.g., the terms in <a href="../modules/_src_lib_terms_.html#a11y_properties">a11y_properties</a>)</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="array_of_miscs" class="tsd-anchor"></a>
@@ -208,14 +176,9 @@
 					<div class="tsd-signature tsd-kind-icon">array_<wbr>of_<wbr>miscs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L103">src/lib/terms.ts:103</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L103">src/lib/terms.ts:103</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Terms referring to an array of values not listed above (e.g., <code>accessModeSufficient</code>)</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="array_of_strings" class="tsd-anchor"></a>
@@ -223,14 +186,9 @@
 					<div class="tsd-signature tsd-kind-icon">array_<wbr>of_<wbr>strings<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L79">src/lib/terms.ts:79</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L79">src/lib/terms.ts:79</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Terms referring to an array of (localizable) strings (e.g., <code>name</code>)</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="array_of_urls" class="tsd-anchor"></a>
@@ -238,14 +196,9 @@
 					<div class="tsd-signature tsd-kind-icon">array_<wbr>of_<wbr>urls<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L91">src/lib/terms.ts:91</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L91">src/lib/terms.ts:91</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Terms referring to an array of URLs (e.g., <code>url</code>)</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="single_boolean" class="tsd-anchor"></a>
@@ -253,14 +206,9 @@
 					<div class="tsd-signature tsd-kind-icon">single_<wbr>boolean<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L94">src/lib/terms.ts:94</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L94">src/lib/terms.ts:94</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Terms referring to a single boolean (e.g., <code>abridged</code>)</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="single_literal" class="tsd-anchor"></a>
@@ -268,14 +216,9 @@
 					<div class="tsd-signature tsd-kind-icon">single_<wbr>literal<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L73">src/lib/terms.ts:73</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L73">src/lib/terms.ts:73</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Terms referring to a single literal (e.g., <code>id</code>)</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="single_misc" class="tsd-anchor"></a>
@@ -283,14 +226,9 @@
 					<div class="tsd-signature tsd-kind-icon">single_<wbr>misc<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L100">src/lib/terms.ts:100</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L100">src/lib/terms.ts:100</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Terms referring to a single value not listed above (not used at present, added as a placeholder)</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="single_number" class="tsd-anchor"></a>
@@ -298,14 +236,9 @@
 					<div class="tsd-signature tsd-kind-icon">single_<wbr>number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L97">src/lib/terms.ts:97</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L97">src/lib/terms.ts:97</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Terms referring to a single number (e.g., <code>length</code>)</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="single_url" class="tsd-anchor"></a>
@@ -313,14 +246,9 @@
 					<div class="tsd-signature tsd-kind-icon">single_<wbr>url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L88">src/lib/terms.ts:88</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L88">src/lib/terms.ts:88</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Terms referring to a single URL (not used at present, added as a placeholder)</p>
-						</div>
-					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -328,24 +256,12 @@
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
 					<a name="all_terms" class="tsd-anchor"></a>
 					<h3>all_<wbr>terms</h3>
-					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> all_terms<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L213">src/lib/terms.ts:213</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>All terms defined for this type</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
-						</li>
-					</ul>
+					<div class="tsd-signature tsd-kind-icon">all_<wbr>terms<span class="tsd-signature-symbol">:</span> </div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L213">src/lib/terms.ts:213</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -360,14 +276,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L108">src/lib/terms.ts:108</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L108">src/lib/terms.ts:108</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Is this term&#39;s value supposed to be an array?</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -388,14 +299,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L122">src/lib/terms.ts:122</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L122">src/lib/terms.ts:122</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Is this term&#39;s value supposed to be an array of Entities?</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -416,14 +322,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L136">src/lib/terms.ts:136</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L136">src/lib/terms.ts:136</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Is this term&#39;s value supposed to be an array of linked resources?</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -444,14 +345,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L164">src/lib/terms.ts:164</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L164">src/lib/terms.ts:164</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Is this term&#39;s value a single or a string of literal(s)?</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -472,15 +368,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L206">src/lib/terms.ts:206</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L206">src/lib/terms.ts:206</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Is this term&#39;s value supposed to be map?
-									(Not used at present, added as a placeholder))</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -501,14 +391,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L185">src/lib/terms.ts:185</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L185">src/lib/terms.ts:185</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Is this term&#39;s value a regular term, ie, which does not require special handling</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -529,14 +414,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L150">src/lib/terms.ts:150</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L150">src/lib/terms.ts:150</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Is this term&#39;s value supposed to be a single boolean?</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -557,14 +437,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L157">src/lib/terms.ts:157</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L157">src/lib/terms.ts:157</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Is this term&#39;s value supposed to be a single number?</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -585,14 +460,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L143">src/lib/terms.ts:143</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L143">src/lib/terms.ts:143</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Is this term&#39;s value supposed to be a single URL?</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -613,14 +483,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L129">src/lib/terms.ts:129</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L129">src/lib/terms.ts:129</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Is this term&#39;s value supposed to be an array of localizable strings?</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -641,14 +506,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L171">src/lib/terms.ts:171</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L171">src/lib/terms.ts:171</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Is this term&#39;s value a single or a string of literal(s)?</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -669,14 +529,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L178">src/lib/terms.ts:178</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L178">src/lib/terms.ts:178</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Is this term&#39;s value supposed to be an array of URLs?</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -697,14 +552,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/lib/terms.ts#L198">src/lib/terms.ts:198</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/lib/terms.ts#L198">src/lib/terms.ts:198</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Is this a valid term, ie, defined by the specification</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>

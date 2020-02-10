@@ -60,8 +60,24 @@ const required_terms = [
  */
 export const audiobook_profile: Profile = {
     identifier: 'https://www.w3.org/TR/audiobooks/',
+
     /**
-     * "Top level" callback done as the last step of the manifest generation. This corresponds to the extension point in the main body of
+     * "Top level" callback to check the profile dependent context files, and possibly process them for a
+     * profile dependent value. This corresponds to the first extension point in the main body of
+     * [§7.4  Publication Manifest](https://www.w3.org/TR/pub-manifest/#processing-algorithm).
+     *
+     * For audiobooks, this is only a placeholder; that profile does not rely on any extra context files.
+     *
+     * @param manifest - the original manifest, i.e., the result of the JSON parsing
+     * @param processed - the generated manifest representation
+     * @returns - the same object as `processed`, with possible additions, or `null` if a fatal error is found (e.g., missing context file that is required for the profile)
+     */
+    validate_context(manifest: PublicationManifest_Impl, processed: PublicationManifest_Impl) : PublicationManifest_Impl {
+        return processed;
+    },
+
+    /**
+     * "Top level" callback done as the last step of the manifest generation. This corresponds to the second extension point in the main body of
      * [§7.4  Publication Manifest](https://www.w3.org/TR/pub-manifest/#processing-algorithm).
      *
      * This method implements the steps specified in

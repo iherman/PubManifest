@@ -66,13 +66,6 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Module implementing the audiobook profile specific extension functions. The specificities of this profile are defined in [§6 Manifest Processing][<a href="https://www.w3.org/TR/audiobooks/#audio-manifest-processing%5D">https://www.w3.org/TR/audiobooks/#audio-manifest-processing]</a> of the Audiobooks specification.</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -100,14 +93,9 @@
 					<div class="tsd-signature tsd-kind-icon">required_<wbr>terms<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[&#x27;abridged&#x27;,&#x27;accessMode&#x27;,&#x27;accessModeSufficient&#x27;,&#x27;accessibilityFeature&#x27;,&#x27;accessibilityHazard&#x27;,&#x27;accessibilitySummary&#x27;,&#x27;author&#x27;,&#x27;dateModified&#x27;,&#x27;datePublished&#x27;,&#x27;id&#x27;,&#x27;inLanguage&#x27;,&#x27;name&#x27;,&#x27;readBy&#x27;,&#x27;readingProgression&#x27;,&#x27;resources&#x27;,&#x27;url&#x27;,]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/audiobooks.ts#L39">src/audiobooks.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/audiobooks.ts#L39">src/audiobooks.ts:39</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Required terms for audio books</p>
-						</div>
-					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -118,21 +106,16 @@
 					<div class="tsd-signature tsd-kind-icon">audiobook_<wbr>profile<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/audiobooks.ts#L61">src/audiobooks.ts:61</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/audiobooks.ts#L61">src/audiobooks.ts:61</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Audiobook profile file instance. See <a href="../interfaces/_src_lib_profile_.profile.html">Profile</a> for the generic specification of this class;</p>
-						</div>
-					</div>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
 						<a name="audiobook_profile.identifier" class="tsd-anchor"></a>
 						<h3>identifier</h3>
 						<div class="tsd-signature tsd-kind-icon">identifier<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;https://www.w3.org/TR/audiobooks/&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/audiobooks.ts#L62">src/audiobooks.ts:62</a></li>
+								<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/audiobooks.ts#L62">src/audiobooks.ts:62</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -146,24 +129,13 @@
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/audiobooks.ts#L223">src/audiobooks.ts:223</a></li>
+										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/audiobooks.ts#L239">src/audiobooks.ts:239</a></li>
 									</ul>
 								</aside>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Add default values from the (possible) HTML document. This corresponds to the profile extension point in
-										<a href="https://www.w3.org/TR/pub-manifest/#add-html-defaults">§7.4.3 of the Publication Manifest</a>.</p>
-									</div>
-									<p>The [§6 Manifest Processing][<a href="https://www.w3.org/TR/audiobooks/#audio-manifest-processing%5D">https://www.w3.org/TR/audiobooks/#audio-manifest-processing]</a> of the Audiobooks specification does not
-									define any special defaults, i.e., this method returns the data value unchanged.</p>
-								</div>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
 										<h5>data: <a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a></h5>
-										<div class="tsd-comment tsd-typography">
-											<p>the (almost) final processed manifest</p>
-										</div>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a></h4>
@@ -183,26 +155,13 @@
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/audiobooks.ts#L131">src/audiobooks.ts:131</a></li>
+										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/audiobooks.ts#L147">src/audiobooks.ts:147</a></li>
 									</ul>
 								</aside>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Last step of data validation, right before empty arrays are removed and the value is returned to the main processing.
-											This corresponds to the profile extension point in the main body of
-											<a href="https://www.w3.org/TR/pub-manifest/#validate-data">§7.4.2 of the Publication Manifest</a>. This method implements the steps specified in
-										[§6 Manifest Processing][<a href="https://www.w3.org/TR/audiobooks/#audio-manifest-processing%5D">https://www.w3.org/TR/audiobooks/#audio-manifest-processing]</a> of the Audiobooks specification.</p>
-									</div>
-									<p>Note: &quot;checking whether the link refers to an audio file&quot; means checking the encoding format (a.k.a. media type) which should start with <code>audio/</code>. More
-									sophisticated applications may try to look into the file itself, but this is good enough for this testing application.</p>
-								</div>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
 										<h5>data: <a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a></h5>
-										<div class="tsd-comment tsd-typography">
-											<p>the data to be checked</p>
-										</div>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a></h4>
@@ -222,25 +181,13 @@
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/audiobooks.ts#L74">src/audiobooks.ts:74</a></li>
+										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/audiobooks.ts#L90">src/audiobooks.ts:90</a></li>
 									</ul>
 								</aside>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>&quot;Top level&quot; callback done as the last step of the manifest generation. This corresponds to the extension point in the main body of
-										<a href="https://www.w3.org/TR/pub-manifest/#processing-algorithm">§7.4  Publication Manifest</a>.</p>
-									</div>
-									<p>This method implements the steps specified in
-										[§6 Manifest Processing][<a href="https://www.w3.org/TR/audiobooks/#audio-manifest-processing%5D">https://www.w3.org/TR/audiobooks/#audio-manifest-processing]</a> of the Audiobooks specification: checking whether a table of content
-									is available either as part of the PEP (if applicable) or in the resource list.</p>
-								</div>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
 										<h5>processed: <a href="../interfaces/_src_manifest_.publicationmanifest.html" class="tsd-signature-type">PublicationManifest</a></h5>
-										<div class="tsd-comment tsd-typography">
-											<p>the generated manifest representation</p>
-										</div>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_manifest_.publicationmanifest.html" class="tsd-signature-type">PublicationManifest</a></h4>
@@ -260,15 +207,9 @@
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/audiobooks.ts#L234">src/audiobooks.ts:234</a></li>
+										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/audiobooks.ts#L250">src/audiobooks.ts:250</a></li>
 									</ul>
 								</aside>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Look for a (possible) TOC element in the PEP, if present, and return it if found. This ToC element should preempt
-										any other search for the ToC element.</p>
-									</div>
-								</div>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
@@ -292,42 +233,53 @@
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/src/audiobooks.ts#L115">src/audiobooks.ts:115</a></li>
+										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/audiobooks.ts#L131">src/audiobooks.ts:131</a></li>
 									</ul>
 								</aside>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>Last step of the normalization of a key/value pair in context. The only extra step in the main processing part is to
-											(recursively) call to the global normalization on all constituents. This corresponds to the extension point in the main body of
-										<a href="https://www.w3.org/TR/pub-manifest/#normalize-data">§7.4.1 of the Publication Manifest</a>.</p>
-									</div>
-									<p>The [§6 Manifest Processing][<a href="https://www.w3.org/TR/audiobooks/#audio-manifest-processing%5D">https://www.w3.org/TR/audiobooks/#audio-manifest-processing]</a> of the Audiobooks specification does not
-									define any special data normalization step, i.e., this method returns the property value unchanged.</p>
-								</div>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
 										<h5>context: <a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a><span class="tsd-signature-symbol"> | </span><a href="_src_lib_terms_.html#recognizedtypes_impl" class="tsd-signature-type">RecognizedTypes_Impl</a></h5>
-										<div class="tsd-comment tsd-typography">
-											<p>&#39;context&#39;, i.e., the object on which the function has been invoked</p>
-										</div>
 									</li>
 									<li>
 										<h5>term: <span class="tsd-signature-type">string</span></h5>
-										<div class="tsd-comment tsd-typography">
-											<p>property term</p>
-										</div>
 									</li>
 									<li>
 										<h5>value: <span class="tsd-signature-type">any</span></h5>
-										<div class="tsd-comment tsd-typography">
-											<p>property value</p>
-										</div>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 								<ul>
 									<li>the “normalized” value, or <code>undefined</code> if a fatal error occurs</li>
+								</ul>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal">
+						<a name="audiobook_profile.validate_context" class="tsd-anchor"></a>
+						<h3>validate_<wbr>context</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal">
+							<li class="tsd-signature tsd-kind-icon">validate_<wbr>context<span class="tsd-signature-symbol">(</span>manifest<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a>, processed<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/src/audiobooks.ts#L75">src/audiobooks.ts:75</a></li>
+									</ul>
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>manifest: <a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a></h5>
+									</li>
+									<li>
+										<h5>processed: <a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_lib_terms_.publicationmanifest_impl.html" class="tsd-signature-type">PublicationManifest_Impl</a></h4>
+								<ul>
+									<li>the same object as <code>processed</code>, with possible additions, or <code>null</code> if a fatal error is found (e.g., missing context file that is required for the profile)</li>
 								</ul>
 							</li>
 						</ul>

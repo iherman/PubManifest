@@ -66,27 +66,6 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Simple test runner. It is based on the test manifest stored in <a href="https://github.com/iherman/PubManifest/tests/index.json">index.json</a>,
-							and uses (for the time being) a rudimentary CLI: the runner should be invoked with the test id, which executes <a href="_src_process_.html#process_manifest">process_manifest</a> on that test entry,
-						displays the resulting processed manifest, as well as the validation and fatal errors as defined in the specification.</p>
-					</div>
-					<p>The tests themselves are separated into three directories: a generic one for the tests running the algorithm as specified in the
-						core <a href="https://www.w3.org/TR/pub-manifest/">publication manifest spec</a>, and a separate audiobooks one, for tests related to the audiobooks extension, specified
-					by the <a href="https://www.w3.org/TR/audiobooks/">audiobooks profile spec</a>, and the <a href="https://www.w3.org/TR/pub-manifest/#app-toc-ua">ToC extraction algorithm</a>.</p>
-					<p>The structure of the JSON is organized by separate test suites for the different categories (see <a href="../interfaces/_tests_runner_.documenttests.html">DocumentTests</a>).
-						For each document there are some metadata and a series of section tests (see <a href="../interfaces/_tests_runner_.sectiontests.html">SectionTests</a>), corresponding to some sections in the specifications. Finally,
-					each section tests is a series of individual tests (see <a href="../interfaces/_tests_runner_.test.html">Test</a>).</p>
-					<p>A test is, usually, a JSON-LD file for a manifest, to make things simpler to test. Alternatively, some tests are in html (the <code>format</code> entry in <a href="../interfaces/_tests_runner_.test.html">Test</a> should be set to <code>html</code> for those cases), pointing to a Primary Entry Point.</p>
-					<dl class="tsd-comment-tags">
-						<dt>author</dt>
-						<dd><p>Ivan Herman <a href="mailto:&#105;&#x76;&#97;&#110;&#64;&#x77;&#51;&#46;&#x6f;&#114;&#103;">&#105;&#x76;&#97;&#110;&#64;&#x77;&#51;&#46;&#x6f;&#114;&#103;</a></p>
-						</dd>
-					</dl>
-				</div>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -129,7 +108,7 @@
 					<div class="tsd-signature tsd-kind-icon">test_<wbr>base_<wbr>audio<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"http://localhost:8001/LocalData/github/Publishing/publ-tests/audiobooks/manifest_processing/tests"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;http://localhost:8001/LocalData/github/Publishing/publ-tests/audiobooks/manifest_processing/tests&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/tests/runner.ts#L21">tests/runner.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/tests/runner.ts#L21">tests/runner.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -139,14 +118,9 @@
 					<div class="tsd-signature tsd-kind-icon">test_<wbr>base_<wbr>general<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/manifest_processing/tests"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/manifest_processing/tests&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/tests/runner.ts#L20">tests/runner.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/tests/runner.ts#L20">tests/runner.ts:20</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Base URL for all files, this should be adapted to the local environment...</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="test_base_toc" class="tsd-anchor"></a>
@@ -154,7 +128,7 @@
 					<div class="tsd-signature tsd-kind-icon">test_<wbr>base_<wbr>toc<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/toc_processing/tests"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;http://localhost:8001/LocalData/github/Publishing/publ-tests/publication_manifest/toc_processing/tests&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/tests/runner.ts#L22">tests/runner.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/tests/runner.ts#L22">tests/runner.ts:22</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -164,7 +138,7 @@
 					<div class="tsd-signature tsd-kind-icon">test_<wbr>profiles<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_src_lib_profile_.profile.html" class="tsd-signature-type">Profile</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[audiobook_profile, default_profile]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/tests/runner.ts#L36">tests/runner.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/tests/runner.ts#L36">tests/runner.ts:36</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -181,20 +155,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/tests/runner.ts#L148">tests/runner.ts:148</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/tests/runner.ts#L148">tests/runner.ts:148</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Generate score object, to be submitted to the test suite reporting</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>all_tests: <a href="../interfaces/_tests_runner_.flattenedsuite.html" class="tsd-signature-type">FlattenedSuite</a></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -211,31 +178,16 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/tests/runner.ts#L104">tests/runner.ts:104</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/tests/runner.ts#L104">tests/runner.ts:104</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Generate a flattened version of the test suite, setting the URL of each test on the fly.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>async</dt>
-									<dd></dd>
-								</dl>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>file_name: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>name of the test manifest file</p>
-									</div>
 								</li>
 								<li>
 									<h5>prefix: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>prefix added to the id of the test for the file name</p>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tests_runner_.flattenedsuite.html" class="tsd-signature-type">FlattenedSuite</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -252,18 +204,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/tests/runner.ts#L166">tests/runner.ts:166</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/tests/runner.ts#L166">tests/runner.ts:166</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Run a test, or dump a general score object on the standard output. The choice depends on the -s flag of the command line.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>async</dt>
-									<dd></dd>
-								</dl>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
@@ -278,26 +221,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/0ef1140/tests/runner.ts#L132">tests/runner.ts:132</a></li>
+									<li>Defined in <a href="https://github.com/iherman/PubManifest/blob/19b4b65/tests/runner.ts#L132">tests/runner.ts:132</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Start the general processing algorithm and, if successful, print the JSON representation of that returned class on standard output, as well as
-									the list of fatal and validation errors.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>async</dt>
-									<dd></dd>
-								</dl>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>url: <a href="_src_manifest_.html#url" class="tsd-signature-type">URL</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>URL to a json file</p>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
