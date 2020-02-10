@@ -78,6 +78,13 @@ export const Global: GlobalData = new GlobalData();
 /** Query selector string for ToC */
 export const toc_query_selector = '*[role*="doc-toc"]';
 
+/**
+ * Turn an array of strings into an array of lower case equivalents
+ * @param arg incoming array of strings
+ */
+export function lower(arg: string[]): string[] {
+    return arg.map((value: string): string => value.toLowerCase())
+}
 
 /**
  * Name tells it all: if the argument is  single value, it is encapsulated into

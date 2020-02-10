@@ -7,7 +7,7 @@
 import { Profile } from './lib/profile';
 
 /** Global data class */
-import { Global, check_duration_value, toc_query_selector } from './lib/utilities';
+import { Global, check_duration_value, toc_query_selector, lower } from './lib/utilities';
 
 import {
     URL,
@@ -195,7 +195,7 @@ export const audiobook_profile: Profile = {
             const res1 = (data.readingOrder) ? data.readingOrder : [];
             const res2 = (data.resources) ? data.resources : [];
             const cover = [...res1, ...res2].find((item: LinkedResource): boolean => {
-                return item.rel && item.rel.includes('cover');
+                return item.rel && lower(item.rel).includes('cover');
             });
             if (cover === undefined) {
                 Global.logger.log_light_validation_error('No cover resource');
