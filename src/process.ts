@@ -1142,6 +1142,13 @@ function add_default_values(data: PublicationManifest_Impl): PublicationManifest
             Global.logger.log_fatal_error("Empty reading order");
             return null;
         }
+    } else {
+        if (Global.document !== undefined) {
+            if (!data.uniqueResources.includes(Global.document.location.href)) {
+                Global.logger.log_light_validation_error("Referring document's URL should be either in the reading order or in the resource list.")
+            }
+        }
+
     }
     /* Profile specific fallback */
     return Global.profile.add_default_values(data);
