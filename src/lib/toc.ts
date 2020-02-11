@@ -154,20 +154,14 @@ function extract_TOC(toc_element: HTMLElement, manifest: PublicationManifest ): 
         }
 
         // Step 4.5.2
-        if (current_toc_node.name === null) {
-            if (current_toc_node.entries === null) {
+        if (current_toc_node.name === null || current_toc_node.name === '' ) {
+            if (current_toc_node.entries !== null) {
+                current_toc_node.name = null;
+            } else {
                 current_toc_node = null;
                 return;
             }
         }
-        // if (current_toc_node.name === null) {
-        //     if (current_toc_node.entries !== null) {
-        //         current_toc_node.name = null;
-        //     } else {
-        //         current_toc_node = null;
-        //         return;
-        //     }
-        // }
 
         // Step 4.5.3
         if (branches.length !== 0) {
