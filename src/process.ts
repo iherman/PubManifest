@@ -464,12 +464,10 @@ export async function generate_internal_representation(args: GenerationArguments
     processed = Global.profile.generate_internal_representation(processed);
 
     /* Step: add the HTML defaults */
-    {
-        const final = add_default_values(processed);
-        if (final === null) {
-            // A fatal error has been raised!
-            return {} as PublicationManifest;
-        }
+    processed = add_default_values(processed);
+    if (processed === null) {
+        // A fatal error has been raised!
+        return {} as PublicationManifest;
     }
 
     /* Step: Extract the ToC */
@@ -1151,5 +1149,7 @@ function add_default_values(data: PublicationManifest_Impl): PublicationManifest
             Global.logger.log_light_validation_error("Referring document's URL should be in either the reading order or the resource list.")
         }
     }
+
+    return data;
 }
 
