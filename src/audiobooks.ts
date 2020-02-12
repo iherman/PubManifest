@@ -104,6 +104,31 @@ export const audiobook_profile: Profile = {
             Global.logger.log_light_validation_error('No table of content found')
         }
 
+        /** Step 2, check the duration values */
+        {
+            // This is the duration in milliseconds!
+            let resourceDuration: number = 0;
+            processed.readingOrder.forEach((resource: LinkedResource) => {
+                if (resource.duration) {
+                    if (!check_duration_value(resource.duration, Global.logger)) {
+                        delete resource.duration
+                    } else {
+                        resourceDuration += moment.duration(resource.duration).asMilliseconds();;
+                    }
+                } else {
+                    Global.logger.log_light_validation_error('No duration set in resource', resource);
+                }
+            });
+            if (processed.duration) {
+                if (moment.duration(processed.duration).asMilliseconds() !== resourceDuration) {
+                    Global.logger.log_light_validation_error(`Inconsistent global duration value (${processed.duration})`);
+                }
+            } else {
+                Global.logger.log_light_validation_error(`Global duration value has not been provided`);
+            }
+        }
+
+
         // The PEP (if it exists) should also be in the unique resources array.
         // @@@@@@@@@@@@!!!!!! This is not yet accepted, just a proposed amendment of the audiobook spec!
         if (Global.document !== undefined) {
@@ -202,27 +227,6 @@ export const audiobook_profile: Profile = {
             }
         }
 
-        /** Step 5, check the duration values */
-        {
-            // This is the duration in milliseconds!
-            let resourceDuration: number = 0;
-            data.readingOrder.forEach((resource: LinkedResource) => {
-                if (resource.duration) {
-                    if (!check_duration_value(resource.duration, Global.logger)) {
-                        delete resource.duration
-                    } else {
-                        resourceDuration += moment.duration(resource.duration).asMilliseconds();;
-                    }
-                } else {
-                    Global.logger.log_light_validation_error('No duration set in resource', resource);
-                }
-            });
-            if (data.duration) {
-                if (moment.duration(data.duration).asMilliseconds() !== resourceDuration) {
-                    Global.logger.log_light_validation_error(`Inconsistent global duration value (${data.duration})`);
-                }
-            }
-        }
         return data;
     },
 
