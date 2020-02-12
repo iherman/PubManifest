@@ -194,27 +194,6 @@ export const audiobook_profile: Profile = {
             }
         }
 
-        /** Step 5, check the duration values */
-        {
-            // This is the duration in milliseconds!
-            let resourceDuration: number = 0;
-            data.readingOrder.forEach((resource: LinkedResource) => {
-                if (resource.duration) {
-                    if (!check_duration_value(resource.duration, Global.logger)) {
-                        delete resource.duration
-                    } else {
-                        resourceDuration += moment.duration(resource.duration).asMilliseconds();;
-                    }
-                } else {
-                    Global.logger.log_light_validation_error('No duration set in resource', resource);
-                }
-            });
-            if (data.duration) {
-                if (moment.duration(data.duration).asMilliseconds() !== resourceDuration) {
-                    Global.logger.log_light_validation_error(`Inconsistent global duration value (${data.duration})`);
-                }
-            }
-        }
         return data;
     },
 
