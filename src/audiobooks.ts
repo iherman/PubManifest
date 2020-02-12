@@ -87,7 +87,7 @@ export const audiobook_profile: Profile = {
      * @param processed - the generated manifest representation
      * @returns - the same object as `processed`, with possible additions
      */
-    generate_internal_representation(processed: PublicationManifest): PublicationManifest {
+    generate_internal_representation(processed: PublicationManifest_Impl): PublicationManifest_Impl {
         let toc: boolean = false;
         if (Global.document !== undefined) {
             if (Global.document.querySelector(toc_query_selector) !== null) {
@@ -102,39 +102,6 @@ export const audiobook_profile: Profile = {
 
         if (!toc) {
             Global.logger.log_light_validation_error('No table of content found')
-        }
-
-        /** Step 2, check the duration values */
-        {
-            // This is the duration in milliseconds!
-            let resourceDuration: number = 0;
-            processed.readingOrder.forEach((resource: LinkedResource) => {
-                if (resource.duration) {
-                    if (!check_duration_value(resource.duration, Global.logger)) {
-                        delete resource.duration
-                    } else {
-                        resourceDuration += moment.duration(resource.duration).asMilliseconds();;
-                    }
-                } else {
-                    Global.logger.log_light_validation_error('No duration set in resource', resource);
-                }
-            });
-            if (processed.duration) {
-                if (moment.duration(processed.duration).asMilliseconds() !== resourceDuration) {
-                    Global.logger.log_light_validation_error(`Inconsistent global duration value (${processed.duration})`);
-                }
-            } else {
-                Global.logger.log_light_validation_error(`Global duration value has not been provided`);
-            }
-        }
-
-
-        // The PEP (if it exists) should also be in the unique resources array.
-        // @@@@@@@@@@@@!!!!!! This is not yet accepted, just a proposed amendment of the audiobook spec!
-        if (Global.document !== undefined) {
-            if (!processed.uniqueResources.includes(Global.document.documentURI)) {
-                processed.uniqueResources.push(Global.document.documentURI);
-            }
         }
 
         return processed;
