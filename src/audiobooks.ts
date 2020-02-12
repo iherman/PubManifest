@@ -87,7 +87,7 @@ export const audiobook_profile: Profile = {
      * @param processed - the generated manifest representation
      * @returns - the same object as `processed`, with possible additions
      */
-    generate_internal_representation(processed: PublicationManifest): PublicationManifest {
+    generate_internal_representation(processed: PublicationManifest_Impl): PublicationManifest_Impl {
         let toc: boolean = false;
         if (Global.document !== undefined) {
             if (Global.document.querySelector(toc_query_selector) !== null) {

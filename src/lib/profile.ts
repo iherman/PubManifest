@@ -57,7 +57,7 @@ export interface Profile {
      * @param processed - the generated manifest representation
      * @returns - the same object as `processed`, with possible additions
      */
-    generate_internal_representation : (processed: PublicationManifest) => PublicationManifest;
+    generate_internal_representation : (processed: PublicationManifest_Impl) => PublicationManifest_Impl;
 
     /**
      * Last step of the normalization of a key/value pair in context. The only extra step in the main processing part is to
@@ -110,7 +110,7 @@ export const default_profile: Profile = {
         return processed;
     },
 
-    generate_internal_representation(processed: PublicationManifest): PublicationManifest {
+    generate_internal_representation(processed: PublicationManifest_Impl): PublicationManifest_Impl {
         return processed;
     },
 

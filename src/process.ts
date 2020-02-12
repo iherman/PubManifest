@@ -460,6 +460,9 @@ export async function generate_internal_representation(args: GenerationArguments
     // if the data validation returned undefined, i.e., a fatal error, we should stop here...
     if (processed === null) return {} as PublicationManifest;
 
+    /* Step: Profile specific processing */
+    processed = Global.profile.generate_internal_representation(processed);
+
     /* Step: add the HTML defaults */
     {
         const final = add_default_values(processed);
@@ -469,17 +472,14 @@ export async function generate_internal_representation(args: GenerationArguments
         }
     }
 
-    /* Step: Profile specific processing, and return: */
-    const retval_impl = Global.profile.generate_internal_representation(processed);
-
     /* Step: Extract the ToC */
-    retval_impl.toc = await generate_TOC(retval_impl);
+    processed.toc = await generate_TOC(processed);
 
     // Doing an ugly trick here. The objects are all '_impl', meaning that they contain additional data
     // that are only necessary for processing and not for the rest, namely '$terms'. To filter them all out
     // the most straightforward way is to convert the object into JSON and back but, along the line,
     // filter those unwanted keys out.
-    const retval = JSON.parse(JSON.stringify(retval_impl,(key, value) =>  key === '$terms' ? undefined : value)) as PublicationManifest;
+    const retval = JSON.parse(JSON.stringify(processed,(key, value) =>  key === '$terms' ? undefined : value)) as PublicationManifest;
     return retval;
 }
 
