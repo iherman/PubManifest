@@ -391,6 +391,12 @@ async function generate_internal_representation(args, logger, profiles = [profil
             }
         }
     }
+    /* Step: profile specific check on the context files */
+    processed = utilities_1.Global.profile.validate_context(manifest, processed);
+    if (processed === null) {
+        // a fatal error has occured when checking the context files
+        return {};
+    }
     /* Step: go (recursively!) through all the term in manifest, normalize the value, an set it in processed */
     process_object_keys(manifest, (term) => {
         const value = manifest[term];
@@ -404,23 +410,21 @@ async function generate_internal_representation(args, logger, profiles = [profil
     // if the data validation returned undefined, i.e., a fatal error, we should stop here...
     if (processed === null)
         return {};
+    /* Step: Profile specific processing */
+    processed = utilities_1.Global.profile.generate_internal_representation(processed);
     /* Step: add the HTML defaults */
-    {
-        const final = add_default_values(processed);
-        if (final === null) {
-            // A fatal error has been raised!
-            return {};
-        }
+    processed = add_default_values(processed);
+    if (processed === null) {
+        // A fatal error has been raised!
+        return {};
     }
-    /* Step: Profile specific processing, and return: */
-    const retval_impl = utilities_1.Global.profile.generate_internal_representation(processed);
     /* Step: Extract the ToC */
-    retval_impl.toc = await toc_1.generate_TOC(retval_impl);
+    processed.toc = await toc_1.generate_TOC(processed);
     // Doing an ugly trick here. The objects are all '_impl', meaning that they contain additional data
     // that are only necessary for processing and not for the rest, namely '$terms'. To filter them all out
     // the most straightforward way is to convert the object into JSON and back but, along the line,
     // filter those unwanted keys out.
-    const retval = JSON.parse(JSON.stringify(retval_impl, (key, value) => key === '$terms' ? undefined : value));
+    const retval = JSON.parse(JSON.stringify(processed, (key, value) => key === '$terms' ? undefined : value));
     return retval;
 }
 exports.generate_internal_representation = generate_internal_representation;
@@ -653,7 +657,7 @@ function data_validation(data) {
                     utilities_1.Global.logger.log_light_validation_error(`Rel value in "links" not set`, link);
                 }
                 else {
-                    const intersection = _.intersection(link["rel"], structural_resources);
+                    const intersection = _.intersection(utilities_1.lower(link["rel"]), structural_resources);
                     if (intersection.length > 0) {
                         utilities_1.Global.logger.log_strong_validation_error(`Linked Resource in "links" includes "${intersection}"`, link);
                         return false;
@@ -671,8 +675,9 @@ function data_validation(data) {
         const res2 = (data.resources) ? data.resources : [];
         [...res1, ...res2].forEach((resource) => {
             if (resource.rel) {
+                let lower_case_rel = utilities_1.lower(resource.rel);
                 structural_resources.forEach((str) => {
-                    if (resource.rel.includes(str)) {
+                    if (lower_case_rel.includes(str)) {
                         // we found a possible structural resource
                         if (flags[str] === true) {
                             // Duplicate, should not be used
@@ -1067,6 +1072,12 @@ function add_default_values(data) {
         }
     }
     /* Profile specific fallback */
-    return utilities_1.Global.profile.add_default_values(data);
+    data = utilities_1.Global.profile.add_default_values(data);
+    if (utilities_1.Global.document !== undefined) {
+        if (!data.uniqueResources.includes(utilities_1.Global.document.location.href)) {
+            utilities_1.Global.logger.log_light_validation_error("Referring document's URL should be in either the reading order or the resource list.");
+        }
+    }
+    return data;
 }
 //# sourceMappingURL=process.js.map

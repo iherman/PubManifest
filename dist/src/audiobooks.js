@@ -36,7 +36,21 @@ const required_terms = [
 exports.audiobook_profile = {
     identifier: 'https://www.w3.org/TR/audiobooks/',
     /**
-     * "Top level" callback done as the last step of the manifest generation. This corresponds to the extension point in the main body of
+     * "Top level" callback to check the profile dependent context files, and possibly process them for a
+     * profile dependent value. This corresponds to the first extension point in the main body of
+     * [§7.4  Publication Manifest](https://www.w3.org/TR/pub-manifest/#processing-algorithm).
+     *
+     * For audiobooks, this is only a placeholder; that profile does not rely on any extra context files.
+     *
+     * @param manifest - the original manifest, i.e., the result of the JSON parsing
+     * @param processed - the generated manifest representation
+     * @returns - the same object as `processed`, with possible additions, or `null` if a fatal error is found (e.g., missing context file that is required for the profile)
+     */
+    validate_context(manifest, processed) {
+        return processed;
+    },
+    /**
+     * "Top level" callback done as the last step of the manifest generation. This corresponds to the second extension point in the main body of
      * [§7.4  Publication Manifest](https://www.w3.org/TR/pub-manifest/#processing-algorithm).
      *
      * This method implements the steps specified in
@@ -60,11 +74,31 @@ exports.audiobook_profile = {
         if (!toc) {
             utilities_1.Global.logger.log_light_validation_error('No table of content found');
         }
-        // The PEP (if it exists) should also be in the unique resources array.
-        // @@@@@@@@@@@@!!!!!! This is not yet accepted, just a proposed amendment of the audiobook spec!
-        if (utilities_1.Global.document !== undefined) {
-            if (!processed.uniqueResources.includes(utilities_1.Global.document.documentURI)) {
-                processed.uniqueResources.push(utilities_1.Global.document.documentURI);
+        /** Step 2, check the duration values */
+        {
+            // This is the duration in milliseconds!
+            let resourceDuration = 0;
+            processed.readingOrder.forEach((resource) => {
+                if (resource.duration) {
+                    if (!utilities_1.check_duration_value(resource.duration, utilities_1.Global.logger)) {
+                        delete resource.duration;
+                    }
+                    else {
+                        resourceDuration += moment_1.default.duration(resource.duration).asMilliseconds();
+                        ;
+                    }
+                }
+                else {
+                    utilities_1.Global.logger.log_light_validation_error('No duration set in resource', resource);
+                }
+            });
+            if (processed.duration) {
+                if (moment_1.default.duration(processed.duration).asMilliseconds() !== resourceDuration) {
+                    utilities_1.Global.logger.log_light_validation_error(`Inconsistent global duration value (${processed.duration})`);
+                }
+            }
+            else {
+                utilities_1.Global.logger.log_light_validation_error(`Global duration value has not been provided`);
             }
         }
         return processed;
@@ -144,34 +178,10 @@ exports.audiobook_profile = {
             const res1 = (data.readingOrder) ? data.readingOrder : [];
             const res2 = (data.resources) ? data.resources : [];
             const cover = [...res1, ...res2].find((item) => {
-                return item.rel && item.rel.includes('cover');
+                return item.rel && utilities_1.lower(item.rel).includes('cover');
             });
             if (cover === undefined) {
                 utilities_1.Global.logger.log_light_validation_error('No cover resource');
-            }
-        }
-        /** Step 5, check the duration values */
-        {
-            // This is the duration in milliseconds!
-            let resourceDuration = 0;
-            data.readingOrder.forEach((resource) => {
-                if (resource.duration) {
-                    if (!utilities_1.check_duration_value(resource.duration, utilities_1.Global.logger)) {
-                        delete resource.duration;
-                    }
-                    else {
-                        resourceDuration += moment_1.default.duration(resource.duration).asMilliseconds();
-                        ;
-                    }
-                }
-                else {
-                    utilities_1.Global.logger.log_light_validation_error('No duration set in resource', resource);
-                }
-            });
-            if (data.duration) {
-                if (moment_1.default.duration(data.duration).asMilliseconds() !== resourceDuration) {
-                    utilities_1.Global.logger.log_light_validation_error(`Inconsistent global duration value (${data.duration})`);
-                }
             }
         }
         return data;

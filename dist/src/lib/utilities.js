@@ -46,6 +46,14 @@ exports.Global = new GlobalData();
 /** Query selector string for ToC */
 exports.toc_query_selector = '*[role*="doc-toc"]';
 /**
+ * Turn an array of strings into an array of lower case equivalents
+ * @param arg incoming array of strings
+ */
+function lower(arg) {
+    return arg.map((value) => value.toLowerCase());
+}
+exports.lower = lower;
+/**
  * Name tells it all: if the argument is  single value, it is encapsulated into
  * an array. Used for Localizable String, Linked Resources, etc.
  *

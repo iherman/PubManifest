@@ -11,6 +11,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 exports.default_profile = {
     identifier: 'https://www.w3.org/TR/pub-manifest/',
+    validate_context(manifest, processed) {
+        return processed;
+    },
     generate_internal_representation(processed) {
         return processed;
     },
