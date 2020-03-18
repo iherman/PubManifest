@@ -32,14 +32,15 @@
         "@typescript-eslint/eslint-plugin": "^2.4.0",
         "@typescript-eslint/parser": "^2.4.0",
         "browserify": "^16.5.0",
-        "eslint": "^6.2.1",
+        "eslint": "^6.8.0",
         "eslint-config-airbnb-base": "^14.0.0",
         "eslint-plugin-import": "^2.18.2",
         "terser": "^4.4.0",
-        "typedoc": "^0.15.0",
+        "typedoc": "^0.15.8",
         "typescript": "^3.7.4"
     },
     "dependencies": {
+        "acorn": "^7.1.1",
         "content-type": "^1.0.4",
         "jsdom": "^15.2.1",
         "moment": "^2.24.0",
