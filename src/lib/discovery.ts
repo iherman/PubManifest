@@ -127,15 +127,17 @@ async function fetch_resource(resource_url: URL, format: ContentType): Promise<a
                     if (response.ok) {
                         // If the response content type is set (which is usually the case, but not in all cases...)
                         const response_type = response.headers.get('content-type');
-                        if (response_type && response_type !== '') {
+                        if (typeof response_type === "string" && response_type) {
+
+                            const responseTypeArray = response_type.replace(/\s/g, '').split(';');
                             // check whether we got what we wanted
                             if (format === ContentType.json) {
-                                if (response_type === json_content_type || response_type === jsonld_content_type) {
+                                if (responseTypeArray.find((v) => v === json_content_type || v === jsonld_content_type)) {
                                     resolve(response.text());
                                 }
                             } else {
                                 // we expect HTML then
-                                if (response_type === html_content_type) {
+                                if (responseTypeArray.includes(html_content_type)) {
                                     resolve(response.text());
                                 }
                             }
