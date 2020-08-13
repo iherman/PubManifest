@@ -7,7 +7,7 @@
         "test": "ts-node tests/runner.ts",
         "build": "tsc && browserify webview/lib/main.js > webview/js/pm.js && terser webview/js/pm.js > webview/js/pm.min.js",
         "run": "node dist/tests/runner.js",
-        "docs": "typedoc src/"
+        "docs": "typedoc src/ tests/"
     },
     "license": "W3C-20150513",
     "keywords": [

@@ -1,4 +1,8 @@
 node_modules/
 
 dist/
+tests/audio_index.json
+tests/manifest_index.json
+tests/toc_index.json
+
 
