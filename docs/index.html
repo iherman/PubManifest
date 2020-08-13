@@ -71,9 +71,9 @@
 				<p>It is <em>not</em> a meaningful implementation insofar as it should be embedded in a full-blown User Agent implementation based on Publication Manifests to make it useful. <em>Its main purpose is to check the correctness of the specifications themselves</em>. This means that, for example, necessary checks on, e.g., the security and validity on the URL-s in the manifest are omitted.</p>
 				<p>The following public functions are available:</p>
 				<ul>
-					<li>The <a href="modules/_src_lib_discovery_.html#discover_manifest">discover_manifest</a> function, implementing the manifest discovery, returning a manifest (text);</li>
-					<li>The <a href="interfaces/_src_lib_profile_.profile.html#generate_internal_representation">generate_internal_representation</a> function, implementing the processing algorithm itself and resulting in a class implementing the <a href="interfaces/_src_manifest_.publicationmanifest.html">PublicationManifest</a> interface;</li>
-					<li>The <a href="modules/_src_process_.html#process_manifest">process_manifest</a> function, a wrapper of around the combination of the two previous functions to provide a single entry point.</li>
+					<li>The <a href="modules/_lib_discovery_.html#discover_manifest">discover_manifest</a> function, implementing the manifest discovery, returning a manifest (text);</li>
+					<li>The <a href="interfaces/_lib_profile_.profile.html#generate_internal_representation">generate_internal_representation</a> function, implementing the processing algorithm itself and resulting in a class implementing the <a href="interfaces/_manifest_.publicationmanifest.html">PublicationManifest</a> interface;</li>
+					<li>The <a href="modules/_process_.html#process_manifest">process_manifest</a> function, a wrapper of around the combination of the two previous functions to provide a single entry point.</li>
 				</ul>
 				<p>There is a rudimentary CLI implemented in the separate <a href="modules/_tests_runner_">runner</a> module for testing only. There is also a <a href="https://iherman.github.io/PubManifest/webview/index.html">“webview”</a> where the user can upload, or type in, manifests and see the resulting data structure.</p>
 				<a href="#implementation-specificities" id="implementation-specificities" style="color: inherit; text-decoration: none;">
@@ -82,7 +82,7 @@
 				<p>The implementation is in Typescript and on top of <code>node.js</code>.</p>
 				<ul>
 					<li>When the document says &#39;failure is returned&#39;, this appears in the code as returning the Javascript value <code>undefined</code> or, when the function returns a boolean, <code>false</code>.</li>
-					<li>The notion of a &#39;context&#39; in the algorithm is implemented via one of the <code>*_Impl</code> interfaces corresponding to the TS Interface definitions for the internal representations (see <a href="modules/_manifest_.html">manifest</a> and <a href="modules/_terms_.html">terms</a> for details). All these classes have a reference to a <a href="classes/_src_lib_terms_.terms.html">Terms</a> instance that classifies the terms defined for that class (type).</li>
+					<li>The notion of a &#39;context&#39; in the algorithm is implemented via one of the <code>*_Impl</code> interfaces corresponding to the TS Interface definitions for the internal representations (see <a href="modules/_manifest_.html">manifest</a> and <a href="modules/_terms_.html">terms</a> for details). All these classes have a reference to a <a href="classes/_lib_terms_.terms.html">Terms</a> instance that classifies the terms defined for that class (type).</li>
 				</ul>
 				<p>The project can be downloaded via cloning and and can be run via the standard <code>npm</code> processing.</p>
 				<hr>
@@ -97,34 +97,31 @@
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_audiobooks_.html">"src/audiobooks"</a>
+						<a href="modules/_audiobooks_.html">&quot;audiobooks&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_bridge_.html">"src/bridge"</a>
+						<a href="modules/_bridge_.html">&quot;bridge&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_lib_discovery_.html">"src/lib/discovery"</a>
+						<a href="modules/_lib_discovery_.html">&quot;lib/discovery&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_lib_profile_.html">"src/lib/profile"</a>
+						<a href="modules/_lib_profile_.html">&quot;lib/profile&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_lib_terms_.html">"src/lib/terms"</a>
+						<a href="modules/_lib_terms_.html">&quot;lib/terms&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_lib_toc_.html">"src/lib/toc"</a>
+						<a href="modules/_lib_toc_.html">&quot;lib/toc&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_lib_utilities_.html">"src/lib/utilities"</a>
+						<a href="modules/_lib_utilities_.html">&quot;lib/utilities&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_manifest_.html">"src/manifest"</a>
+						<a href="modules/_manifest_.html">&quot;manifest&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_process_.html">"src/process"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_tests_runner_.html">"tests/runner"</a>
+						<a href="modules/_process_.html">&quot;process&quot;</a>
 					</li>
 				</ul>
 			</nav>
