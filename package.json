@@ -44,7 +44,7 @@
         "content-type": "^1.0.4",
         "jsdom": "^15.2.1",
         "moment": "^2.24.0",
-        "node-fetch": "^2.6.0",
+        "node-fetch": "^2.6.1",
         "tsutils": "^3.17.1",
         "underscore": "^1.9.1",
         "url": "^0.11.0",
