@@ -42,7 +42,7 @@
     "dependencies": {
         "acorn": "^7.1.1",
         "content-type": "^1.0.4",
-        "jsdom": "^15.2.1",
+        "jsdom": "^16.5.0",
         "moment": "^2.29.2",
         "node-fetch": "^2.6.1",
         "tsutils": "^3.17.1",
