@@ -35,7 +35,7 @@
         "eslint": "^6.8.0",
         "eslint-config-airbnb-base": "^14.0.0",
         "eslint-plugin-import": "^2.18.2",
-        "terser": "^4.4.0",
+        "terser": "^4.8.1",
         "typedoc": "^0.15.8",
         "typescript": "^3.7.4"
     },
