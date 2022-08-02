@@ -43,7 +43,7 @@
         "acorn": "^7.1.1",
         "content-type": "^1.0.4",
         "jsdom": "^16.5.0",
-        "moment": "^2.29.2",
+        "moment": "^2.29.4",
         "node-fetch": "^2.6.1",
         "tsutils": "^3.17.1",
         "underscore": "^1.12.1",
